@@ -34,6 +34,7 @@ export const HeroSection: React.FC = () => {
       {/* Background Video or Image */}
       {siteSettings.heroMediaType === 'video' && siteSettings.heroMediaUrl ? (
         <video
+          key={siteSettings.heroMediaUrl}
           autoPlay
           muted
           loop

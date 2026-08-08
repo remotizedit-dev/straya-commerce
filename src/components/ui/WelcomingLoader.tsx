@@ -67,9 +67,10 @@ export const WelcomingLoader: React.FC = () => {
           exit={{ opacity: 0, scale: 1.02, transition: { duration: 0.8, ease: 'easeInOut' } }}
           className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black overflow-hidden select-none"
         >
-          {/* Background Welcoming Video Loop */}
+          {/* Background Welcoming Video Loop with key prop to force instant reload when CMS URL changes */}
           {siteSettings.welcomingVideoUrl ? (
             <video
+              key={siteSettings.welcomingVideoUrl}
               autoPlay
               muted
               playsInline

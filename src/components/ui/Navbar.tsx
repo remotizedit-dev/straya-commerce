@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/lib/store';
-import { ShoppingBag, Search, Menu, X, ShieldCheck, PhoneCall } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, PhoneCall } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
@@ -25,13 +26,19 @@ export const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 w-full bg-black/90 backdrop-blur-md border-b border-white/10 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Brand Logo */}
+        {/* Brand Logo - Dynamically renders logoUrl from CMS if provided */}
         <Link href="/" className="flex items-center space-x-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-[0_0_15px_rgba(255,0,122,0.4)] group-hover:scale-105 transition-transform">
-            <div className="w-full h-full bg-[#09090D] rounded-[10px] flex items-center justify-center font-black text-xl text-white">
-              S
+          {siteSettings.logoUrl ? (
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-[#FF007A]/50 group-hover:scale-105 transition-transform">
+              <Image src={siteSettings.logoUrl} alt="Logo" fill className="object-cover" />
             </div>
-          </div>
+          ) : (
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-[0_0_15px_rgba(255,0,122,0.4)] group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-[#09090D] rounded-[10px] flex items-center justify-center font-black text-xl text-white">
+                S
+              </div>
+            </div>
+          )}
           <div className="flex flex-col">
             <span className="font-black text-xl sm:text-2xl tracking-wider text-white">
               STRAYA<span className="text-[#FF007A]">.</span>
@@ -87,7 +94,7 @@ export const Navbar: React.FC = () => {
                 />
                 <button
                   onClick={() => setIsSearchOpen(false)}
-                  className="bg-[#151520] border-y border-r border-[#FF007A]/50 px-2 py-2 rounded-r-lg text-gray-400 hover:text-white"
+                  className="bg-[#151520] border-y border-r border-[#FF007A]/50 px-2 py-2 rounded-r-lg text-gray-400 hover:text-white cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -129,7 +136,7 @@ export const Navbar: React.FC = () => {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg bg-white/5 text-gray-300 hover:text-white"
+            className="lg:hidden p-2 rounded-lg bg-white/5 text-gray-300 hover:text-white cursor-pointer"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -165,7 +172,7 @@ export const Navbar: React.FC = () => {
                   setIsMobileMenuOpen(false);
                   openCallModal();
                 }}
-                className="w-full flex items-center justify-center space-x-2 py-3 rounded-lg bg-gradient-to-r from-[#FF007A] to-[#00F0FF] text-white font-bold text-sm shadow-md"
+                className="w-full flex items-center justify-center space-x-2 py-3 rounded-lg bg-gradient-to-r from-[#FF007A] to-[#00F0FF] text-white font-bold text-sm shadow-md cursor-pointer"
               >
                 <PhoneCall className="w-4 h-4" />
                 <span>Request Call Back</span>
