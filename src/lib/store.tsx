@@ -109,7 +109,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
   const [customers, setCustomers] = useState<CustomerRecord[]>(INITIAL_CUSTOMERS);
 
-  // Load cart from localStorage on client side
+  // Load cart and orders from localStorage on client side
   useEffect(() => {
     try {
       if (typeof window !== 'undefined') {
@@ -117,9 +117,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (savedCart) {
           setCart(JSON.parse(savedCart));
         }
+        const savedOrders = localStorage.getItem('straya_orders');
+        if (savedOrders) {
+          const parsed: Order[] = JSON.parse(savedOrders);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setOrders(parsed);
+          }
+        }
       }
     } catch (e) {
-      console.warn('localStorage cart read error', e);
+      console.warn('localStorage read error', e);
     }
   }, []);
 
@@ -133,6 +140,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       console.warn('localStorage cart write error', e);
     }
   }, [cart]);
+
+  // Save orders to localStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && orders.length > 0) {
+        localStorage.setItem('straya_orders', JSON.stringify(orders));
+      }
+    } catch (e) {
+      console.warn('localStorage orders write error', e);
+    }
+  }, [orders]);
 
   // Sync with Firebase Realtime Database
   useEffect(() => {
@@ -241,9 +259,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (snapshot.exists()) {
             const data = snapshot.val();
             const list: Order[] = Object.keys(data).map((key) => ({ ...data[key], id: key }));
-            setOrders(list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
-          } else {
-            setOrders([]);
+            setOrders((prev) => {
+              const map = new Map<string, Order>();
+              prev.forEach((o) => map.set(o.id, o));
+              list.forEach((o) => map.set(o.id, o));
+              return Array.from(map.values()).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            });
           }
         },
         (err) => {

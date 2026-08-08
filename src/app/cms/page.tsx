@@ -228,14 +228,14 @@ export default function CMSDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#07090E] text-slate-100 flex font-sans select-none">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex font-sans select-none">
       {/* 1. CMS SIDEBAR NAVIGATION */}
-      <aside className="w-64 bg-[#0B0F19] border-r border-slate-800 flex flex-col justify-between shrink-0 hidden md:flex">
+      <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0 hidden md:flex">
         <div className="p-6 space-y-6">
           {/* Logo Brand */}
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-lg">
-              <div className="w-full h-full bg-[#0B0F19] rounded-[10px] flex items-center justify-center font-black text-xl text-white">
+              <div className="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center font-black text-xl text-white">
                 S
               </div>
             </div>
@@ -261,16 +261,16 @@ export default function CMSDashboardPage() {
                   onClick={() => setActiveTab(item.id as any)}
                   className={`w-full px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#FF007A] to-[#C4005E] text-white shadow-lg'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-slate-800 text-white border border-slate-700 shadow-md'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-900'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#FF007A]' : 'text-slate-400'}`} />
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (
-                    <span className="px-2 py-0.5 rounded-full bg-[#00F0FF]/20 text-[#00F0FF] text-[10px] font-mono font-bold">
+                    <span className="px-2 py-0.5 rounded-full bg-[#FF007A]/20 text-[#FF007A] text-[10px] font-mono font-bold">
                       {item.badge}
                     </span>
                   )}
@@ -281,7 +281,7 @@ export default function CMSDashboardPage() {
         </div>
 
         {/* Sidebar Footer User Info */}
-        <div className="p-4 border-t border-slate-800/80 bg-[#0A0D15]">
+        <div className="p-4 border-t border-slate-800 bg-slate-900">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2.5">
               <div className="w-8 h-8 rounded-full bg-[#FF007A]/20 border border-[#FF007A]/40 flex items-center justify-center font-bold text-xs text-[#FF007A]">
@@ -307,9 +307,9 @@ export default function CMSDashboardPage() {
       {/* 2. MAIN CMS CONTENT AREA */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Top Header Bar */}
-        <header className="sticky top-0 z-30 bg-[#0B0F19]/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+        <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-xs">
           <div className="flex items-center space-x-3">
-            <h1 className="text-lg font-black text-white uppercase tracking-wider hidden sm:block">
+            <h1 className="text-lg font-black text-slate-900 uppercase tracking-wider hidden sm:block">
               {navItems.find((n) => n.id === activeTab)?.label}
             </h1>
           </div>
@@ -320,10 +320,10 @@ export default function CMSDashboardPage() {
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold flex items-center space-x-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 text-xs font-bold flex items-center space-x-1.5 transition-colors"
             >
               <span>Live Storefront</span>
-              <ExternalLink className="w-3.5 h-3.5 text-[#00F0FF]" />
+              <ExternalLink className="w-3.5 h-3.5 text-[#FF007A]" />
             </a>
 
             <button
@@ -331,7 +331,7 @@ export default function CMSDashboardPage() {
                 setActiveTab('products');
                 setIsAddingProduct(true);
               }}
-              className="glow-pink-btn text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 cursor-pointer"
+              className="glow-pink-btn text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 cursor-pointer shadow-md"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Add Product</span>
