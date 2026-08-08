@@ -77,6 +77,7 @@ interface AppContextType {
   orders: Order[];
   createOrder: (orderData: Omit<Order, 'id' | 'createdAt'>) => Promise<Order>;
   updateOrderStatus: (id: string, paymentStatus?: Order['paymentStatus'], deliveryStatus?: Order['deliveryStatus']) => Promise<void>;
+  deleteOrder: (id: string) => Promise<void>;
 
   customers: CustomerRecord[];
   addOrUpdateCustomer: (customer: Omit<CustomerRecord, 'id' | 'createdAt' | 'totalOrders' | 'totalSpent'>) => Promise<void>;
@@ -569,6 +570,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  const deleteOrder = async (id: string) => {
+    setOrders((prev) => prev.filter((o) => o.id !== id));
+    try {
+      await remove(ref(database, `orders/${id}`));
+    } catch (e) {
+      console.warn('Firebase deleteOrder error', e);
+    }
+  };
+
   const addOrUpdateCustomer = async (custData: Omit<CustomerRecord, 'id' | 'createdAt' | 'totalOrders' | 'totalSpent'>) => {
     const existing = customers.find((c) => c.email.toLowerCase() === custData.email.toLowerCase());
     let customerRecord: CustomerRecord;
@@ -654,6 +664,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         orders,
         createOrder,
         updateOrderStatus,
+        deleteOrder,
         customers,
         addOrUpdateCustomer,
         deleteCustomer,

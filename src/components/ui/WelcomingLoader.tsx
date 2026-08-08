@@ -42,20 +42,17 @@ export const WelcomingLoader: React.FC = () => {
           exit={{ opacity: 0, transition: { duration: 0.8, ease: 'easeInOut' } }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black overflow-hidden select-none"
         >
-          {/* Full Opacity Crisp Welcoming Video Only (Frame 0 Instant Mount) */}
-          {siteSettings.welcomingVideoUrl ? (
-            <video
-              key={siteSettings.welcomingVideoUrl}
-              autoPlay
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-100 filter brightness-110 saturate-120"
-            >
-              <source src={siteSettings.welcomingVideoUrl} type="video/mp4" />
-            </video>
-          ) : (
-            <div className="absolute inset-0 bg-black" />
-          )}
+          {/* Instant Local Video Playback (.webm and .mp4 supported) */}
+          <video
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            className="absolute inset-0 w-full h-full object-cover opacity-100 filter brightness-110 saturate-120"
+          >
+            <source src="/videos/welcoming_intro.webm" type="video/webm" />
+            <source src="/videos/welcoming_intro.mp4" type="video/mp4" />
+          </video>
         </motion.div>
       )}
     </AnimatePresence>

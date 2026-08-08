@@ -53,6 +53,7 @@ export default function CMSDashboardPage() {
     deleteProduct,
     orders,
     updateOrderStatus,
+    deleteOrder,
     customers,
     deleteCustomer,
     leads,
@@ -69,6 +70,11 @@ export default function CMSDashboardPage() {
   >('overview');
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+
+  // Modals for Orders & Products CRUD
+  const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
 
   // 🔒 STRICT PRODUCTION FIREBASE AUTH CHECK
   useEffect(() => {
@@ -594,16 +600,33 @@ export default function CMSDashboardPage() {
                             </select>
                           </td>
                           <td className="p-4 text-right">
-                            <button
-                              onClick={() => {
-                                setSelectedOrderForInvoice(o);
-                                setIsInvoiceOpen(true);
-                              }}
-                              className="px-3.5 py-2 rounded-xl bg-[#00F0FF]/20 border border-[#00F0FF]/50 text-[#00F0FF] hover:bg-[#00F0FF] hover:text-black font-bold text-xs uppercase flex items-center space-x-1.5 ml-auto transition-all cursor-pointer"
-                            >
-                              <FileText className="w-4 h-4" />
-                              <span>Export Invoice</span>
-                            </button>
+                            <div className="flex items-center justify-end space-x-2">
+                              <button
+                                onClick={() => setViewingOrder(o)}
+                                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
+                                title="View Details"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setSelectedOrderForInvoice(o);
+                                  setIsInvoiceOpen(true);
+                                }}
+                                className="px-3 py-1.5 rounded-xl bg-[#00F0FF]/20 border border-[#00F0FF]/50 text-[#00F0FF] hover:bg-[#00F0FF] hover:text-black font-bold text-xs uppercase flex items-center space-x-1 transition-all cursor-pointer"
+                                title="View/Export Tax Invoice"
+                              >
+                                <FileText className="w-3.5 h-3.5" />
+                                <span>Invoice</span>
+                              </button>
+                              <button
+                                onClick={() => deleteOrder(o.id)}
+                                className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 cursor-pointer"
+                                title="Delete Order"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -764,13 +787,29 @@ export default function CMSDashboardPage() {
                           </span>
                         </td>
                         <td className="p-4 text-right">
-                          <button
-                            onClick={() => deleteProduct(p.id)}
-                            className="p-2 text-slate-400 hover:text-red-400 cursor-pointer"
-                            title="Delete Product"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center justify-end space-x-2">
+                            <button
+                              onClick={() => setViewingProduct(p)}
+                              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
+                              title="View Compound Details"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => setEditingProduct(p)}
+                              className="p-2 rounded-xl bg-white/5 hover:bg-[#00F0FF]/20 text-[#00F0FF] cursor-pointer"
+                              title="Edit Compound"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => deleteProduct(p.id)}
+                              className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 cursor-pointer"
+                              title="Delete Product"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -1032,17 +1071,7 @@ export default function CMSDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Welcoming Loader Video Link (.mp4)</label>
-                  <input
-                    type="text"
-                    value={editableSettings.welcomingVideoUrl}
-                    onChange={(e) => setEditableSettings({ ...editableSettings, welcomingVideoUrl: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-[#00F0FF]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">Intro Video Duration in Seconds (e.g. 2.46 or 3.5)</label>
+                  <label className="block text-slate-300 font-bold mb-1">Intro Loader Video Duration in Seconds (e.g. 2.46 or 3.5)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1221,6 +1250,157 @@ export default function CMSDashboardPage() {
             setSelectedOrderForInvoice(null);
           }}
         />
+      )}
+
+      {/* View Order Details Modal */}
+      {viewingOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
+          <div className="bg-[#0F1422] border border-slate-800 rounded-3xl p-6 max-w-xl w-full text-white space-y-4 shadow-2xl">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <h3 className="text-lg font-bold uppercase text-[#FF007A]">Order Details: {viewingOrder.id}</h3>
+              <button onClick={() => setViewingOrder(null)} className="p-2 text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="text-xs space-y-2 text-slate-300">
+              <p><strong>Customer:</strong> {viewingOrder.customer.firstName} {viewingOrder.customer.lastName} ({viewingOrder.customer.email})</p>
+              <p><strong>Phone:</strong> {viewingOrder.customer.phone}</p>
+              <p><strong>Shipping:</strong> {viewingOrder.customer.address.street}, {viewingOrder.customer.address.suburb} {viewingOrder.customer.address.state} {viewingOrder.customer.address.postcode}</p>
+              <p><strong>Payment Status:</strong> <span className="uppercase text-emerald-400 font-bold">{viewingOrder.paymentStatus}</span></p>
+              <p><strong>Delivery Stage:</strong> <span className="uppercase text-[#00F0FF] font-bold">{viewingOrder.deliveryStatus}</span></p>
+            </div>
+            <div className="border-t border-slate-800 pt-3">
+              <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Ordered Compounds:</h4>
+              <div className="space-y-1 text-xs">
+                {viewingOrder.items.map(({ product, quantity }) => (
+                  <div key={product.id} className="flex justify-between p-2 rounded-lg bg-slate-900">
+                    <span>{product.title} (x{quantity})</span>
+                    <span className="font-mono text-white">{formatAUD((product.discountedPrice || product.price) * quantity)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-between font-bold text-sm border-t border-slate-800 pt-3">
+              <span>Total AUD:</span>
+              <span className="font-mono text-[#FF007A]">{formatAUD(viewingOrder.totalAmount)}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Product Modal */}
+      {editingProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateProduct(editingProduct.id, editingProduct);
+              setEditingProduct(null);
+            }}
+            className="bg-[#0F1422] border border-[#00F0FF]/40 rounded-3xl p-6 sm:p-8 max-w-xl w-full text-white space-y-4 shadow-2xl"
+          >
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <h3 className="text-lg font-bold uppercase text-[#00F0FF]">Edit Product: {editingProduct.title}</h3>
+              <button type="button" onClick={() => setEditingProduct(null)} className="p-2 text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">Title</label>
+                <input
+                  type="text"
+                  value={editingProduct.title}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, title: e.target.value })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">Image URL</label>
+                <input
+                  type="text"
+                  value={editingProduct.images[0] || ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, images: [e.target.value] })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">Original Price ($)</label>
+                <input
+                  type="number"
+                  value={editingProduct.price}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, price: Number(e.target.value) })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">Discounted Price ($)</label>
+                <input
+                  type="number"
+                  value={editingProduct.discountedPrice || 0}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, discountedPrice: Number(e.target.value) })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">Category</label>
+                <select
+                  value={editingProduct.category}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white cursor-pointer"
+                >
+                  {siteSettings.categories.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">Type Flag</label>
+                <select
+                  value={editingProduct.type}
+                  onChange={(e: any) => setEditingProduct({ ...editingProduct, type: e.target.value })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white cursor-pointer"
+                >
+                  <option value="best_sell">Best Sale</option>
+                  <option value="featured">Featured</option>
+                  <option value="standard">Standard Catalog</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end space-x-3 pt-3 border-t border-slate-800">
+              <button type="button" onClick={() => setEditingProduct(null)} className="px-4 py-2 bg-slate-800 text-xs rounded-xl font-bold">
+                Cancel
+              </button>
+              <button type="submit" className="glow-pink-btn text-white text-xs px-6 py-2 rounded-xl font-bold cursor-pointer">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* View Product Details Modal */}
+      {viewingProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
+          <div className="bg-[#0F1422] border border-slate-800 rounded-3xl p-6 max-w-md w-full text-white space-y-4 shadow-2xl">
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <h3 className="text-lg font-bold text-white uppercase">{viewingProduct.title}</h3>
+              <button onClick={() => setViewingProduct(null)} className="p-2 text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-800">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={viewingProduct.images[0] || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop'} alt={viewingProduct.title} className="w-full h-full object-cover" />
+            </div>
+            <div className="text-xs space-y-1.5 text-slate-300">
+              <p><strong>Category:</strong> <span className="text-[#00F0FF]">{viewingProduct.category}</span></p>
+              <p><strong>Price:</strong> <span className="font-mono text-white font-bold">{formatAUD(viewingProduct.discountedPrice || viewingProduct.price)}</span></p>
+              <p><strong>Purity Spec:</strong> {viewingProduct.purity || '>99% HPLC Verified'}</p>
+              <p><strong>Dosage Form:</strong> {viewingProduct.dosage || 'Standard Vial'}</p>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
