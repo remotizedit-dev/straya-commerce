@@ -31,7 +31,7 @@ export const HeroSection: React.FC = () => {
 
   return (
     <div className="relative min-h-[82vh] flex items-center justify-center overflow-hidden bg-slate-950 text-white select-none">
-      {/* Background Video or Image */}
+      {/* Background Video or Image - High Opacity & Clarity */}
       {siteSettings.heroMediaType === 'video' && siteSettings.heroMediaUrl ? (
         <video
           key={siteSettings.heroMediaUrl}
@@ -39,19 +39,19 @@ export const HeroSection: React.FC = () => {
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-50 scale-105 filter saturate-150"
+          className="absolute inset-0 w-full h-full object-cover opacity-90 scale-100 filter saturate-120"
         >
           <source src={siteSettings.heroMediaUrl} type="video/mp4" />
         </video>
       ) : (
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-45 filter saturate-150"
+          className="absolute inset-0 bg-cover bg-center opacity-85 filter saturate-120"
           style={{ backgroundImage: `url(${siteSettings.heroMediaUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1600&auto=format&fit=crop'})` }}
         />
       )}
 
-      {/* Dark Gradient Overlay for Contrast */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/90" />
+      {/* Subtle Overlay Gradient for Text Contrast */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-slate-950/60" />
 
       {/* Ambient Floating Motion Particles */}
       <motion.div
@@ -60,7 +60,7 @@ export const HeroSection: React.FC = () => {
           opacity: [0.3, 0.6, 0.3],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute -top-24 left-1/4 w-96 h-96 bg-[#FF007A]/20 rounded-full blur-3xl pointer-events-none"
+        className="absolute -top-24 left-1/4 w-96 h-96 bg-[#FF007A]/15 rounded-full blur-3xl pointer-events-none"
       />
       <motion.div
         animate={{
@@ -68,7 +68,7 @@ export const HeroSection: React.FC = () => {
           opacity: [0.2, 0.5, 0.2],
         }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        className="absolute -bottom-24 right-1/4 w-96 h-96 bg-[#00F0FF]/20 rounded-full blur-3xl pointer-events-none"
+        className="absolute -bottom-24 right-1/4 w-96 h-96 bg-[#00F0FF]/15 rounded-full blur-3xl pointer-events-none"
       />
 
       {/* Main Content Box */}
@@ -82,7 +82,7 @@ export const HeroSection: React.FC = () => {
         <motion.div variants={itemVariants} className="inline-block mb-6">
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white/10 border border-[#00F0FF]/50 text-[#00F0FF] text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-lg cursor-pointer"
+            className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-slate-950/70 border border-[#00F0FF]/60 text-[#00F0FF] text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-xl cursor-pointer"
           >
             <Award className="w-4 h-4 text-[#FF007A]" />
             <span>HPLC Verified &gt;99% Purity | Australian Stock</span>
@@ -94,7 +94,7 @@ export const HeroSection: React.FC = () => {
         {siteSettings.heroTitle && (
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-6xl md:text-7xl font-black text-white uppercase tracking-tight leading-none mb-6"
+            className="text-4xl sm:text-6xl md:text-7xl font-black text-white uppercase tracking-tight leading-none mb-6 drop-shadow-md"
           >
             {siteSettings.heroTitle.split(' ').map((word, i) => {
               if (word.toLowerCase().includes('research') || word.toLowerCase().includes('peptide') || word.toLowerCase().includes('australia')) {
@@ -113,7 +113,7 @@ export const HeroSection: React.FC = () => {
         {siteSettings.heroSubtitle && (
           <motion.p
             variants={itemVariants}
-            className="text-slate-200 text-base sm:text-lg md:text-xl max-w-3xl font-light mb-10 leading-relaxed"
+            className="text-slate-100 text-base sm:text-lg md:text-xl max-w-3xl font-normal mb-10 leading-relaxed drop-shadow-sm"
           >
             {siteSettings.heroSubtitle}
           </motion.p>
@@ -152,34 +152,34 @@ export const HeroSection: React.FC = () => {
         {/* Trust Badges Grid */}
         <motion.div
           variants={itemVariants}
-          className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 text-left text-xs text-slate-300 border-t border-white/10 pt-8 w-full"
+          className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 text-left text-xs text-slate-200 border-t border-white/20 pt-8 w-full backdrop-blur-sm bg-slate-950/30 p-4 rounded-2xl"
         >
           <motion.div whileHover={{ y: -2 }} className="flex items-center space-x-3">
             <ShieldCheck className="w-6 h-6 text-[#00F0FF] shrink-0" />
             <div>
               <p className="text-white font-bold">100% Guaranteed Purity</p>
-              <p className="text-[11px] text-slate-400">HPLC Certificate Included</p>
+              <p className="text-[11px] text-slate-300">HPLC Certificate Included</p>
             </div>
           </motion.div>
           <motion.div whileHover={{ y: -2 }} className="flex items-center space-x-3">
             <Zap className="w-6 h-6 text-[#FF007A] shrink-0" />
             <div>
               <p className="text-white font-bold">Same-Day Express Dispatch</p>
-              <p className="text-[11px] text-slate-400">Shipped from SYD & MEL</p>
+              <p className="text-[11px] text-slate-300">Shipped from SYD & MEL</p>
             </div>
           </motion.div>
           <motion.div whileHover={{ y: -2 }} className="flex items-center space-x-3">
             <Award className="w-6 h-6 text-[#00F0FF] shrink-0" />
             <div>
               <p className="text-white font-bold">COA Transparency</p>
-              <p className="text-[11px] text-slate-400">Full Batch Mass Spec</p>
+              <p className="text-[11px] text-slate-300">Full Batch Mass Spec</p>
             </div>
           </motion.div>
           <motion.div whileHover={{ y: -2 }} className="flex items-center space-x-3">
             <ShieldCheck className="w-6 h-6 text-[#FF007A] shrink-0" />
             <div>
               <p className="text-white font-bold">Australian Support</p>
-              <p className="text-[11px] text-slate-400">Fast Local Response</p>
+              <p className="text-[11px] text-slate-300">Fast Local Response</p>
             </div>
           </motion.div>
         </motion.div>
