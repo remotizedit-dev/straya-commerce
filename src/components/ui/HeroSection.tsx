@@ -14,8 +14,8 @@ export const HeroSection: React.FC = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
+        staggerChildren: 0.12,
+        delayChildren: 0.05,
       },
     },
   };
@@ -25,13 +25,13 @@ export const HeroSection: React.FC = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.7, ease: 'easeOut' },
+      transition: { duration: 0.6, ease: 'easeOut' },
     },
   };
 
   return (
-    <div className="relative min-h-[82vh] flex items-center justify-center overflow-hidden bg-slate-950 text-white select-none">
-      {/* Background Video or Image - High Opacity & Clarity */}
+    <div className="relative min-h-[88vh] flex flex-col justify-end overflow-hidden bg-slate-950 text-white select-none pb-12 pt-28">
+      {/* Background Video or Image - Bright, Vibrant & Clear */}
       {siteSettings.heroMediaType === 'video' && siteSettings.heroMediaUrl ? (
         <video
           key={siteSettings.heroMediaUrl}
@@ -39,53 +39,53 @@ export const HeroSection: React.FC = () => {
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-90 scale-100 filter saturate-120"
+          className="absolute inset-0 w-full h-full object-cover opacity-100 scale-100 filter brightness-110 saturate-125"
         >
           <source src={siteSettings.heroMediaUrl} type="video/mp4" />
         </video>
       ) : (
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-85 filter saturate-120"
+          className="absolute inset-0 bg-cover bg-center opacity-100 filter brightness-110 saturate-125"
           style={{ backgroundImage: `url(${siteSettings.heroMediaUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1600&auto=format&fit=crop'})` }}
         />
       )}
 
-      {/* Subtle Overlay Gradient for Text Contrast */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-slate-950/60" />
+      {/* Subtle Bottom Vignette for Text Contrast */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
 
-      {/* Ambient Floating Motion Particles */}
+      {/* Ambient Motion Glow */}
       <motion.div
         animate={{
           scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3],
+          opacity: [0.2, 0.5, 0.2],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute -top-24 left-1/4 w-96 h-96 bg-[#FF007A]/15 rounded-full blur-3xl pointer-events-none"
+        className="absolute bottom-10 left-1/4 w-96 h-96 bg-[#FF007A]/15 rounded-full blur-3xl pointer-events-none"
       />
       <motion.div
         animate={{
           scale: [1, 1.3, 1],
-          opacity: [0.2, 0.5, 0.2],
+          opacity: [0.2, 0.4, 0.2],
         }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        className="absolute -bottom-24 right-1/4 w-96 h-96 bg-[#00F0FF]/15 rounded-full blur-3xl pointer-events-none"
+        className="absolute bottom-10 right-1/4 w-96 h-96 bg-[#00F0FF]/15 rounded-full blur-3xl pointer-events-none"
       />
 
-      {/* Main Content Box */}
+      {/* Main Content Box - Shifted Lower Down */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center flex flex-col items-center"
+        className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center mt-auto space-y-6"
       >
         {/* Australian Quality Badge */}
-        <motion.div variants={itemVariants} className="inline-block mb-6">
+        <motion.div variants={itemVariants}>
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-slate-950/70 border border-[#00F0FF]/60 text-[#00F0FF] text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-xl cursor-pointer"
+            className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-slate-950/80 border border-[#00F0FF]/60 text-[#00F0FF] text-xs font-bold uppercase tracking-widest backdrop-blur-md shadow-2xl cursor-pointer"
           >
             <Award className="w-4 h-4 text-[#FF007A]" />
-            <span>HPLC Verified &gt;99% Purity | Australian Stock</span>
+            <span>HPLC VERIFIED &gt;99% PURITY | AUSTRALIAN STOCK</span>
             <Sparkles className="w-3.5 h-3.5 text-[#00F0FF] animate-spin" />
           </motion.div>
         </motion.div>
@@ -94,12 +94,12 @@ export const HeroSection: React.FC = () => {
         {siteSettings.heroTitle && (
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-6xl md:text-7xl font-black text-white uppercase tracking-tight leading-none mb-6 drop-shadow-md"
+            className="text-4xl sm:text-6xl md:text-7xl font-black text-white uppercase tracking-tight leading-none drop-shadow-xl"
           >
             {siteSettings.heroTitle.split(' ').map((word, i) => {
               if (word.toLowerCase().includes('research') || word.toLowerCase().includes('peptide') || word.toLowerCase().includes('australia')) {
                 return (
-                  <span key={i} className="text-[#FF007A] inline-block mr-3">
+                  <span key={i} className="text-[#FF007A] inline-block mr-3 drop-shadow-[0_0_20px_rgba(255,0,122,0.4)]">
                     {word}{' '}
                   </span>
                 );
@@ -113,7 +113,7 @@ export const HeroSection: React.FC = () => {
         {siteSettings.heroSubtitle && (
           <motion.p
             variants={itemVariants}
-            className="text-slate-100 text-base sm:text-lg md:text-xl max-w-3xl font-normal mb-10 leading-relaxed drop-shadow-sm"
+            className="text-slate-100 text-base sm:text-lg md:text-xl max-w-3xl font-medium leading-relaxed drop-shadow-md"
           >
             {siteSettings.heroSubtitle}
           </motion.p>
@@ -122,7 +122,7 @@ export const HeroSection: React.FC = () => {
         {/* Hero CTA Buttons */}
         <motion.div
           variants={itemVariants}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md sm:max-w-none"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md sm:max-w-none pt-2"
         >
           {/* Shop Now Pink Button */}
           <Link href="/products" className="w-full sm:w-auto">
@@ -142,17 +142,17 @@ export const HeroSection: React.FC = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={openCallModal}
-            className="w-full sm:w-auto bg-white hover:bg-slate-100 text-slate-900 font-black text-base px-8 py-4 rounded-xl flex items-center justify-center space-x-3 transition-all cursor-pointer shadow-lg"
+            className="w-full sm:w-auto bg-white hover:bg-slate-100 text-slate-900 font-black text-base px-8 py-4 rounded-xl flex items-center justify-center space-x-3 transition-all cursor-pointer shadow-xl"
           >
             <PhoneCall className="w-5 h-5 text-[#FF007A]" />
             <span>REQUEST FOR A CALL</span>
           </motion.button>
         </motion.div>
 
-        {/* Trust Badges Grid */}
+        {/* Trust Badges Grid - Positioned Nicely at the Bottom */}
         <motion.div
           variants={itemVariants}
-          className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 text-left text-xs text-slate-200 border-t border-white/20 pt-8 w-full backdrop-blur-sm bg-slate-950/30 p-4 rounded-2xl"
+          className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-left text-xs text-slate-100 border border-white/15 pt-5 pb-5 px-6 w-full backdrop-blur-md bg-slate-950/70 rounded-2xl shadow-2xl"
         >
           <motion.div whileHover={{ y: -2 }} className="flex items-center space-x-3">
             <ShieldCheck className="w-6 h-6 text-[#00F0FF] shrink-0" />
