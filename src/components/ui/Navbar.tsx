@@ -3,16 +3,16 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/lib/store';
 import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
-  const { cartCount, openCart, searchQuery, setSearchQuery, siteSettings } = useApp();
+  const router = useRouter();
+  const { cartCount, openCart, siteSettings } = useApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -23,48 +23,30 @@ export const Navbar: React.FC = () => {
     { name: 'Track Order', href: '/track' },
   ];
 
+  const handleSearchClick = () => {
+    if (pathname === '/') {
+      const el = document.getElementById('products');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      router.push('/#products');
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full bg-black border-b border-white/10 shadow-2xl select-none">
-      {/* Tier 1: Absolute Center Logo + Animated Expanding Search Icon on Left */}
+      {/* Tier 1: Left Search Icon Only, Center Logo, Right Cart */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between relative border-b border-white/5 min-h-[72px]">
-        {/* Left Side: Animated Expanding Search Bar on Hover/Click */}
+        {/* Left Side: Search Icon Only (Click redirects to homepage search section) */}
         <div className="flex items-center">
-          <div className="relative flex items-center">
-            {isSearchOpen ? (
-              <motion.div
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 220, opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                className="flex items-center"
-              >
-                <input
-                  type="text"
-                  placeholder="Search peptides..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#111622] text-white text-xs px-3.5 py-2 rounded-l-xl border border-[#FF007A]/50 focus:outline-none focus:border-[#00F0FF] placeholder:text-slate-400"
-                  autoFocus
-                />
-                <button
-                  onClick={() => setIsSearchOpen(false)}
-                  className="bg-[#111622] border-y border-r border-[#FF007A]/50 px-2.5 py-2 rounded-r-xl text-gray-400 hover:text-white cursor-pointer"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </motion.div>
-            ) : (
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                onMouseEnter={() => setIsSearchOpen(true)}
-                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors cursor-pointer border border-white/10 flex items-center space-x-2 group"
-                title="Search peptides"
-              >
-                <Search className="w-5 h-5 text-[#00F0FF] group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-semibold text-slate-300 hidden sm:inline">Search</span>
-              </button>
-            )}
-          </div>
+          <button
+            onClick={handleSearchClick}
+            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors cursor-pointer border border-white/10 flex items-center justify-center group"
+            title="Search Products on Homepage"
+          >
+            <Search className="w-5 h-5 text-[#00F0FF] group-hover:scale-110 transition-transform" />
+          </button>
         </div>
 
         {/* Absolute Dead Center Screen Logo */}
@@ -144,7 +126,7 @@ export const Navbar: React.FC = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-black border-b border-white/10 px-4 pt-2 pb-6 space-y-3"
+            className="lg:hidden bg-black border-b border-white/10 px-4 pt-2 pb-6 space-y-3 text-center"
           >
             {navLinks.map((link) => (
               <Link

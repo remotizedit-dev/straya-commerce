@@ -65,7 +65,7 @@ export default function COAPage() {
             >
               <div
                 onClick={() => setSelectedCOA(item)}
-                className="relative aspect-[4/3] w-full bg-slate-100 cursor-pointer overflow-hidden group-hover:brightness-95 transition-all"
+                className="relative aspect-[1/1.414] w-full bg-slate-100 cursor-pointer overflow-hidden group-hover:brightness-95 transition-all"
               >
                 <Image
                   src={item.imageUrl}

@@ -277,12 +277,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (snapshot.exists()) {
             const data = snapshot.val();
             const list: Order[] = Object.keys(data).map((key) => ({ ...data[key], id: key }));
-            setOrders((prev) => {
-              const map = new Map<string, Order>();
-              prev.forEach((o) => map.set(o.id, o));
-              list.forEach((o) => map.set(o.id, o));
-              return Array.from(map.values()).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-            });
+            const sorted = list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            setOrders(sorted);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('straya_orders', JSON.stringify(sorted));
+            }
+          } else {
+            setOrders([]);
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('straya_orders');
+            }
           }
         },
         (err) => {
@@ -298,12 +302,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (snapshot.exists()) {
             const data = snapshot.val();
             const list: CustomerRecord[] = Object.keys(data).map((key) => ({ ...data[key], id: key }));
-            setCustomers((prev) => {
-              const map = new Map<string, CustomerRecord>();
-              prev.forEach((c) => map.set(c.id, c));
-              list.forEach((c) => map.set(c.id, c));
-              return Array.from(map.values());
-            });
+            setCustomers(list);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('straya_customers', JSON.stringify(list));
+            }
+          } else {
+            setCustomers([]);
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('straya_customers');
+            }
           }
         },
         (err) => {

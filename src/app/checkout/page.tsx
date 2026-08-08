@@ -136,6 +136,9 @@ export default function CheckoutPage() {
       });
 
       setCreatedOrder(order);
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       confetti({
         particleCount: 100,
         spread: 70,

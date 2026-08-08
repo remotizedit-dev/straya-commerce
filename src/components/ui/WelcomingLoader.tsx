@@ -9,7 +9,7 @@ export const WelcomingLoader: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Dynamic video duration from CMS in seconds (e.g. 3.0s)
+  // Dynamic video duration from CMS in seconds (default 3.5s)
   const videoDurationSec = siteSettings.welcomingVideoDurationSec && siteSettings.welcomingVideoDurationSec > 0
     ? siteSettings.welcomingVideoDurationSec
     : 3.5;
@@ -18,42 +18,47 @@ export const WelcomingLoader: React.FC = () => {
 
   const dismissLoader = () => {
     setIsVisible(false);
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('straya_loader_seen', 'true');
-    }
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const hasSeenLoader = sessionStorage.getItem('straya_loader_seen');
-      if (hasSeenLoader) {
-        setIsVisible(false);
-        return;
-      }
-    }
+    const playVideo = () => {
+      if (videoRef.current) {
+        videoRef.current.muted = true;
+        videoRef.current.defaultMuted = true;
+        videoRef.current.setAttribute('playsinline', 'true');
+        videoRef.current.setAttribute('webkit-playsinline', 'true');
+        videoRef.current.setAttribute('x5-playsinline', 'true');
 
-    // Force inline playback & muted status for iOS Safari & Android Chrome
-    if (videoRef.current) {
-      videoRef.current.muted = true;
-      videoRef.current.defaultMuted = true;
-      videoRef.current.setAttribute('playsinline', 'true');
-      videoRef.current.setAttribute('webkit-playsinline', 'true');
-      videoRef.current.setAttribute('x5-playsinline', 'true');
-      
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((err) => {
-          console.warn('Mobile video autoplay deferral:', err);
-          // Do not immediately dismiss loader on mobile autoplay deferral; let fallback timer handle transition gracefully
-        });
+        const promise = videoRef.current.play();
+        if (promise !== undefined) {
+          promise.catch((err) => {
+            console.warn('Mobile video autoplay pending user gesture:', err);
+          });
+        }
       }
-    }
+    };
+
+    playVideo();
+
+    // Attach touch/click fallback listener for low power mode on mobile iOS/Android
+    const handleInteraction = () => {
+      playVideo();
+      window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('click', handleInteraction);
+    };
+
+    window.addEventListener('touchstart', handleInteraction, { passive: true });
+    window.addEventListener('click', handleInteraction, { passive: true });
 
     const timer = setTimeout(() => {
       dismissLoader();
     }, durationMs);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('click', handleInteraction);
+    };
   }, [durationMs]);
 
   return (
@@ -64,7 +69,7 @@ export const WelcomingLoader: React.FC = () => {
           exit={{ opacity: 0, transition: { duration: 0.8, ease: 'easeInOut' } }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black overflow-hidden select-none"
         >
-          {/* Mobile Optimized Video Tag: MP4 primary source for iOS Safari compatibility */}
+          {/* Mobile Guaranteed Autoplay Video Tag */}
           <video
             ref={videoRef}
             autoPlay
