@@ -63,18 +63,40 @@ export default function CMSDashboardPage() {
     addPromoCode,
     togglePromoCode,
     deletePromoCode,
+    coas,
+    addCOA,
+    deleteCOA,
+    faqs,
+    addFAQ,
+    updateFAQ,
+    deleteFAQ,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'settings' | 'products' | 'orders' | 'customers' | 'leads' | 'promos' | 'seo'
+    'overview' | 'settings' | 'products' | 'coas' | 'faqs' | 'contact' | 'orders' | 'customers' | 'leads' | 'promos' | 'seo'
   >('overview');
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
 
-  // Modals for Orders & Products CRUD
+  // Modals & Forms for COA, FAQ, Orders & Products CRUD
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
+
+  // COA Form State
+  const [isAddingCOA, setIsAddingCOA] = useState(false);
+  const [coaTitle, setCoaTitle] = useState('');
+  const [coaBatch, setCoaBatch] = useState('STRAYA-2026-01');
+  const [coaPurity, setCoaPurity] = useState('99.6%');
+  const [coaImage, setCoaImage] = useState('');
+  const [coaPdf, setCoaPdf] = useState('');
+
+  // FAQ Form State
+  const [isAddingFAQ, setIsAddingFAQ] = useState(false);
+  const [faqQuestion, setFaqQuestion] = useState('');
+  const [faqAnswer, setFaqAnswer] = useState('');
+  const [faqCategory, setFaqCategory] = useState('General');
+  const [editingFAQ, setEditingFAQ] = useState<FAQItem | null>(null);
 
   // 🔒 STRICT PRODUCTION FIREBASE AUTH CHECK
   useEffect(() => {
@@ -195,6 +217,9 @@ export default function CMSDashboardPage() {
     { id: 'overview', label: 'Dashboard Overview', icon: LayoutDashboard },
     { id: 'orders', label: 'Orders & Invoices', icon: ShoppingBag, badge: unpaidOrdersCount > 0 ? `${unpaidOrdersCount} Unpaid` : undefined },
     { id: 'products', label: 'Product Catalog', icon: Package },
+    { id: 'coas', label: 'COA Reports', icon: Award },
+    { id: 'faqs', label: 'FAQ Accordions', icon: FileText },
+    { id: 'contact', label: 'Contact Us & Map', icon: PhoneCall },
     { id: 'customers', label: 'Customer Directory', icon: Users },
     { id: 'leads', label: 'Leads & Callback Desk', icon: PhoneCall, badge: leads.filter(l => l.status === 'new').length > 0 ? 'New' : undefined },
     { id: 'promos', label: 'Promo Code Generator', icon: Tag },
@@ -720,6 +745,16 @@ export default function CMSDashboardPage() {
                         className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
                       />
                     </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-slate-300 font-bold mb-1">Product Description & Technical Notes</label>
+                      <textarea
+                        rows={3}
+                        placeholder="Detailed compound research notes, purity level, usage specs..."
+                        value={prodDesc}
+                        onChange={(e) => setProdDesc(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#00F0FF]"
+                      />
+                    </div>
                     <div>
                       <label className="block text-slate-300 font-bold mb-1">Category Dropdown *</label>
                       <select
@@ -815,6 +850,311 @@ export default function CMSDashboardPage() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: CERTIFICATE OF ANALYSIS (COA) MANAGEMENT */}
+          {activeTab === 'coas' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-white uppercase">Certificate of Analysis (COA) Management</h2>
+                  <p className="text-xs text-slate-400">Add, view, and manage HPLC mass spec laboratory report documents</p>
+                </div>
+                <button
+                  onClick={() => setIsAddingCOA(!isAddingCOA)}
+                  className="glow-pink-btn text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center space-x-2 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add New COA Report</span>
+                </button>
+              </div>
+
+              {/* Add COA Form */}
+              {isAddingCOA && (
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    await addCOA({
+                      productTitle: coaTitle,
+                      batchNumber: coaBatch,
+                      purity: coaPurity,
+                      imageUrl: coaImage || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop',
+                      pdfUrl: coaPdf || undefined,
+                      date: new Date().toISOString().split('T')[0],
+                    });
+                    setIsAddingCOA(false);
+                    setCoaTitle('');
+                    setCoaImage('');
+                  }}
+                  className="bg-[#0F1422] p-6 sm:p-8 rounded-3xl border border-[#FF007A]/40 space-y-4 shadow-2xl"
+                >
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">New COA Report Document</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <label className="block text-slate-300 font-bold mb-1">Compound Product Title *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. BPC-157 5mg High Purity"
+                        value={coaTitle}
+                        onChange={(e) => setCoaTitle(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 font-bold mb-1">Batch Number *</label>
+                      <input
+                        type="text"
+                        required
+                        value={coaBatch}
+                        onChange={(e) => setCoaBatch(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 font-bold mb-1">Purity Percentage *</label>
+                      <input
+                        type="text"
+                        required
+                        value={coaPurity}
+                        onChange={(e) => setCoaPurity(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 font-bold mb-1">Report Image URL (Cloudinary, AWS) *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="https://..."
+                        value={coaImage}
+                        onChange={(e) => setCoaImage(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex space-x-3 pt-2">
+                    <button type="submit" className="glow-pink-btn text-white font-bold text-xs py-3 px-6 rounded-xl cursor-pointer">
+                      Save COA Document
+                    </button>
+                    <button type="button" onClick={() => setIsAddingCOA(false)} className="px-4 py-3 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* COA Table */}
+              <div className="border border-slate-800 rounded-2xl overflow-hidden bg-[#0F1422] shadow-xl">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-900 text-slate-200 uppercase font-bold border-b border-slate-800">
+                    <tr>
+                      <th className="p-4">Compound Title</th>
+                      <th className="p-4">Batch Number</th>
+                      <th className="p-4">Purity</th>
+                      <th className="p-4">Date</th>
+                      <th className="p-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                    {coas.map((c) => (
+                      <tr key={c.id} className="hover:bg-slate-800/40">
+                        <td className="p-4 font-bold text-white text-sm">{c.productTitle}</td>
+                        <td className="p-4 font-mono text-[#00F0FF]">{c.batchNumber}</td>
+                        <td className="p-4 font-bold text-emerald-400">{c.purity}</td>
+                        <td className="p-4 text-slate-400">{c.date}</td>
+                        <td className="p-4 text-right">
+                          <button onClick={() => deleteCOA(c.id)} className="p-2 text-slate-400 hover:text-red-400 cursor-pointer">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: FAQ ACCORDIONS MANAGEMENT */}
+          {activeTab === 'faqs' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-white uppercase">FAQ Accordion Management</h2>
+                  <p className="text-xs text-slate-400">Add, edit, or delete customer question & answer items</p>
+                </div>
+                <button
+                  onClick={() => setIsAddingFAQ(!isAddingFAQ)}
+                  className="glow-pink-btn text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center space-x-2 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add New FAQ Accordion</span>
+                </button>
+              </div>
+
+              {/* Add FAQ Form */}
+              {isAddingFAQ && (
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    await addFAQ({
+                      question: faqQuestion,
+                      answer: faqAnswer,
+                      category: faqCategory,
+                    });
+                    setIsAddingFAQ(false);
+                    setFaqQuestion('');
+                    setFaqAnswer('');
+                  }}
+                  className="bg-[#0F1422] p-6 sm:p-8 rounded-3xl border border-[#00F0FF]/40 space-y-4 shadow-2xl"
+                >
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">New FAQ Item</h3>
+                  <div className="space-y-3 text-xs">
+                    <div>
+                      <label className="block text-slate-300 font-bold mb-1">Question *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. How are peptides dispatched within Australia?"
+                        value={faqQuestion}
+                        onChange={(e) => setFaqQuestion(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 font-bold mb-1">Answer Content *</label>
+                      <textarea
+                        rows={3}
+                        required
+                        placeholder="Detailed answer text..."
+                        value={faqAnswer}
+                        onChange={(e) => setFaqAnswer(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 font-bold mb-1">Category</label>
+                      <select
+                        value={faqCategory}
+                        onChange={(e) => setFaqCategory(e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white cursor-pointer"
+                      >
+                        <option value="General">General</option>
+                        <option value="Quality & HPLC">Quality & HPLC</option>
+                        <option value="Shipping & Delivery">Shipping & Delivery</option>
+                        <option value="Orders & Payment">Orders & Payment</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex space-x-3 pt-2">
+                    <button type="submit" className="glow-pink-btn text-white font-bold text-xs py-3 px-6 rounded-xl cursor-pointer">
+                      Save FAQ Item
+                    </button>
+                    <button type="button" onClick={() => setIsAddingFAQ(false)} className="px-4 py-3 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* FAQ Table */}
+              <div className="border border-slate-800 rounded-2xl overflow-hidden bg-[#0F1422] shadow-xl">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-900 text-slate-200 uppercase font-bold border-b border-slate-800">
+                    <tr>
+                      <th className="p-4">Question</th>
+                      <th className="p-4">Category</th>
+                      <th className="p-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                    {faqs.map((f) => (
+                      <tr key={f.id} className="hover:bg-slate-800/40">
+                        <td className="p-4 font-bold text-white">{f.question}</td>
+                        <td className="p-4 text-[#00F0FF] font-bold">{f.category}</td>
+                        <td className="p-4 text-right">
+                          <div className="flex items-center justify-end space-x-2">
+                            <button onClick={() => setEditingFAQ(f)} className="p-2 rounded-xl bg-white/5 hover:bg-[#00F0FF]/20 text-[#00F0FF] cursor-pointer">
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button onClick={() => deleteFAQ(f.id)} className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 cursor-pointer">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: CONTACT US & LOCATION CONFIG */}
+          {activeTab === 'contact' && (
+            <div className="bg-[#0F1422] p-8 rounded-3xl border border-slate-800 space-y-6 shadow-xl">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h2 className="text-xl font-black text-white uppercase">Contact Details & Map Embed</h2>
+                  <p className="text-xs text-slate-400">Edit support phone, email, address, operating hours, and Google Maps embed</p>
+                </div>
+                <button
+                  onClick={handleSaveSettings}
+                  className="glow-pink-btn text-white text-xs font-bold px-6 py-3 rounded-xl cursor-pointer"
+                >
+                  Save Contact Settings
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">Support Email Address</label>
+                  <input
+                    type="email"
+                    value={editableSettings.contactEmail}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, contactEmail: e.target.value })}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">Contact Phone Number</label>
+                  <input
+                    type="text"
+                    value={editableSettings.contactPhone}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, contactPhone: e.target.value })}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">Australian Laboratory Address</label>
+                  <input
+                    type="text"
+                    value={editableSettings.address}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, address: e.target.value })}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-300 font-bold mb-1">Business Operating Hours</label>
+                  <input
+                    type="text"
+                    value={editableSettings.businessHours}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, businessHours: e.target.value })}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-slate-300 font-bold mb-1">Google Maps Embed URL (iframe src)</label>
+                  <input
+                    type="text"
+                    value={editableSettings.mapEmbedUrl}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, mapEmbedUrl: e.target.value })}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -1400,6 +1740,67 @@ export default function CMSDashboardPage() {
               <p><strong>Dosage Form:</strong> {viewingProduct.dosage || 'Standard Vial'}</p>
             </div>
           </div>
+        </div>
+      )}
+      {/* Edit FAQ Modal */}
+      {editingFAQ && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateFAQ(editingFAQ.id, editingFAQ);
+              setEditingFAQ(null);
+            }}
+            className="bg-[#0F1422] border border-[#00F0FF]/40 rounded-3xl p-6 max-w-xl w-full text-white space-y-4 shadow-2xl"
+          >
+            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+              <h3 className="text-lg font-bold uppercase text-[#00F0FF]">Edit FAQ Item</h3>
+              <button type="button" onClick={() => setEditingFAQ(null)} className="p-2 text-slate-400 hover:text-white cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">Question</label>
+                <input
+                  type="text"
+                  value={editingFAQ.question}
+                  onChange={(e) => setEditingFAQ({ ...editingFAQ, question: e.target.value })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">Answer Content</label>
+                <textarea
+                  rows={3}
+                  value={editingFAQ.answer}
+                  onChange={(e) => setEditingFAQ({ ...editingFAQ, answer: e.target.value })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-300 font-bold mb-1">Category</label>
+                <select
+                  value={editingFAQ.category}
+                  onChange={(e) => setEditingFAQ({ ...editingFAQ, category: e.target.value })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white cursor-pointer"
+                >
+                  <option value="General">General</option>
+                  <option value="Quality & HPLC">Quality & HPLC</option>
+                  <option value="Shipping & Delivery">Shipping & Delivery</option>
+                  <option value="Orders & Payment">Orders & Payment</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex justify-end space-x-3 pt-3 border-t border-slate-800">
+              <button type="button" onClick={() => setEditingFAQ(null)} className="px-4 py-2 bg-slate-800 text-xs rounded-xl font-bold">
+                Cancel
+              </button>
+              <button type="submit" className="glow-pink-btn text-white text-xs px-6 py-2 rounded-xl font-bold cursor-pointer">
+                Save Changes
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>

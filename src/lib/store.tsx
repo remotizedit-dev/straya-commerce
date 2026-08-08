@@ -242,6 +242,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             const data = snapshot.val();
             const list: Order[] = Object.keys(data).map((key) => ({ ...data[key], id: key }));
             setOrders(list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+          } else {
+            setOrders([]);
           }
         },
         (err) => {
@@ -507,36 +509,44 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       createdAt: new Date().toISOString(),
     };
 
+    // 1. Optimistic state update
     setOrders((prev) => [newOrder, ...prev]);
 
-    await addOrUpdateCustomer({
-      firstName: orderData.customer.firstName,
-      lastName: orderData.customer.lastName,
-      email: orderData.customer.email,
-      phone: orderData.customer.phone,
-      street: orderData.customer.address.street,
-      suburb: orderData.customer.address.suburb,
-      state: orderData.customer.address.state,
-      postcode: orderData.customer.address.postcode,
-    });
-
-    if (orderData.promoCode) {
-      const pCode = promoCodes.find((p) => p.code === orderData.promoCode?.code);
-      if (pCode) {
-        const newCount = pCode.usedCount + 1;
-        setPromoCodes((prev) => prev.map((p) => (p.id === pCode.id ? { ...p, usedCount: newCount } : p)));
-        try {
-          await update(ref(database, `promoCodes/${pCode.id}`), { usedCount: newCount });
-        } catch (e) {
-          console.warn('Firebase promo update error', e);
-        }
-      }
-    }
-
+    // 2. Direct database write for the Order
     try {
       await set(ref(database, `orders/${orderId}`), newOrder);
     } catch (e) {
-      console.warn('Firebase createOrder error', e);
+      console.error('Firebase createOrder set error', e);
+    }
+
+    // 3. Customer directory update
+    try {
+      await addOrUpdateCustomer({
+        firstName: orderData.customer.firstName,
+        lastName: orderData.customer.lastName,
+        email: orderData.customer.email,
+        phone: orderData.customer.phone,
+        street: orderData.customer.address.street,
+        suburb: orderData.customer.address.suburb,
+        state: orderData.customer.address.state,
+        postcode: orderData.customer.address.postcode,
+      });
+    } catch (e) {
+      console.warn('Customer directory update non-fatal error', e);
+    }
+
+    // 4. Promo usage update
+    if (orderData.promoCode) {
+      try {
+        const pCode = promoCodes.find((p) => p.code === orderData.promoCode?.code);
+        if (pCode) {
+          const newCount = pCode.usedCount + 1;
+          setPromoCodes((prev) => prev.map((p) => (p.id === pCode.id ? { ...p, usedCount: newCount } : p)));
+          await update(ref(database, `promoCodes/${pCode.id}`), { usedCount: newCount });
+        }
+      } catch (e) {
+        console.warn('Promo code count update error', e);
+      }
     }
 
     clearCart();

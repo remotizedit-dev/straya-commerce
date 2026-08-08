@@ -24,64 +24,35 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-black/90 backdrop-blur-md border-b border-white/10 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Brand Logo - Dynamically renders logoUrl from CMS if provided */}
-        <Link href="/" className="flex items-center space-x-3 group">
+    <header className="sticky top-0 z-40 w-full bg-black border-b border-white/10 shadow-2xl select-none">
+      {/* Tier 1: Centered Big Logo & Action Icons */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between relative border-b border-white/5">
+        {/* Left Placeholder for symmetry */}
+        <div className="w-24 hidden sm:block" />
+
+        {/* Center Bigger Logo (NO STRAYA Text) */}
+        <Link href="/" className="flex items-center justify-center mx-auto group">
           {siteSettings.logoUrl ? (
-            <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-[#FF007A]/50 group-hover:scale-105 transition-transform">
-              <Image src={siteSettings.logoUrl} alt="Logo" fill className="object-cover" />
+            <div className="relative h-14 w-44 sm:h-16 sm:w-52 group-hover:scale-105 transition-transform duration-300">
+              <Image src={siteSettings.logoUrl} alt="Brand Logo" fill className="object-contain" />
             </div>
           ) : (
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-[0_0_15px_rgba(255,0,122,0.4)] group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-[#09090D] rounded-[10px] flex items-center justify-center font-black text-xl text-white">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-[0_0_25px_rgba(255,0,122,0.5)] group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-[#09090D] rounded-[14px] flex items-center justify-center font-black text-2xl text-white">
                 S
               </div>
             </div>
           )}
-          <div className="flex flex-col">
-            <span className="font-black text-xl sm:text-2xl tracking-wider text-white">
-              STRAYA<span className="text-[#FF007A]">.</span>
-            </span>
-            <span className="text-[9px] tracking-widest text-[#00F0FF] uppercase font-bold -mt-1">
-              Peptides Australia
-            </span>
-          </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center space-x-1">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  isActive ? 'text-white font-bold' : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                {link.name}
-                {isActive && (
-                  <motion.div
-                    layoutId="activeNavTab"
-                    className="absolute inset-0 bg-[#FF007A]/15 border border-[#FF007A]/40 rounded-lg -z-10 shadow-[0_0_12px_rgba(255,0,122,0.2)]"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Action Icons & Buttons */}
-        <div className="flex items-center space-x-3">
+        {/* Right Action Icons & Buttons */}
+        <div className="flex items-center space-x-3 absolute right-4 sm:right-8">
           {/* Quick Search Toggle */}
           <div className="relative">
             {isSearchOpen ? (
               <motion.div
                 initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 220, opacity: 1 }}
+                animate={{ width: 200, opacity: 1 }}
                 className="flex items-center"
               >
                 <input
@@ -143,6 +114,33 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
+      {/* Tier 2: Next Line Centered Dark Navigation Bar */}
+      <div className="hidden lg:block bg-black py-2.5">
+        <nav className="max-w-7xl mx-auto px-4 flex items-center justify-center space-x-2">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`relative px-5 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors ${
+                  isActive ? 'text-white font-extrabold' : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                {link.name}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeNavTab"
+                    className="absolute inset-0 bg-[#FF007A]/20 border border-[#FF007A]/50 rounded-xl -z-10 shadow-[0_0_15px_rgba(255,0,122,0.3)]"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
       {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -150,7 +148,7 @@ export const Navbar: React.FC = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-black/95 border-b border-white/10 px-4 pt-2 pb-6 space-y-3"
+            className="lg:hidden bg-black border-b border-white/10 px-4 pt-2 pb-6 space-y-3"
           >
             {navLinks.map((link) => (
               <Link
