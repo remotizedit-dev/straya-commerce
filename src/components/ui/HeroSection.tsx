@@ -39,6 +39,10 @@ export const HeroSection: React.FC = () => {
           muted
           loop
           playsInline
+          // @ts-ignore
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          controls={false}
           className="absolute inset-0 w-full h-full object-cover opacity-100 scale-100 filter brightness-110 saturate-125"
         >
           <source src={siteSettings.heroMediaUrl} type="video/mp4" />
