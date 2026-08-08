@@ -1,0 +1,40 @@
+{
+  "rules": {
+    "siteSettings": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "products": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["category", "type"]
+    },
+    "coas": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "faqs": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "promoCodes": {
+      ".read": true,
+      ".write": "auth != null",
+      ".indexOn": ["code"]
+    },
+    "leads": {
+      ".read": "auth != null",
+      ".write": true
+    },
+    "orders": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["createdAt", "paymentStatus", "deliveryStatus", "customer/email"]
+    },
+    "customers": {
+      ".read": "auth != null",
+      ".write": true,
+      ".indexOn": ["email"]
+    }
+  }
+}
