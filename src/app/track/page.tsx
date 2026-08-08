@@ -43,9 +43,25 @@ function TrackOrderContent() {
       return;
     }
 
-    const found = orders.filter((o) => {
-      const matchId = o.id.toLowerCase().includes(trimmed);
-      const matchEmail = o.customer.email.toLowerCase().includes(trimmed);
+    let sourceOrders = orders;
+    if (sourceOrders.length === 0 && typeof window !== 'undefined') {
+      try {
+        const local = localStorage.getItem('straya_orders');
+        if (local) {
+          const parsed = JSON.parse(local);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            sourceOrders = parsed;
+          }
+        }
+      } catch (err) {
+        console.warn('Track local storage search fallback error', err);
+      }
+    }
+
+    const found = sourceOrders.filter((o) => {
+      if (!o) return false;
+      const matchId = o.id ? o.id.toLowerCase().includes(trimmed) : false;
+      const matchEmail = o.customer?.email ? o.customer.email.toLowerCase().includes(trimmed) : false;
       return matchId || matchEmail;
     });
 
@@ -54,7 +70,7 @@ function TrackOrderContent() {
   };
 
   useEffect(() => {
-    if (initialQuery) {
+    if (initialQuery || query.trim()) {
       handleSearch();
     }
   }, [initialQuery, orders]);
