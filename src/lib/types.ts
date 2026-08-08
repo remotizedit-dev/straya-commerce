@@ -130,6 +130,7 @@ export interface SiteSettings {
   heroMediaUrl: string;
   heroTitle: string;
   heroSubtitle: string;
+  heroTextColor?: string;
   introTitle: string;
   introText: string;
   disclaimerText: string;

@@ -112,16 +112,7 @@ export default function ProductDetailPage() {
                 {product.title}
               </h1>
 
-              {/* Rating */}
-              <div className="flex items-center space-x-2 text-sm text-amber-500">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-                <span className="font-bold text-slate-900">{product.rating || 4.9}</span>
-                <span className="text-slate-400 text-xs">({product.reviewsCount || 84} Verified Reviews)</span>
-              </div>
+
 
               {/* Price Box */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
@@ -190,23 +181,30 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Technical Specs Tab */}
+        {/* Technical Specifications Section */}
         <div className="space-y-6 pt-6 border-t border-slate-200">
-          <h3 className="text-lg font-black text-slate-900 uppercase flex items-center space-x-2">
-            <Award className="w-5 h-5 text-[#FF007A]" />
-            <span>Technical Specifications</span>
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {product.technicalSpecs && product.technicalSpecs.length > 0 ? (
-              product.technicalSpecs.map((spec, idx) => (
-                <div key={idx} className="flex justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-                  <span className="text-slate-500 font-medium">{spec.label}</span>
-                  <span className="font-mono text-slate-900 font-bold">{spec.value}</span>
-                </div>
-              ))
-            ) : (
-              <div className="text-xs text-slate-500">Purity: &gt;99.5% HPLC Verified</div>
-            )}
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+            Technical Specifications
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {(product.technicalSpecs && product.technicalSpecs.length > 0
+              ? product.technicalSpecs
+              : [
+                  { label: 'COMPOUND NAME', value: product.title.split(' ')[0] },
+                  { label: 'PURITY', value: product.purity || '99.79%' },
+                  { label: 'FORM', value: 'White lyophilized powder' },
+                  { label: 'TESTING METHOD', value: 'HPLC-MS' },
+                ]
+            ).map((spec, idx) => (
+              <div key={idx} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1.5 hover:border-[#FF007A]/40 transition-all">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+                  {spec.label}
+                </span>
+                <span className="text-base font-extrabold text-slate-900 font-mono block leading-snug">
+                  {spec.value}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

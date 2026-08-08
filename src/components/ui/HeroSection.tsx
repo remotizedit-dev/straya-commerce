@@ -98,18 +98,10 @@ export const HeroSection: React.FC = () => {
         {siteSettings.heroTitle && (
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-6xl md:text-7xl font-black text-white uppercase tracking-tight leading-none drop-shadow-xl"
+            style={{ color: siteSettings.heroTextColor || '#FFFFFF' }}
+            className="text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight leading-none drop-shadow-xl"
           >
-            {siteSettings.heroTitle.split(' ').map((word, i) => {
-              if (word.toLowerCase().includes('research') || word.toLowerCase().includes('peptide') || word.toLowerCase().includes('australia')) {
-                return (
-                  <span key={i} className="text-[#FF007A] inline-block mr-3 drop-shadow-[0_0_20px_rgba(255,0,122,0.4)]">
-                    {word}{' '}
-                  </span>
-                );
-              }
-              return <span key={i} className="mr-3">{word} </span>;
-            })}
+            {siteSettings.heroTitle}
           </motion.h1>
         )}
 

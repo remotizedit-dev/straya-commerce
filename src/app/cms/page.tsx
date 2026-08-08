@@ -70,7 +70,19 @@ export default function CMSDashboardPage() {
 
   const [activeTab, setActiveTab] = useState<
     'overview' | 'settings' | 'products' | 'coas' | 'faqs' | 'contact' | 'orders' | 'customers' | 'leads' | 'promos' | 'seo'
-  >('overview');
+  >(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('straya_cms_active_tab');
+      if (saved) return saved as any;
+    }
+    return 'overview';
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('straya_cms_active_tab', activeTab);
+    }
+  }, [activeTab]);
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
 
@@ -578,23 +590,46 @@ export default function CMSDashboardPage() {
                 </button>
               </div>
 
-              {/* Add Custom Category Box */}
-              <div className="bg-white p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3 shadow-xs">
-                <span className="text-xs font-bold text-slate-700 shrink-0">Add Category To Dropdown List:</span>
-                <input
-                  type="text"
-                  placeholder="e.g. Nootropic Compounds..."
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                  className="bg-slate-50 text-slate-900 text-xs px-3.5 py-2 rounded-xl border border-slate-300 flex-1 focus:outline-none focus:border-slate-900"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddCategory}
-                  className="bg-slate-900 text-white font-bold text-xs px-4 py-2 rounded-xl cursor-pointer"
-                >
-                  Add Category
-                </button>
+              {/* Category Management Box */}
+              <div className="bg-white p-4.5 rounded-2xl border border-slate-200 space-y-3 shadow-xs">
+                <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                  <span className="text-xs font-bold text-slate-700 shrink-0">Add Category To Dropdown List:</span>
+                  <input
+                    type="text"
+                    placeholder="e.g. Nootropic Compounds..."
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    className="bg-slate-50 text-slate-900 text-xs px-3.5 py-2 rounded-xl border border-slate-300 flex-1 focus:outline-none focus:border-slate-900"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddCategory}
+                    className="bg-slate-900 text-white font-bold text-xs px-4 py-2 rounded-xl cursor-pointer"
+                  >
+                    Add Category
+                  </button>
+                </div>
+
+                {/* Existing Categories List with X Delete Buttons */}
+                <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                  <span className="text-[11px] font-bold text-slate-500 mr-1">Active Categories ({siteSettings.categories?.length || 0}):</span>
+                  {siteSettings.categories?.map((cat) => (
+                    <span key={cat} className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-xl bg-slate-100 border border-slate-300 text-slate-900 text-xs font-bold">
+                      <span>{cat}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = siteSettings.categories.filter((c) => c !== cat);
+                          updateSiteSettings({ categories: updated });
+                        }}
+                        className="text-slate-400 hover:text-red-600 cursor-pointer ml-1"
+                        title="Delete Category"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
               </div>
 
               {/* Add Product Form Box */}
@@ -1309,6 +1344,124 @@ export default function CMSDashboardPage() {
                   />
                 </div>
 
+                <div className="md:col-span-2 pt-4 border-t border-slate-200 space-y-3">
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Homepage Hero Banner & Color Config</h3>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Hero Title Text</label>
+                  <input
+                    type="text"
+                    value={editableSettings.heroTitle || ''}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, heroTitle: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Hero Title Text Color Picker</label>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="color"
+                      value={editableSettings.heroTextColor || '#FFFFFF'}
+                      onChange={(e) => setEditableSettings({ ...editableSettings, heroTextColor: e.target.value })}
+                      className="w-12 h-10 rounded-xl border border-slate-300 cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      value={editableSettings.heroTextColor || '#FFFFFF'}
+                      onChange={(e) => setEditableSettings({ ...editableSettings, heroTextColor: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 font-mono text-xs uppercase"
+                    />
+                  </div>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-slate-700 font-bold mb-1">Hero Subtitle Text</label>
+                  <textarea
+                    rows={2}
+                    value={editableSettings.heroSubtitle || ''}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, heroSubtitle: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
+                  />
+                </div>
+
+                <div className="md:col-span-2 pt-4 border-t border-slate-200 space-y-4">
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Checkout Delivery Options Manager</h3>
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                      <input
+                        type="text"
+                        placeholder="Delivery Title (e.g. Australia Post Express)"
+                        id="new-del-name"
+                        className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Description (e.g. 1-2 Business Days)"
+                        id="new-del-desc"
+                        className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900"
+                      />
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="number"
+                          placeholder="Price (AUD)"
+                          id="new-del-price"
+                          className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 w-full"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nameEl = document.getElementById('new-del-name') as HTMLInputElement;
+                            const descEl = document.getElementById('new-del-desc') as HTMLInputElement;
+                            const priceEl = document.getElementById('new-del-price') as HTMLInputElement;
+                            if (!nameEl || !nameEl.value.trim()) return;
+                            const newOption = {
+                              id: `del-${Date.now()}`,
+                              name: nameEl.value.trim(),
+                              description: descEl ? descEl.value.trim() : 'Express Dispatch',
+                              price: priceEl ? parseFloat(priceEl.value) || 0 : 0,
+                            };
+                            const updated = [...(editableSettings.deliveryOptions || []), newOption];
+                            setEditableSettings({ ...editableSettings, deliveryOptions: updated });
+                            nameEl.value = '';
+                            if (descEl) descEl.value = '';
+                            if (priceEl) priceEl.value = '';
+                          }}
+                          className="bg-slate-900 text-white font-bold text-xs px-4 py-2 rounded-xl shrink-0 cursor-pointer"
+                        >
+                          Add Option
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Active Delivery Options List */}
+                    <div className="space-y-2 pt-2">
+                      {editableSettings.deliveryOptions?.map((opt) => (
+                        <div key={opt.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-200 text-xs">
+                          <div>
+                            <span className="font-bold text-slate-900">{opt.name}</span>
+                            <span className="text-slate-500 font-mono text-[11px] block">{opt.description}</span>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <span className="font-mono font-bold text-[#FF007A]">{opt.price === 0 ? 'FREE' : formatAUD(opt.price)}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = editableSettings.deliveryOptions.filter((d) => d.id !== opt.id);
+                                setEditableSettings({ ...editableSettings, deliveryOptions: updated });
+                              }}
+                              className="text-red-600 hover:bg-red-50 p-1.5 rounded-lg cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="md:col-span-2 pt-4 border-t border-slate-200">
                   <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Australian Bank Transfer / PayID Details</h3>
                 </div>
@@ -1503,6 +1656,20 @@ export default function CMSDashboardPage() {
                   onChange={(e) => setEditingProduct({ ...editingProduct, discountedPrice: Number(e.target.value) })}
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
                 />
+              </div>
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">Category Dropdown *</label>
+                <select
+                  value={editingProduct.category}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 cursor-pointer font-bold"
+                >
+                  {siteSettings.categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-slate-700 font-bold mb-1">Description & Notes</label>

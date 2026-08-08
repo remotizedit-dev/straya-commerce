@@ -393,7 +393,7 @@ export default function CheckoutPage() {
                       <div
                         key={option.id}
                         onClick={() => setSelectedDelivery(option)}
-                        className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${
+                        className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 ${
                           isSelected
                             ? 'bg-slate-50 border-[#FF007A] shadow-sm'
                             : 'bg-white border-slate-200 hover:border-slate-300'
