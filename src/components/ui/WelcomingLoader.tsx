@@ -9,12 +9,12 @@ export const WelcomingLoader: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Dynamic video duration from CMS in seconds (e.g. 2.46s or 3.0s)
+  // Dynamic video duration from CMS in seconds (e.g. 3.0s)
   const videoDurationSec = siteSettings.welcomingVideoDurationSec && siteSettings.welcomingVideoDurationSec > 0
     ? siteSettings.welcomingVideoDurationSec
-    : 3.0;
+    : 3.5;
 
-  const durationMs = videoDurationSec * 1000;
+  const durationMs = (videoDurationSec + 0.5) * 1000;
 
   const dismissLoader = () => {
     setIsVisible(false);
@@ -32,14 +32,21 @@ export const WelcomingLoader: React.FC = () => {
       }
     }
 
-    // Programmatic play trigger for iOS Safari and Android Chrome
+    // Force inline playback & muted status for iOS Safari & Android Chrome
     if (videoRef.current) {
       videoRef.current.muted = true;
       videoRef.current.defaultMuted = true;
-      videoRef.current.play().catch(() => {
-        // If mobile OS Low Power mode blocks video autoplay, proceed smoothly
-        dismissLoader();
-      });
+      videoRef.current.setAttribute('playsinline', 'true');
+      videoRef.current.setAttribute('webkit-playsinline', 'true');
+      videoRef.current.setAttribute('x5-playsinline', 'true');
+      
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn('Mobile video autoplay deferral:', err);
+          // Do not immediately dismiss loader on mobile autoplay deferral; let fallback timer handle transition gracefully
+        });
+      }
     }
 
     const timer = setTimeout(() => {
@@ -57,7 +64,7 @@ export const WelcomingLoader: React.FC = () => {
           exit={{ opacity: 0, transition: { duration: 0.8, ease: 'easeInOut' } }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black overflow-hidden select-none"
         >
-          {/* iOS Safari & Android Chrome Optimized Video Tag */}
+          {/* Mobile Optimized Video Tag: MP4 primary source for iOS Safari compatibility */}
           <video
             ref={videoRef}
             autoPlay
@@ -70,11 +77,10 @@ export const WelcomingLoader: React.FC = () => {
             disablePictureInPicture
             preload="auto"
             onEnded={dismissLoader}
-            onError={dismissLoader}
             className="absolute inset-0 w-full h-full object-cover opacity-100 filter brightness-110 saturate-120"
           >
-            <source src="/videos/welcoming_intro.webm" type="video/webm" />
             <source src="/videos/welcoming_intro.mp4" type="video/mp4" />
+            <source src="/videos/welcoming_intro.webm" type="video/webm" />
           </video>
         </motion.div>
       )}
