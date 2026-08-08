@@ -23,29 +23,32 @@ export const Navbar: React.FC = () => {
     { name: 'Track Order', href: '/track' },
   ];
 
-  const handleSearchClick = () => {
+  const handleSearchClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (pathname === '/') {
-      const el = document.getElementById('products');
+      const el = document.getElementById('search-lookup') || document.getElementById('products');
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const inputEl = el.querySelector('input');
+        if (inputEl) inputEl.focus();
       }
     } else {
-      router.push('/#products');
+      router.push('/#search-lookup');
     }
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-black border-b border-white/10 shadow-2xl select-none">
+    <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200 shadow-sm select-none">
       {/* Tier 1: Left Search Icon Only, Center Logo, Right Cart */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between relative border-b border-white/5 min-h-[72px]">
-        {/* Left Side: Search Icon Only (Click redirects to homepage search section) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between relative border-b border-slate-100 min-h-[72px]">
+        {/* Left Side: Search Icon Only (Click redirects/scrolls to homepage search section) */}
         <div className="flex items-center">
           <button
             onClick={handleSearchClick}
-            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors cursor-pointer border border-white/10 flex items-center justify-center group"
+            className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors cursor-pointer border border-slate-200 flex items-center justify-center group"
             title="Search Products on Homepage"
           >
-            <Search className="w-5 h-5 text-[#00F0FF] group-hover:scale-110 transition-transform" />
+            <Search className="w-5 h-5 text-[#FF007A] group-hover:scale-110 transition-transform" />
           </button>
         </div>
 
@@ -57,8 +60,8 @@ export const Navbar: React.FC = () => {
                 <Image src={siteSettings.logoUrl} alt="Brand Logo" fill className="object-contain" />
               </div>
             ) : (
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-[0_0_25px_rgba(255,0,122,0.5)] group-hover:scale-105 transition-transform">
-                <div className="w-full h-full bg-[#09090D] rounded-[14px] flex items-center justify-center font-black text-2xl text-white">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-md group-hover:scale-105 transition-transform">
+                <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center font-black text-2xl text-slate-900">
                   S
                 </div>
               </div>
@@ -71,7 +74,7 @@ export const Navbar: React.FC = () => {
           {/* Cart Counter Button */}
           <button
             onClick={openCart}
-            className="relative p-2.5 rounded-xl glow-pink-btn text-white flex items-center justify-center cursor-pointer shadow-lg"
+            className="relative p-2.5 rounded-xl glow-pink-btn text-white flex items-center justify-center cursor-pointer shadow-md"
             title="View Cart"
           >
             <ShoppingBag className="w-5 h-5" />
@@ -85,7 +88,7 @@ export const Navbar: React.FC = () => {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2.5 rounded-xl bg-white/5 text-gray-300 hover:text-white cursor-pointer border border-white/10"
+            className="lg:hidden p-2.5 rounded-xl bg-slate-100 text-slate-800 hover:text-black cursor-pointer border border-slate-200"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -93,7 +96,7 @@ export const Navbar: React.FC = () => {
       </div>
 
       {/* Tier 2: Next Line Centered Navigation Bar */}
-      <div className="hidden lg:block bg-black py-2.5">
+      <div className="hidden lg:block bg-white py-2">
         <nav className="max-w-7xl mx-auto px-4 flex items-center justify-center space-x-2">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -101,15 +104,15 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-5 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors ${
-                  isActive ? 'text-white font-extrabold' : 'text-slate-300 hover:text-white'
+                className={`relative px-5 py-2 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider transition-colors ${
+                  isActive ? 'text-[#FF007A]' : 'text-slate-700 hover:text-slate-900'
                 }`}
               >
                 {link.name}
                 {isActive && (
                   <motion.div
                     layoutId="activeNavTab"
-                    className="absolute inset-0 bg-[#FF007A]/20 border border-[#FF007A]/50 rounded-xl -z-10 shadow-[0_0_15px_rgba(255,0,122,0.3)]"
+                    className="absolute inset-0 bg-[#FF007A]/10 border border-[#FF007A]/30 rounded-xl -z-10"
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -126,17 +129,17 @@ export const Navbar: React.FC = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-black border-b border-white/10 px-4 pt-2 pb-6 space-y-3 text-center"
+            className="lg:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-2 text-center"
           >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-3 rounded-lg text-base font-medium ${
+                className={`block px-4 py-3 rounded-lg text-base font-bold ${
                   pathname === link.href
-                    ? 'bg-[#FF007A]/20 text-white font-bold border border-[#FF007A]/40'
-                    : 'text-gray-300 hover:bg-white/5'
+                    ? 'bg-[#FF007A]/10 text-[#FF007A] font-extrabold border border-[#FF007A]/30'
+                    : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 {link.name}

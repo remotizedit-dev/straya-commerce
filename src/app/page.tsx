@@ -11,6 +11,19 @@ import { Search, Flame, Award, ShieldAlert, Sparkles, ArrowRight, Zap, CheckCirc
 export default function HomePage() {
   const { products, siteSettings, searchQuery, setSearchQuery } = useApp();
 
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#search-lookup') {
+      const el = document.getElementById('search-lookup');
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const inputEl = el.querySelector('input');
+          if (inputEl) inputEl.focus();
+        }, 300);
+      }
+    }
+  }, []);
+
   const bestSaleProducts = products
     .filter((p) => p.type === 'best_sell' || p.rating! >= 4.85)
     .filter((p) => p.title.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -31,7 +44,7 @@ export default function HomePage() {
       <HeroSection />
 
       {/* 6/ Functional Search Bar Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
+      <section id="search-lookup" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
         <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-3 w-full md:w-auto">
             <div className="p-3 rounded-xl bg-[#FF007A]/10 text-[#FF007A] shrink-0">

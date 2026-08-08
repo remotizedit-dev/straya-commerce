@@ -22,16 +22,16 @@ export default function COAPage() {
     <div className="bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
         {/* Header Banner */}
-        <div className="relative rounded-3xl bg-slate-900 text-white p-8 sm:p-12 overflow-hidden shadow-xl">
-          <div className="relative z-10 max-w-3xl space-y-3">
+        <div className="relative rounded-3xl bg-slate-900 text-white p-8 sm:p-12 overflow-hidden shadow-xl text-center">
+          <div className="relative z-10 max-w-3xl mx-auto space-y-3 flex flex-col items-center justify-center">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#FF007A]/20 text-[#FF007A] text-xs font-bold uppercase tracking-wider">
               <Award className="w-4 h-4" />
               <span>High Performance Liquid Chromatography (HPLC)</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight">
+            <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-center">
               Certificate of Analysis (COA)
             </h1>
-            <p className="text-slate-300 text-sm leading-relaxed">
+            <p className="text-slate-300 text-sm leading-relaxed text-center max-w-2xl">
               Transparency is our core standard. View and inspect batch-specific HPLC and Mass Spectrometry laboratory reports for all Straya research peptides.
             </p>
           </div>
