@@ -117,16 +117,16 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, isOpen, onClo
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-200 text-xs">
               <div>
                 <h4 className="text-[#FF007A] font-bold uppercase tracking-wider mb-2">Billed To Customer:</h4>
-                <p className="text-slate-900 font-extrabold text-sm">{order.customer.firstName} {order.customer.lastName}</p>
-                <p className="text-slate-600 mt-0.5">{order.customer.email}</p>
-                <p className="text-slate-600">{order.customer.phone}</p>
+                <p className="text-slate-900 font-extrabold text-sm">{order.customer?.firstName || 'Guest'} {order.customer?.lastName || ''}</p>
+                <p className="text-slate-600 mt-0.5">{order.customer?.email || 'N/A'}</p>
+                <p className="text-slate-600">{order.customer?.phone || 'N/A'}</p>
               </div>
 
               <div>
                 <h4 className="text-[#FF007A] font-bold uppercase tracking-wider mb-2">Shipping Destination:</h4>
-                <p className="text-slate-800 font-medium">{order.customer.address.street}</p>
+                <p className="text-slate-800 font-medium">{order.customer?.address?.street || 'N/A'}</p>
                 <p className="text-slate-800 font-medium">
-                  {order.customer.address.suburb}, {order.customer.address.state} {order.customer.address.postcode}
+                  {order.customer?.address?.suburb || ''}, {order.customer?.address?.state || ''} {order.customer?.address?.postcode || ''}
                 </p>
                 <p className="text-slate-600 font-bold">Australia</p>
               </div>

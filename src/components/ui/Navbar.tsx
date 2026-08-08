@@ -6,11 +6,11 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/lib/store';
-import { ShoppingBag, Search, Menu, X, PhoneCall } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
-  const { cartCount, openCart, searchQuery, setSearchQuery, openCallModal, siteSettings } = useApp();
+  const { cartCount, openCart, searchQuery, setSearchQuery, siteSettings } = useApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -25,34 +25,17 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-black border-b border-white/10 shadow-2xl select-none">
-      {/* Tier 1: Centered Big Logo & Action Icons */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between relative border-b border-white/5">
-        {/* Left Placeholder for symmetry */}
-        <div className="w-24 hidden sm:block" />
-
-        {/* Center Bigger Logo (NO STRAYA Text) */}
-        <Link href="/" className="flex items-center justify-center mx-auto group">
-          {siteSettings.logoUrl ? (
-            <div className="relative h-14 w-44 sm:h-16 sm:w-52 group-hover:scale-105 transition-transform duration-300">
-              <Image src={siteSettings.logoUrl} alt="Brand Logo" fill className="object-contain" />
-            </div>
-          ) : (
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-[0_0_25px_rgba(255,0,122,0.5)] group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-[#09090D] rounded-[14px] flex items-center justify-center font-black text-2xl text-white">
-                S
-              </div>
-            </div>
-          )}
-        </Link>
-
-        {/* Right Action Icons & Buttons */}
-        <div className="flex items-center space-x-3 absolute right-4 sm:right-8">
-          {/* Quick Search Toggle */}
-          <div className="relative">
+      {/* Tier 1: Absolute Center Logo + Animated Expanding Search Icon on Left */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between relative border-b border-white/5 min-h-[72px]">
+        {/* Left Side: Animated Expanding Search Bar on Hover/Click */}
+        <div className="flex items-center">
+          <div className="relative flex items-center">
             {isSearchOpen ? (
               <motion.div
                 initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 200, opacity: 1 }}
+                animate={{ width: 220, opacity: 1 }}
+                exit={{ width: 0, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                 className="flex items-center"
               >
                 <input
@@ -60,12 +43,12 @@ export const Navbar: React.FC = () => {
                   placeholder="Search peptides..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#151520] text-white text-xs px-3 py-2 rounded-l-lg border border-[#FF007A]/50 focus:outline-none focus:border-[#00F0FF]"
+                  className="w-full bg-[#111622] text-white text-xs px-3.5 py-2 rounded-l-xl border border-[#FF007A]/50 focus:outline-none focus:border-[#00F0FF] placeholder:text-slate-400"
                   autoFocus
                 />
                 <button
                   onClick={() => setIsSearchOpen(false)}
-                  className="bg-[#151520] border-y border-r border-[#FF007A]/50 px-2 py-2 rounded-r-lg text-gray-400 hover:text-white cursor-pointer"
+                  className="bg-[#111622] border-y border-r border-[#FF007A]/50 px-2.5 py-2 rounded-r-xl text-gray-400 hover:text-white cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -73,27 +56,40 @@ export const Navbar: React.FC = () => {
             ) : (
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors cursor-pointer"
-                title="Search products"
+                onMouseEnter={() => setIsSearchOpen(true)}
+                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors cursor-pointer border border-white/10 flex items-center space-x-2 group"
+                title="Search peptides"
               >
-                <Search className="w-5 h-5 text-[#00F0FF]" />
+                <Search className="w-5 h-5 text-[#00F0FF] group-hover:scale-110 transition-transform" />
+                <span className="text-xs font-semibold text-slate-300 hidden sm:inline">Search</span>
               </button>
             )}
           </div>
+        </div>
 
-          {/* Request Call Quick Button */}
-          <button
-            onClick={openCallModal}
-            className="hidden sm:flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-[#FF007A]/40 text-gray-200 hover:text-white transition-all cursor-pointer"
-          >
-            <PhoneCall className="w-3.5 h-3.5 text-[#FF007A]" />
-            <span>Request Call</span>
-          </button>
+        {/* Absolute Dead Center Screen Logo */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10">
+          <Link href="/" className="flex items-center justify-center group">
+            {siteSettings.logoUrl ? (
+              <div className="relative h-14 w-44 sm:h-16 sm:w-56 group-hover:scale-105 transition-transform duration-300">
+                <Image src={siteSettings.logoUrl} alt="Brand Logo" fill className="object-contain" />
+              </div>
+            ) : (
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-[0_0_25px_rgba(255,0,122,0.5)] group-hover:scale-105 transition-transform">
+                <div className="w-full h-full bg-[#09090D] rounded-[14px] flex items-center justify-center font-black text-2xl text-white">
+                  S
+                </div>
+              </div>
+            )}
+          </Link>
+        </div>
 
+        {/* Right Side: Cart Counter Button & Mobile Menu */}
+        <div className="flex items-center space-x-3">
           {/* Cart Counter Button */}
           <button
             onClick={openCart}
-            className="relative p-2.5 rounded-lg glow-pink-btn text-white flex items-center justify-center cursor-pointer"
+            className="relative p-2.5 rounded-xl glow-pink-btn text-white flex items-center justify-center cursor-pointer shadow-lg"
             title="View Cart"
           >
             <ShoppingBag className="w-5 h-5" />
@@ -107,14 +103,14 @@ export const Navbar: React.FC = () => {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg bg-white/5 text-gray-300 hover:text-white cursor-pointer"
+            className="lg:hidden p-2.5 rounded-xl bg-white/5 text-gray-300 hover:text-white cursor-pointer border border-white/10"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Tier 2: Next Line Centered Dark Navigation Bar */}
+      {/* Tier 2: Next Line Centered Navigation Bar */}
       <div className="hidden lg:block bg-black py-2.5">
         <nav className="max-w-7xl mx-auto px-4 flex items-center justify-center space-x-2">
           {navLinks.map((link) => {
@@ -164,18 +160,6 @@ export const Navbar: React.FC = () => {
                 {link.name}
               </Link>
             ))}
-            <div className="pt-2">
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  openCallModal();
-                }}
-                className="w-full flex items-center justify-center space-x-2 py-3 rounded-lg bg-gradient-to-r from-[#FF007A] to-[#00F0FF] text-white font-bold text-sm shadow-md cursor-pointer"
-              >
-                <PhoneCall className="w-4 h-4" />
-                <span>Request Call Back</span>
-              </button>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

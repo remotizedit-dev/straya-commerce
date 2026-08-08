@@ -124,6 +124,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             setOrders(parsed);
           }
         }
+        const savedCustomers = localStorage.getItem('straya_customers');
+        if (savedCustomers) {
+          const parsed: CustomerRecord[] = JSON.parse(savedCustomers);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setCustomers(parsed);
+          }
+        }
       }
     } catch (e) {
       console.warn('localStorage read error', e);
@@ -151,6 +158,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       console.warn('localStorage orders write error', e);
     }
   }, [orders]);
+
+  // Save customers to localStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && customers.length > 0) {
+        localStorage.setItem('straya_customers', JSON.stringify(customers));
+      }
+    } catch (e) {
+      console.warn('localStorage customers write error', e);
+    }
+  }, [customers]);
 
   // Sync with Firebase Realtime Database
   useEffect(() => {
@@ -280,11 +298,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           if (snapshot.exists()) {
             const data = snapshot.val();
             const list: CustomerRecord[] = Object.keys(data).map((key) => ({ ...data[key], id: key }));
-            setCustomers(list);
+            setCustomers((prev) => {
+              const map = new Map<string, CustomerRecord>();
+              prev.forEach((c) => map.set(c.id, c));
+              list.forEach((c) => map.set(c.id, c));
+              return Array.from(map.values());
+            });
           }
         },
         (err) => {
-          if (!err.message.includes('permission_denied')) console.warn('Firebase customers read fallback:', err);
+          console.warn('Firebase customers read fallback:', err);
         }
       );
 
@@ -531,11 +554,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     // 1. Optimistic state update
-    setOrders((prev) => [newOrder, ...prev]);
+    setOrders((prev) => {
+      const updated = [newOrder, ...prev];
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('straya_orders', JSON.stringify(updated));
+        }
+      } catch (e) {
+        console.warn('localStorage order write error', e);
+      }
+      return updated;
+    });
 
-    // 2. Direct database write for the Order
+    // 2. Direct database write for the Order (Sanitized of undefined fields)
     try {
-      await set(ref(database, `orders/${orderId}`), newOrder);
+      const cleanOrder = JSON.parse(JSON.stringify(newOrder));
+      await set(ref(database, `orders/${orderId}`), cleanOrder);
     } catch (e) {
       console.error('Firebase createOrder set error', e);
     }

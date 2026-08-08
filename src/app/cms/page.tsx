@@ -33,13 +33,9 @@ import {
   ChevronRight,
   BarChart3,
   PieChart,
-  ShieldCheck,
-  ArrowUpRight,
-  Sparkles,
   ExternalLink,
-  Layers,
-  Clock,
-  Filter,
+  MapPin,
+  HelpCircle,
 } from 'lucide-react';
 
 export default function CMSDashboardPage() {
@@ -78,8 +74,10 @@ export default function CMSDashboardPage() {
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
 
-  // Modals & Forms for COA, FAQ, Orders & Products CRUD
+  // Modals & Forms State
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
+  const [selectedOrderForInvoice, setSelectedOrderForInvoice] = useState<Order | null>(null);
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState<boolean>(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
 
@@ -124,10 +122,6 @@ export default function CMSDashboardPage() {
     }
     router.push('/cms/login');
   };
-
-  // Modal State for Invoice Preview
-  const [selectedOrderForInvoice, setSelectedOrderForInvoice] = useState<Order | null>(null);
-  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
   // New Category Input State
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -193,6 +187,7 @@ export default function CMSDashboardPage() {
     setIsAddingProduct(false);
     setProdTitle('');
     setProdImage('');
+    setProdDesc('');
   };
 
   const handleCreatePromoSubmit = async (e: React.FormEvent) => {
@@ -228,29 +223,29 @@ export default function CMSDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex font-sans select-none">
-      {/* 1. CMS SIDEBAR NAVIGATION */}
-      <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0 hidden md:flex">
+    <div className="min-h-screen bg-white text-slate-900 flex font-sans select-none">
+      {/* 1. CMS SIDEBAR NAVIGATION - Pure White & Black Accent */}
+      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 hidden md:flex shadow-xs">
         <div className="p-6 space-y-6">
           {/* Logo Brand */}
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-lg">
+          <div className="flex items-center space-x-3 border-b border-slate-200 pb-4">
+            <div className="w-10 h-10 rounded-xl bg-slate-900 p-0.5 shadow-md">
               <div className="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center font-black text-xl text-white">
                 S
               </div>
             </div>
             <div>
-              <span className="font-black text-lg text-white tracking-wider">
+              <span className="font-black text-lg text-slate-900 tracking-wider">
                 STRAYA<span className="text-[#FF007A]">.</span>
               </span>
-              <span className="text-[10px] text-[#00F0FF] font-bold block uppercase tracking-widest -mt-1">
+              <span className="text-[10px] text-slate-600 font-bold block uppercase tracking-widest -mt-1">
                 CMS Admin Portal
               </span>
             </div>
           </div>
 
           {/* Navigation Items */}
-          <nav className="space-y-1.5 pt-2">
+          <nav className="space-y-1 pt-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -261,16 +256,16 @@ export default function CMSDashboardPage() {
                   onClick={() => setActiveTab(item.id as any)}
                   className={`w-full px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-slate-800 text-white border border-slate-700 shadow-md'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-900'
+                      ? 'bg-slate-900 text-white shadow-md'
+                      : 'text-slate-700 hover:text-black hover:bg-slate-100'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#FF007A]' : 'text-slate-400'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#FF007A]' : 'text-slate-500'}`} />
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (
-                    <span className="px-2 py-0.5 rounded-full bg-[#FF007A]/20 text-[#FF007A] text-[10px] font-mono font-bold">
+                    <span className="px-2 py-0.5 rounded-full bg-[#FF007A] text-white text-[10px] font-mono font-bold">
                       {item.badge}
                     </span>
                   )}
@@ -281,22 +276,22 @@ export default function CMSDashboardPage() {
         </div>
 
         {/* Sidebar Footer User Info */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900">
+        <div className="p-4 border-t border-slate-200 bg-slate-50">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-full bg-[#FF007A]/20 border border-[#FF007A]/40 flex items-center justify-center font-bold text-xs text-[#FF007A]">
+              <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
                 AU
               </div>
               <div className="text-xs truncate max-w-[130px]">
-                <p className="font-bold text-white leading-tight truncate">{currentUserEmail || 'Admin User'}</p>
-                <p className="text-[10px] text-emerald-400 font-mono">● Authenticated</p>
+                <p className="font-bold text-slate-900 leading-tight truncate">{currentUserEmail || 'Admin User'}</p>
+                <p className="text-[10px] text-emerald-600 font-mono font-bold">● Authenticated</p>
               </div>
             </div>
           </div>
 
           <button
             onClick={handleLogout}
-            className="w-full py-2 px-3 rounded-xl bg-red-950/40 border border-red-900/60 hover:bg-red-900/60 text-red-300 text-xs font-bold flex items-center justify-center space-x-2 transition-all cursor-pointer"
+            className="w-full py-2 px-3 rounded-xl bg-red-50 border border-red-200 hover:bg-red-100 text-red-700 text-xs font-bold flex items-center justify-center space-x-2 transition-all cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -304,8 +299,8 @@ export default function CMSDashboardPage() {
         </div>
       </aside>
 
-      {/* 2. MAIN CMS CONTENT AREA */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      {/* 2. MAIN CMS CONTENT AREA - Pure White & Black */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto bg-slate-50">
         {/* Top Header Bar */}
         <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-xs">
           <div className="flex items-center space-x-3">
@@ -331,7 +326,7 @@ export default function CMSDashboardPage() {
                 setActiveTab('products');
                 setIsAddingProduct(true);
               }}
-              className="glow-pink-btn text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 cursor-pointer shadow-md"
+              className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 cursor-pointer shadow-md"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Add Product</span>
@@ -340,7 +335,7 @@ export default function CMSDashboardPage() {
         </header>
 
         {/* Mobile Tab Navigation */}
-        <div className="md:hidden flex items-center space-x-2 overflow-x-auto p-3 bg-[#0B0F19] border-b border-slate-800">
+        <div className="md:hidden flex items-center space-x-2 overflow-x-auto p-3 bg-white border-b border-slate-200">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -350,7 +345,7 @@ export default function CMSDashboardPage() {
                 type="button"
                 onClick={() => setActiveTab(item.id as any)}
                 className={`px-3 py-2 rounded-lg text-xs font-bold flex items-center space-x-1.5 shrink-0 ${
-                  isActive ? 'bg-[#FF007A] text-white' : 'bg-slate-800 text-slate-400'
+                  isActive ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -367,160 +362,63 @@ export default function CMSDashboardPage() {
             <div className="space-y-8">
               {/* Metric Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-[#0F1422] p-6 rounded-2xl border border-slate-800 shadow-lg space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between text-xs text-slate-500 font-bold uppercase">
                     <span>Verified Sales</span>
-                    <DollarSign className="w-4 h-4 text-[#00F0FF]" />
+                    <DollarSign className="w-4 h-4 text-slate-900" />
                   </div>
-                  <h3 className="text-3xl font-black text-[#00F0FF] font-mono">{formatAUD(totalRevenue)}</h3>
-                  <div className="flex items-center space-x-1 text-[11px] text-emerald-400">
-                    <TrendingUp className="w-3.5 h-3.5" />
-                    <span>Real-time Firebase Sync</span>
-                  </div>
+                  <h3 className="text-3xl font-black text-slate-900 font-mono">{formatAUD(totalRevenue)}</h3>
+                  <p className="text-[11px] text-emerald-600 font-bold">● {paidOrders.length} Paid Invoices</p>
                 </div>
 
-                <div className="bg-[#0F1422] p-6 rounded-2xl border border-slate-800 shadow-lg space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between text-xs text-slate-500 font-bold uppercase">
                     <span>Total Orders</span>
                     <ShoppingBag className="w-4 h-4 text-[#FF007A]" />
                   </div>
-                  <h3 className="text-3xl font-black text-white font-mono">{totalOrdersCount}</h3>
-                  <p className="text-[11px] text-[#FF007A] font-bold">{unpaidOrdersCount} Orders Awaiting Payment</p>
+                  <h3 className="text-3xl font-black text-slate-900 font-mono">{totalOrdersCount}</h3>
+                  <p className="text-[11px] text-amber-600 font-bold">● {unpaidOrdersCount} Pending Bank Payments</p>
                 </div>
 
-                <div className="bg-[#0F1422] p-6 rounded-2xl border border-slate-800 shadow-lg space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
-                    <span>Customer Accounts</span>
-                    <Users className="w-4 h-4 text-[#00F0FF]" />
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between text-xs text-slate-500 font-bold uppercase">
+                    <span>Active Products</span>
+                    <Package className="w-4 h-4 text-slate-900" />
                   </div>
-                  <h3 className="text-3xl font-black text-white font-mono">{totalCustomersCount}</h3>
-                  <p className="text-[11px] text-slate-400">Captured from checkout</p>
+                  <h3 className="text-3xl font-black text-slate-900 font-mono">{products.length}</h3>
+                  <p className="text-[11px] text-slate-600 font-bold">● HPLC Tested Stock</p>
                 </div>
 
-                <div className="bg-[#0F1422] p-6 rounded-2xl border border-slate-800 shadow-lg space-y-2">
-                  <div className="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
-                    <span>Inquiries & Leads</span>
-                    <PhoneCall className="w-4 h-4 text-[#FF007A]" />
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                  <div className="flex items-center justify-between text-xs text-slate-500 font-bold uppercase">
+                    <span>Registered Customers</span>
+                    <Users className="w-4 h-4 text-slate-900" />
                   </div>
-                  <h3 className="text-3xl font-black text-[#FF007A] font-mono">{totalLeadsCount}</h3>
-                  <p className="text-[11px] text-slate-400">Callback requests & contact messages</p>
-                </div>
-              </div>
-
-              {/* 📊 INTERACTIVE GRAPH WIDGETS */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Visual Sales Trend Bar/Area Chart (2 Cols) */}
-                <div className="lg:col-span-2 bg-[#0F1422] p-6 rounded-2xl border border-slate-800 space-y-6 shadow-lg">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                    <div>
-                      <h3 className="text-base font-bold text-white uppercase tracking-wider flex items-center space-x-2">
-                        <BarChart3 className="w-5 h-5 text-[#00F0FF]" />
-                        <span>Sales Revenue Analytics</span>
-                      </h3>
-                      <p className="text-xs text-slate-400">Calculated live from paid database orders</p>
-                    </div>
-                    <span className="px-3 py-1 rounded-lg bg-[#00F0FF]/15 text-[#00F0FF] text-xs font-mono font-bold">
-                      AUD Growth
-                    </span>
-                  </div>
-
-                  <div className="h-56 w-full flex items-end justify-between gap-3 pt-6 px-2 border-b border-slate-800">
-                    {[
-                      { month: 'Mar', val: 0, height: '10%' },
-                      { month: 'Apr', val: 0, height: '10%' },
-                      { month: 'May', val: 0, height: '10%' },
-                      { month: 'Jun', val: 0, height: '10%' },
-                      { month: 'Jul', val: 0, height: '10%' },
-                      { month: 'Aug', val: Math.round(totalRevenue), height: totalRevenue > 0 ? '100%' : '15%' },
-                    ].map((item, idx) => (
-                      <div key={idx} className="flex-1 flex flex-col items-center gap-2 group">
-                        <div className="text-[10px] font-mono text-slate-400 group-hover:text-white transition-colors">
-                          ${item.val}
-                        </div>
-                        <div className="w-full max-w-[40px] bg-slate-800 rounded-t-lg overflow-hidden h-40 flex items-end p-0.5">
-                          <div
-                            style={{ height: item.height }}
-                            className="w-full bg-gradient-to-t from-[#FF007A] to-[#00F0FF] rounded-t-md group-hover:brightness-125 transition-all"
-                          />
-                        </div>
-                        <span className="text-xs font-bold text-slate-300">{item.month}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Distribution Breakdown Donut & Quick Activity (1 Col) */}
-                <div className="bg-[#0F1422] p-6 rounded-2xl border border-slate-800 space-y-6 shadow-lg flex flex-col justify-between">
-                  <div className="border-b border-slate-800 pb-4">
-                    <h3 className="text-base font-bold text-white uppercase tracking-wider flex items-center space-x-2">
-                      <PieChart className="w-5 h-5 text-[#FF007A]" />
-                      <span>Order Status Breakdown</span>
-                    </h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                      <div className="flex justify-between text-xs font-bold">
-                        <span className="text-emerald-400">Paid Orders ({paidOrders.length})</span>
-                        <span className="text-white">
-                          {totalOrdersCount > 0 ? Math.round((paidOrders.length / totalOrdersCount) * 100) : 0}%
-                        </span>
-                      </div>
-                      <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="bg-emerald-400 h-full rounded-full"
-                          style={{
-                            width: `${totalOrdersCount > 0 ? (paidOrders.length / totalOrdersCount) * 100 : 0}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                      <div className="flex justify-between text-xs font-bold">
-                        <span className="text-[#FF007A]">Unpaid Orders ({unpaidOrdersCount})</span>
-                        <span className="text-white">
-                          {totalOrdersCount > 0 ? Math.round((unpaidOrdersCount / totalOrdersCount) * 100) : 0}%
-                        </span>
-                      </div>
-                      <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="bg-[#FF007A] h-full rounded-full"
-                          style={{
-                            width: `${totalOrdersCount > 0 ? (unpaidOrdersCount / totalOrdersCount) * 100 : 0}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300">
-                    <span className="text-[#00F0FF] font-bold block mb-1">Production Security Active</span>
-                    Firebase Authentication & Security Rules active.
-                  </div>
+                  <h3 className="text-3xl font-black text-slate-900 font-mono">{totalCustomersCount}</h3>
+                  <p className="text-[11px] text-slate-600 font-bold">● Australian Client Profiles</p>
                 </div>
               </div>
 
               {/* Recent Orders List Preview */}
-              <div className="bg-[#0F1422] p-6 rounded-2xl border border-slate-800 space-y-4 shadow-lg">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-white uppercase">Recent Store Orders</h3>
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 space-y-4 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                  <h3 className="text-base font-bold text-slate-900 uppercase">Recent Store Orders ({orders.length})</h3>
                   <button
                     onClick={() => setActiveTab('orders')}
-                    className="text-xs text-[#00F0FF] hover:underline font-bold"
+                    className="text-xs text-[#FF007A] hover:underline font-bold"
                   >
                     View All Orders →
                   </button>
                 </div>
 
                 {orders.length === 0 ? (
-                  <div className="p-8 text-center text-xs text-slate-400">
+                  <div className="p-8 text-center text-xs text-slate-500">
                     No orders placed yet. New checkout orders will appear here automatically.
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-900 text-slate-300 uppercase font-bold">
+                      <thead className="bg-slate-900 text-white uppercase font-bold">
                         <tr>
                           <th className="p-3">Order ID</th>
                           <th className="p-3">Customer</th>
@@ -529,15 +427,15 @@ export default function CMSDashboardPage() {
                           <th className="p-3 text-right">Action</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800 text-slate-200">
+                      <tbody className="divide-y divide-slate-200 text-slate-900">
                         {orders.slice(0, 5).map((o) => (
-                          <tr key={o.id} className="hover:bg-slate-800/40">
+                          <tr key={o.id} className="hover:bg-slate-50">
                             <td className="p-3 font-mono font-bold text-[#FF007A]">{o.id}</td>
-                            <td className="p-3 font-bold text-white">{o.customer.firstName} {o.customer.lastName}</td>
-                            <td className="p-3 font-mono font-bold text-slate-100">{formatAUD(o.totalAmount)}</td>
+                            <td className="p-3 font-bold text-slate-900">{o.customer?.firstName || 'Guest'} {o.customer?.lastName || ''}</td>
+                            <td className="p-3 font-mono font-bold text-slate-900">{formatAUD(o.totalAmount)}</td>
                             <td className="p-3">
                               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                                o.paymentStatus === 'paid' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'
+                                o.paymentStatus === 'paid' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-amber-100 text-amber-800 border border-amber-300'
                               }`}>
                                 {o.paymentStatus}
                               </span>
@@ -548,7 +446,7 @@ export default function CMSDashboardPage() {
                                   setSelectedOrderForInvoice(o);
                                   setIsInvoiceOpen(true);
                                 }}
-                                className="px-3 py-1 rounded-lg bg-[#00F0FF]/20 text-[#00F0FF] font-bold text-[10px] uppercase cursor-pointer"
+                                className="px-3 py-1 rounded-lg bg-slate-900 text-white font-bold text-[10px] uppercase cursor-pointer"
                               >
                                 Invoice
                               </button>
@@ -566,21 +464,21 @@ export default function CMSDashboardPage() {
           {/* TAB 2: ORDERS MANAGEMENT & PDF/PNG INVOICES */}
           {activeTab === 'orders' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
-                  <h2 className="text-xl font-black text-white uppercase">Orders & Official Invoices</h2>
-                  <p className="text-xs text-slate-400">Manage payment status, shipping stages, and print invoices</p>
+                  <h2 className="text-xl font-black text-slate-900 uppercase">Orders & Official Invoices ({orders.length})</h2>
+                  <p className="text-xs text-slate-500">Manage payment status, shipping stages, and print official invoices</p>
                 </div>
               </div>
 
               {orders.length === 0 ? (
-                <div className="p-12 text-center rounded-2xl bg-[#0F1422] border border-slate-800 text-slate-400 text-xs">
+                <div className="p-12 text-center rounded-2xl bg-white border border-slate-200 text-slate-500 text-xs">
                   No orders found in database. New customer orders will be listed here in real-time.
                 </div>
               ) : (
-                <div className="border border-slate-800 rounded-2xl overflow-hidden bg-[#0F1422] shadow-xl">
+                <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-900 text-slate-200 uppercase font-bold border-b border-slate-800">
+                    <thead className="bg-slate-900 text-white uppercase font-bold border-b border-slate-300">
                       <tr>
                         <th className="p-4">Order ID</th>
                         <th className="p-4">Customer Details</th>
@@ -590,23 +488,23 @@ export default function CMSDashboardPage() {
                         <th className="p-4 text-right">Invoice Export</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                    <tbody className="divide-y divide-slate-200 text-slate-900">
                       {orders.map((o) => (
-                        <tr key={o.id} className="hover:bg-slate-800/40 transition-colors">
+                        <tr key={o.id} className="hover:bg-slate-50 transition-colors">
                           <td className="p-4 font-mono font-bold text-[#FF007A] text-sm">{o.id}</td>
                           <td className="p-4">
-                            <p className="font-bold text-white text-sm">{o.customer.firstName} {o.customer.lastName}</p>
-                            <p className="text-slate-400 font-mono text-[11px]">{o.customer.email}</p>
-                            <p className="text-slate-400 font-mono text-[11px]">{o.customer.phone}</p>
+                            <p className="font-bold text-slate-900 text-sm">{o.customer?.firstName || 'Guest'} {o.customer?.lastName || ''}</p>
+                            <p className="text-slate-600 font-mono text-[11px]">{o.customer?.email || 'N/A'}</p>
+                            <p className="text-slate-600 font-mono text-[11px]">{o.customer?.phone || 'N/A'}</p>
                           </td>
-                          <td className="p-4 font-mono font-bold text-white text-sm">{formatAUD(o.totalAmount)}</td>
+                          <td className="p-4 font-mono font-bold text-slate-900 text-sm">{formatAUD(o.totalAmount)}</td>
                           <td className="p-4">
                             <button
                               onClick={() => updateOrderStatus(o.id, o.paymentStatus === 'paid' ? 'unpaid' : 'paid')}
                               className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase cursor-pointer transition-all ${
                                 o.paymentStatus === 'paid'
-                                  ? 'bg-emerald-950 text-emerald-400 border border-emerald-800 hover:bg-emerald-900'
-                                  : 'bg-amber-950 text-amber-400 border border-amber-800 hover:bg-amber-900'
+                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200'
+                                  : 'bg-amber-100 text-amber-800 border border-amber-300 hover:bg-amber-200'
                               }`}
                             >
                               {o.paymentStatus} (Toggle)
@@ -616,7 +514,7 @@ export default function CMSDashboardPage() {
                             <select
                               value={o.deliveryStatus}
                               onChange={(e: any) => updateOrderStatus(o.id, undefined, e.target.value)}
-                              className="bg-slate-900 text-white text-xs px-3 py-1.5 rounded-xl border border-slate-700 focus:outline-none focus:border-[#00F0FF] cursor-pointer font-bold"
+                              className="bg-slate-50 text-slate-900 text-xs px-3 py-1.5 rounded-xl border border-slate-300 focus:outline-none focus:border-slate-900 cursor-pointer font-bold"
                             >
                               <option value="Payment Received">Payment Received</option>
                               <option value="Processing">Processing</option>
@@ -628,7 +526,7 @@ export default function CMSDashboardPage() {
                             <div className="flex items-center justify-end space-x-2">
                               <button
                                 onClick={() => setViewingOrder(o)}
-                                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
+                                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-black cursor-pointer"
                                 title="View Details"
                               >
                                 <Eye className="w-4 h-4" />
@@ -638,7 +536,7 @@ export default function CMSDashboardPage() {
                                   setSelectedOrderForInvoice(o);
                                   setIsInvoiceOpen(true);
                                 }}
-                                className="px-3 py-1.5 rounded-xl bg-[#00F0FF]/20 border border-[#00F0FF]/50 text-[#00F0FF] hover:bg-[#00F0FF] hover:text-black font-bold text-xs uppercase flex items-center space-x-1 transition-all cursor-pointer"
+                                className="px-3 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs uppercase flex items-center space-x-1 hover:bg-black transition-all cursor-pointer shadow-xs"
                                 title="View/Export Tax Invoice"
                               >
                                 <FileText className="w-3.5 h-3.5" />
@@ -646,7 +544,7 @@ export default function CMSDashboardPage() {
                               </button>
                               <button
                                 onClick={() => deleteOrder(o.id)}
-                                className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 cursor-pointer"
+                                className="p-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 cursor-pointer"
                                 title="Delete Order"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -665,15 +563,15 @@ export default function CMSDashboardPage() {
           {/* TAB 3: PRODUCT CATALOG CRUD */}
           {activeTab === 'products' && (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                  <h2 className="text-xl font-black text-white uppercase">Product Catalog CRUD</h2>
-                  <p className="text-xs text-slate-400">Add, edit, or delete compound listings and custom categories</p>
+                  <h2 className="text-xl font-black text-slate-900 uppercase">Product Catalog CRUD</h2>
+                  <p className="text-xs text-slate-500">Add, edit, or delete compound listings and custom categories</p>
                 </div>
 
                 <button
                   onClick={() => setIsAddingProduct(!isAddingProduct)}
-                  className="glow-pink-btn text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center space-x-2 cursor-pointer"
+                  className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center space-x-2 cursor-pointer shadow-md"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add New Product</span>
@@ -681,143 +579,138 @@ export default function CMSDashboardPage() {
               </div>
 
               {/* Add Custom Category Box */}
-              <div className="bg-[#0F1422] p-4 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3">
-                <span className="text-xs font-bold text-slate-300 shrink-0">Add Category To Dropdown List:</span>
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3 shadow-xs">
+                <span className="text-xs font-bold text-slate-700 shrink-0">Add Category To Dropdown List:</span>
                 <input
                   type="text"
                   placeholder="e.g. Nootropic Compounds..."
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
-                  className="bg-slate-900 text-white text-xs px-3.5 py-2 rounded-xl border border-slate-700 flex-1 focus:outline-none focus:border-[#00F0FF]"
+                  className="bg-slate-50 text-slate-900 text-xs px-3.5 py-2 rounded-xl border border-slate-300 flex-1 focus:outline-none focus:border-slate-900"
                 />
                 <button
                   type="button"
                   onClick={handleAddCategory}
-                  className="glow-cyan-btn text-black font-bold text-xs px-4 py-2 rounded-xl cursor-pointer"
+                  className="bg-slate-900 text-white font-bold text-xs px-4 py-2 rounded-xl cursor-pointer"
                 >
                   Add Category
                 </button>
               </div>
 
-              {/* Add Product Form Modal / Box */}
+              {/* Add Product Form Box */}
               {isAddingProduct && (
-                <form onSubmit={handleCreateProductSubmit} className="bg-[#0F1422] p-6 sm:p-8 rounded-3xl border border-[#FF007A]/40 space-y-4 shadow-2xl">
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">New Product Configuration</h3>
+                <form onSubmit={handleCreateProductSubmit} className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-300 space-y-4 shadow-xl text-slate-900">
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-2">New Product Configuration</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Product Title *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Product Title *</label>
                       <input
                         type="text"
                         required
                         placeholder="e.g. BPC-157 5mg Vial"
                         value={prodTitle}
                         onChange={(e) => setProdTitle(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#FF007A]"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-slate-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Image URL Link (Cloudinary, AWS, Unsplash) *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Image URL Link (Cloudinary, AWS, Unsplash) *</label>
                       <input
                         type="text"
                         required
                         placeholder="https://..."
                         value={prodImage}
                         onChange={(e) => setProdImage(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#00F0FF]"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-slate-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Original Price (AUD) *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Original Price (AUD) *</label>
                       <input
                         type="number"
                         required
                         value={prodPrice}
                         onChange={(e) => setProdPrice(Number(e.target.value))}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Discounted Price (AUD)</label>
+                      <label className="block text-slate-700 font-bold mb-1">Discounted Price (AUD)</label>
                       <input
                         type="number"
                         value={prodDiscountPrice}
                         onChange={(e) => setProdDiscountPrice(Number(e.target.value))}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none"
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <label className="block text-slate-300 font-bold mb-1">Product Description & Technical Notes</label>
+                      <label className="block text-slate-700 font-bold mb-1">Product Description & Technical Notes</label>
                       <textarea
                         rows={3}
                         placeholder="Detailed compound research notes, purity level, usage specs..."
                         value={prodDesc}
                         onChange={(e) => setProdDesc(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-[#00F0FF]"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-slate-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Category Dropdown *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Category Dropdown *</label>
                       <select
                         value={prodCategory}
                         onChange={(e) => setProdCategory(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white cursor-pointer"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none cursor-pointer"
                       >
                         {siteSettings.categories.map((c) => (
-                          <option key={c} value={c}>{c}</option>
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Type Flag (Home Page Display) *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Product Display Type *</label>
                       <select
                         value={prodType}
                         onChange={(e: any) => setProdType(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white cursor-pointer"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none cursor-pointer"
                       >
-                        <option value="best_sell">Best Sale Section</option>
-                        <option value="featured">Featured Section</option>
+                        <option value="best_sell">Best Sale (Top Badge)</option>
+                        <option value="featured">Featured Product</option>
                         <option value="standard">Standard Catalog</option>
                       </select>
                     </div>
                   </div>
                   <div className="flex space-x-3 pt-2">
-                    <button
-                      type="submit"
-                      className="glow-pink-btn text-white font-bold text-xs py-3 px-6 rounded-xl cursor-pointer"
-                    >
-                      Save Product to Catalog
+                    <button type="submit" className="bg-slate-900 hover:bg-black text-white font-bold text-xs py-3 px-6 rounded-xl cursor-pointer shadow-md">
+                      Save & Publish Product
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsAddingProduct(false)}
-                      className="px-4 py-3 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs cursor-pointer"
-                    >
+                    <button type="button" onClick={() => setIsAddingProduct(false)} className="px-4 py-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold border border-slate-300">
                       Cancel
                     </button>
                   </div>
                 </form>
               )}
 
-              {/* Table */}
-              <div className="border border-slate-800 rounded-2xl overflow-hidden bg-[#0F1422] shadow-xl">
+              {/* Product Catalog Table */}
+              <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-900 text-slate-200 uppercase font-bold border-b border-slate-800">
+                  <thead className="bg-slate-900 text-white uppercase font-bold border-b border-slate-300">
                     <tr>
                       <th className="p-4">Title</th>
                       <th className="p-4">Category</th>
-                      <th className="p-4">Price / Disc</th>
-                      <th className="p-4">Type Flag</th>
+                      <th className="p-4">Price</th>
+                      <th className="p-4">Type</th>
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                  <tbody className="divide-y divide-slate-200 text-slate-900">
                     {products.map((p) => (
-                      <tr key={p.id} className="hover:bg-slate-800/40">
-                        <td className="p-4 font-bold text-white text-sm">{p.title}</td>
-                        <td className="p-4 text-[#00F0FF] font-bold">{p.category}</td>
-                        <td className="p-4 font-mono text-sm">{formatAUD(p.discountedPrice || p.price)}</td>
+                      <tr key={p.id} className="hover:bg-slate-50">
+                        <td className="p-4 font-bold text-slate-900 text-sm">{p.title}</td>
+                        <td className="p-4 text-slate-700 font-bold">{p.category}</td>
+                        <td className="p-4 font-mono text-sm font-bold">{formatAUD(p.discountedPrice || p.price)}</td>
                         <td className="p-4 uppercase text-[10px] font-bold">
-                          <span className="px-2.5 py-1 rounded-md bg-[#FF007A]/20 border border-[#FF007A]/40 text-[#FF007A]">
+                          <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-300 text-slate-900">
                             {p.type}
                           </span>
                         </td>
@@ -825,21 +718,21 @@ export default function CMSDashboardPage() {
                           <div className="flex items-center justify-end space-x-2">
                             <button
                               onClick={() => setViewingProduct(p)}
-                              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
-                              title="View Compound Details"
+                              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer"
+                              title="View Details"
                             >
                               <Eye className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => setEditingProduct(p)}
-                              className="p-2 rounded-xl bg-white/5 hover:bg-[#00F0FF]/20 text-[#00F0FF] cursor-pointer"
+                              className="p-2 rounded-xl bg-slate-900 text-white hover:bg-black cursor-pointer"
                               title="Edit Compound"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => deleteProduct(p.id)}
-                              className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 cursor-pointer"
+                              className="p-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 cursor-pointer"
                               title="Delete Product"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -854,17 +747,17 @@ export default function CMSDashboardPage() {
             </div>
           )}
 
-          {/* TAB: CERTIFICATE OF ANALYSIS (COA) MANAGEMENT */}
+          {/* TAB: COA MANAGEMENT */}
           {activeTab === 'coas' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
-                  <h2 className="text-xl font-black text-white uppercase">Certificate of Analysis (COA) Management</h2>
-                  <p className="text-xs text-slate-400">Add, view, and manage HPLC mass spec laboratory report documents</p>
+                  <h2 className="text-xl font-black text-slate-900 uppercase">COA Reports Management</h2>
+                  <p className="text-xs text-slate-500">Add, view, and manage HPLC mass spec laboratory report documents</p>
                 </div>
                 <button
                   onClick={() => setIsAddingCOA(!isAddingCOA)}
-                  className="glow-pink-btn text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center space-x-2 cursor-pointer"
+                  className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center space-x-2 cursor-pointer shadow-md"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add New COA Report</span>
@@ -888,58 +781,58 @@ export default function CMSDashboardPage() {
                     setCoaTitle('');
                     setCoaImage('');
                   }}
-                  className="bg-[#0F1422] p-6 sm:p-8 rounded-3xl border border-[#FF007A]/40 space-y-4 shadow-2xl"
+                  className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-300 space-y-4 shadow-xl text-slate-900"
                 >
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">New COA Report Document</h3>
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-2">New COA Report Document</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Compound Product Title *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Compound Product Title *</label>
                       <input
                         type="text"
                         required
                         placeholder="e.g. BPC-157 5mg High Purity"
                         value={coaTitle}
                         onChange={(e) => setCoaTitle(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Batch Number *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Batch Number *</label>
                       <input
                         type="text"
                         required
                         value={coaBatch}
                         onChange={(e) => setCoaBatch(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Purity Percentage *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Purity Percentage *</label>
                       <input
                         type="text"
                         required
                         value={coaPurity}
                         onChange={(e) => setCoaPurity(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Report Image URL (Cloudinary, AWS) *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Report Image URL (Cloudinary, AWS) *</label>
                       <input
                         type="text"
                         required
                         placeholder="https://..."
                         value={coaImage}
                         onChange={(e) => setCoaImage(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900"
                       />
                     </div>
                   </div>
                   <div className="flex space-x-3 pt-2">
-                    <button type="submit" className="glow-pink-btn text-white font-bold text-xs py-3 px-6 rounded-xl cursor-pointer">
+                    <button type="submit" className="bg-slate-900 hover:bg-black text-white font-bold text-xs py-3 px-6 rounded-xl cursor-pointer">
                       Save COA Document
                     </button>
-                    <button type="button" onClick={() => setIsAddingCOA(false)} className="px-4 py-3 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">
+                    <button type="button" onClick={() => setIsAddingCOA(false)} className="px-4 py-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold border border-slate-300">
                       Cancel
                     </button>
                   </div>
@@ -947,9 +840,9 @@ export default function CMSDashboardPage() {
               )}
 
               {/* COA Table */}
-              <div className="border border-slate-800 rounded-2xl overflow-hidden bg-[#0F1422] shadow-xl">
+              <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-900 text-slate-200 uppercase font-bold border-b border-slate-800">
+                  <thead className="bg-slate-900 text-white uppercase font-bold border-b border-slate-300">
                     <tr>
                       <th className="p-4">Compound Title</th>
                       <th className="p-4">Batch Number</th>
@@ -958,15 +851,15 @@ export default function CMSDashboardPage() {
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                  <tbody className="divide-y divide-slate-200 text-slate-900">
                     {coas.map((c) => (
-                      <tr key={c.id} className="hover:bg-slate-800/40">
-                        <td className="p-4 font-bold text-white text-sm">{c.productTitle}</td>
-                        <td className="p-4 font-mono text-[#00F0FF]">{c.batchNumber}</td>
-                        <td className="p-4 font-bold text-emerald-400">{c.purity}</td>
-                        <td className="p-4 text-slate-400">{c.date}</td>
+                      <tr key={c.id} className="hover:bg-slate-50">
+                        <td className="p-4 font-bold text-slate-900 text-sm">{c.productTitle}</td>
+                        <td className="p-4 font-mono font-bold text-slate-900">{c.batchNumber}</td>
+                        <td className="p-4 font-bold text-emerald-700">{c.purity}</td>
+                        <td className="p-4 text-slate-600">{c.date}</td>
                         <td className="p-4 text-right">
-                          <button onClick={() => deleteCOA(c.id)} className="p-2 text-slate-400 hover:text-red-400 cursor-pointer">
+                          <button onClick={() => deleteCOA(c.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg cursor-pointer">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </td>
@@ -981,17 +874,17 @@ export default function CMSDashboardPage() {
           {/* TAB: FAQ ACCORDIONS MANAGEMENT */}
           {activeTab === 'faqs' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
-                  <h2 className="text-xl font-black text-white uppercase">FAQ Accordion Management</h2>
-                  <p className="text-xs text-slate-400">Add, edit, or delete customer question & answer items</p>
+                  <h2 className="text-xl font-black text-slate-900 uppercase">FAQ Accordions</h2>
+                  <p className="text-xs text-slate-500">Add, edit, or delete customer question & answer items</p>
                 </div>
                 <button
                   onClick={() => setIsAddingFAQ(!isAddingFAQ)}
-                  className="glow-pink-btn text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center space-x-2 cursor-pointer"
+                  className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center space-x-2 cursor-pointer shadow-md"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Add New FAQ Accordion</span>
+                  <span>Add New FAQ</span>
                 </button>
               </div>
 
@@ -1009,38 +902,38 @@ export default function CMSDashboardPage() {
                     setFaqQuestion('');
                     setFaqAnswer('');
                   }}
-                  className="bg-[#0F1422] p-6 sm:p-8 rounded-3xl border border-[#00F0FF]/40 space-y-4 shadow-2xl"
+                  className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-300 space-y-4 shadow-xl text-slate-900"
                 >
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">New FAQ Item</h3>
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-2">New FAQ Accordion Item</h3>
                   <div className="space-y-3 text-xs">
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Question *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Question *</label>
                       <input
                         type="text"
                         required
                         placeholder="e.g. How are peptides dispatched within Australia?"
                         value={faqQuestion}
                         onChange={(e) => setFaqQuestion(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Answer Content *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Answer Content *</label>
                       <textarea
                         rows={3}
                         required
                         placeholder="Detailed answer text..."
                         value={faqAnswer}
                         onChange={(e) => setFaqAnswer(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Category</label>
+                      <label className="block text-slate-700 font-bold mb-1">Category</label>
                       <select
                         value={faqCategory}
                         onChange={(e) => setFaqCategory(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white cursor-pointer"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 cursor-pointer"
                       >
                         <option value="General">General</option>
                         <option value="Quality & HPLC">Quality & HPLC</option>
@@ -1050,10 +943,10 @@ export default function CMSDashboardPage() {
                     </div>
                   </div>
                   <div className="flex space-x-3 pt-2">
-                    <button type="submit" className="glow-pink-btn text-white font-bold text-xs py-3 px-6 rounded-xl cursor-pointer">
+                    <button type="submit" className="bg-slate-900 hover:bg-black text-white font-bold text-xs py-3 px-6 rounded-xl cursor-pointer">
                       Save FAQ Item
                     </button>
-                    <button type="button" onClick={() => setIsAddingFAQ(false)} className="px-4 py-3 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">
+                    <button type="button" onClick={() => setIsAddingFAQ(false)} className="px-4 py-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold border border-slate-300">
                       Cancel
                     </button>
                   </div>
@@ -1061,26 +954,26 @@ export default function CMSDashboardPage() {
               )}
 
               {/* FAQ Table */}
-              <div className="border border-slate-800 rounded-2xl overflow-hidden bg-[#0F1422] shadow-xl">
+              <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-900 text-slate-200 uppercase font-bold border-b border-slate-800">
+                  <thead className="bg-slate-900 text-white uppercase font-bold border-b border-slate-300">
                     <tr>
                       <th className="p-4">Question</th>
                       <th className="p-4">Category</th>
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                  <tbody className="divide-y divide-slate-200 text-slate-900">
                     {faqs.map((f) => (
-                      <tr key={f.id} className="hover:bg-slate-800/40">
-                        <td className="p-4 font-bold text-white">{f.question}</td>
-                        <td className="p-4 text-[#00F0FF] font-bold">{f.category}</td>
+                      <tr key={f.id} className="hover:bg-slate-50">
+                        <td className="p-4 font-bold text-slate-900">{f.question}</td>
+                        <td className="p-4 text-slate-700 font-bold">{f.category}</td>
                         <td className="p-4 text-right">
                           <div className="flex items-center justify-end space-x-2">
-                            <button onClick={() => setEditingFAQ(f)} className="p-2 rounded-xl bg-white/5 hover:bg-[#00F0FF]/20 text-[#00F0FF] cursor-pointer">
+                            <button onClick={() => setEditingFAQ(f)} className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 cursor-pointer">
                               <Edit className="w-4 h-4" />
                             </button>
-                            <button onClick={() => deleteFAQ(f.id)} className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 cursor-pointer">
+                            <button onClick={() => deleteFAQ(f.id)} className="p-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 cursor-pointer">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
@@ -1095,15 +988,15 @@ export default function CMSDashboardPage() {
 
           {/* TAB: CONTACT US & LOCATION CONFIG */}
           {activeTab === 'contact' && (
-            <div className="bg-[#0F1422] p-8 rounded-3xl border border-slate-800 space-y-6 shadow-xl">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 space-y-6 shadow-sm text-slate-900">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
-                  <h2 className="text-xl font-black text-white uppercase">Contact Details & Map Embed</h2>
-                  <p className="text-xs text-slate-400">Edit support phone, email, address, operating hours, and Google Maps embed</p>
+                  <h2 className="text-xl font-black text-slate-900 uppercase">Contact Details & Map Embed</h2>
+                  <p className="text-xs text-slate-500">Edit support phone, email, address, operating hours, and Google Maps embed</p>
                 </div>
                 <button
                   onClick={handleSaveSettings}
-                  className="glow-pink-btn text-white text-xs font-bold px-6 py-3 rounded-xl cursor-pointer"
+                  className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-6 py-3 rounded-xl cursor-pointer shadow-md"
                 >
                   Save Contact Settings
                 </button>
@@ -1111,48 +1004,48 @@ export default function CMSDashboardPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Support Email Address</label>
+                  <label className="block text-slate-700 font-bold mb-1">Support Email Address</label>
                   <input
                     type="email"
                     value={editableSettings.contactEmail}
                     onChange={(e) => setEditableSettings({ ...editableSettings, contactEmail: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Contact Phone Number</label>
+                  <label className="block text-slate-700 font-bold mb-1">Contact Phone Number</label>
                   <input
                     type="text"
                     value={editableSettings.contactPhone}
                     onChange={(e) => setEditableSettings({ ...editableSettings, contactPhone: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Australian Laboratory Address</label>
+                  <label className="block text-slate-700 font-bold mb-1">Australian Laboratory Address</label>
                   <input
                     type="text"
                     value={editableSettings.address}
                     onChange={(e) => setEditableSettings({ ...editableSettings, address: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Business Operating Hours</label>
+                  <label className="block text-slate-700 font-bold mb-1">Business Operating Hours</label>
                   <input
                     type="text"
                     value={editableSettings.businessHours}
                     onChange={(e) => setEditableSettings({ ...editableSettings, businessHours: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-slate-300 font-bold mb-1">Google Maps Embed URL (iframe src)</label>
+                  <label className="block text-slate-700 font-bold mb-1">Google Maps Embed URL (iframe src)</label>
                   <input
                     type="text"
                     value={editableSettings.mapEmbedUrl}
                     onChange={(e) => setEditableSettings({ ...editableSettings, mapEmbedUrl: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
               </div>
@@ -1162,44 +1055,36 @@ export default function CMSDashboardPage() {
           {/* TAB 4: CUSTOMERS DIRECTORY */}
           {activeTab === 'customers' && (
             <div className="space-y-6">
-              <div className="border-b border-slate-800 pb-4">
-                <h2 className="text-xl font-black text-white uppercase">Customer Directory</h2>
-                <p className="text-xs text-slate-400">Captured automatically during checkout shipping details</p>
+              <div className="border-b border-slate-200 pb-4">
+                <h2 className="text-xl font-black text-slate-900 uppercase">Customer Directory</h2>
+                <p className="text-xs text-slate-500">Captured automatically during checkout shipping details</p>
               </div>
 
               {customers.length === 0 ? (
-                <div className="p-12 text-center rounded-2xl bg-[#0F1422] border border-slate-800 text-slate-400 text-xs">
+                <div className="p-12 text-center rounded-2xl bg-white border border-slate-200 text-slate-500 text-xs">
                   No customer profiles registered yet. Checkout details will populate this directory automatically.
                 </div>
               ) : (
-                <div className="border border-slate-800 rounded-2xl overflow-hidden bg-[#0F1422] shadow-xl">
+                <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-900 text-slate-200 uppercase font-bold border-b border-slate-800">
+                    <thead className="bg-slate-900 text-white uppercase font-bold border-b border-slate-300">
                       <tr>
                         <th className="p-4">Customer Name</th>
-                        <th className="p-4">Contact Info</th>
-                        <th className="p-4">Australian Address</th>
-                        <th className="p-4 text-right">Action</th>
+                        <th className="p-4">Email</th>
+                        <th className="p-4">Phone</th>
+                        <th className="p-4">Location</th>
+                        <th className="p-4 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                    <tbody className="divide-y divide-slate-200 text-slate-900">
                       {customers.map((c) => (
-                        <tr key={c.id} className="hover:bg-slate-800/40">
-                          <td className="p-4 font-bold text-white text-sm">
-                            {c.firstName} {c.lastName}
-                          </td>
-                          <td className="p-4">
-                            <p className="text-white font-bold">{c.email}</p>
-                            <p className="text-slate-400 font-mono">{c.phone}</p>
-                          </td>
-                          <td className="p-4 text-slate-300">
-                            {c.street}, {c.suburb} {c.state} {c.postcode}
-                          </td>
+                        <tr key={c.id} className="hover:bg-slate-50">
+                          <td className="p-4 font-bold text-slate-900 text-sm">{c.firstName} {c.lastName}</td>
+                          <td className="p-4 font-mono font-bold text-slate-900">{c.email}</td>
+                          <td className="p-4 font-mono text-slate-600">{c.phone}</td>
+                          <td className="p-4 text-slate-700">{c.suburb}, {c.state}</td>
                           <td className="p-4 text-right">
-                            <button
-                              onClick={() => deleteCustomer(c.id)}
-                              className="p-2 text-slate-400 hover:text-red-400 cursor-pointer"
-                            >
+                            <button onClick={() => deleteCustomer(c.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg cursor-pointer">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </td>
@@ -1212,54 +1097,49 @@ export default function CMSDashboardPage() {
             </div>
           )}
 
-          {/* TAB 5: LEADS & CALLBACK REQUESTS */}
+          {/* TAB 5: LEADS & CALLBACK DESK */}
           {activeTab === 'leads' && (
             <div className="space-y-6">
-              <div className="border-b border-slate-800 pb-4">
-                <h2 className="text-xl font-black text-white uppercase">Leads & Callback Requests</h2>
-                <p className="text-xs text-slate-400">Captured from Request Call modal and Contact Us form</p>
+              <div className="border-b border-slate-200 pb-4">
+                <h2 className="text-xl font-black text-slate-900 uppercase">Leads & Callback Desk</h2>
+                <p className="text-xs text-slate-500">Inbound requests submitted via "Request Call Back" button</p>
               </div>
 
               {leads.length === 0 ? (
-                <div className="p-12 text-center rounded-2xl bg-[#0F1422] border border-slate-800 text-slate-400 text-xs">
-                  No inquiries or callback leads submitted yet. Form submissions will appear here in real-time.
+                <div className="p-12 text-center rounded-2xl bg-white border border-slate-200 text-slate-500 text-xs">
+                  No callback requests submitted yet.
                 </div>
               ) : (
-                <div className="border border-slate-800 rounded-2xl overflow-hidden bg-[#0F1422] shadow-xl">
+                <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-900 text-slate-200 uppercase font-bold border-b border-slate-800">
+                    <thead className="bg-slate-900 text-white uppercase font-bold border-b border-slate-300">
                       <tr>
-                        <th className="p-4">Lead Name</th>
-                        <th className="p-4">Phone / Email</th>
-                        <th className="p-4">Source</th>
-                        <th className="p-4">Message</th>
+                        <th className="p-4">Name</th>
+                        <th className="p-4">Phone Number</th>
+                        <th className="p-4">Preferred Time</th>
                         <th className="p-4">Status</th>
-                        <th className="p-4 text-right">Action</th>
+                        <th className="p-4 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                    <tbody className="divide-y divide-slate-200 text-slate-900">
                       {leads.map((l) => (
-                        <tr key={l.id} className="hover:bg-slate-800/40">
-                          <td className="p-4 font-bold text-white text-sm">{l.name}</td>
-                          <td className="p-4 font-mono">
-                            <div className="text-white font-bold">{l.phone}</div>
-                            <div className="text-slate-400">{l.email}</div>
-                          </td>
-                          <td className="p-4 font-bold text-[#00F0FF] uppercase text-[10px]">{l.source}</td>
-                          <td className="p-4 text-slate-300 max-w-xs truncate">{l.message || 'Callback requested'}</td>
+                        <tr key={l.id} className="hover:bg-slate-50">
+                          <td className="p-4 font-bold text-slate-900 text-sm">{l.name}</td>
+                          <td className="p-4 font-mono font-bold text-slate-900">{l.phone}</td>
+                          <td className="p-4 text-slate-700">{l.message || 'Callback Request'}</td>
                           <td className="p-4">
                             <select
                               value={l.status}
                               onChange={(e: any) => updateLeadStatus(l.id, e.target.value)}
-                              className="bg-slate-900 text-white text-xs px-3 py-1.5 rounded-xl border border-slate-700 cursor-pointer font-bold"
+                              className="bg-slate-50 text-slate-900 text-xs px-3 py-1.5 rounded-xl border border-slate-300 font-bold cursor-pointer"
                             >
                               <option value="new">New</option>
                               <option value="contacted">Contacted</option>
-                              <option value="resolved">Resolved</option>
+                              <option value="closed">Closed</option>
                             </select>
                           </td>
                           <td className="p-4 text-right">
-                            <button onClick={() => deleteLead(l.id)} className="p-2 text-slate-400 hover:text-red-400 cursor-pointer">
+                            <button onClick={() => deleteLead(l.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg cursor-pointer">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </td>
@@ -1275,103 +1155,111 @@ export default function CMSDashboardPage() {
           {/* TAB 6: PROMO CODE GENERATOR */}
           {activeTab === 'promos' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
-                  <h2 className="text-xl font-black text-white uppercase">Promo Code Generator</h2>
-                  <p className="text-xs text-slate-400">Generate discount codes with usage limits and active toggles</p>
+                  <h2 className="text-xl font-black text-slate-900 uppercase">Promo Code Generator</h2>
+                  <p className="text-xs text-slate-500">Create discount coupons for checkout validation</p>
                 </div>
                 <button
                   onClick={() => setIsAddingPromo(!isAddingPromo)}
-                  className="glow-pink-btn text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 cursor-pointer"
+                  className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-5 py-2.5 rounded-xl flex items-center space-x-2 cursor-pointer shadow-md"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Create Code</span>
+                  <span>Create Promo Code</span>
                 </button>
               </div>
 
+              {/* Add Promo Code Form */}
               {isAddingPromo && (
-                <form onSubmit={handleCreatePromoSubmit} className="bg-[#0F1422] p-6 rounded-2xl border border-[#FF007A]/40 space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+                <form onSubmit={handleCreatePromoSubmit} className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-300 space-y-4 shadow-xl text-slate-900">
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-2">New Coupon Code</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Code Name *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Coupon Code (Uppercase) *</label>
                       <input
                         type="text"
                         required
                         placeholder="e.g. STRAYA20"
                         value={promoCodeName}
-                        onChange={(e) => setPromoCodeName(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white uppercase"
+                        onChange={(e) => setPromoCodeName(e.target.value.toUpperCase())}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 font-mono"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Discount Type *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Discount Type *</label>
                       <select
                         value={promoType}
                         onChange={(e: any) => setPromoType(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white cursor-pointer"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 cursor-pointer"
                       >
-                        <option value="percentage">Percentage (%) Off</option>
-                        <option value="fixed">Fixed Amount ($ AUD) Off</option>
+                        <option value="percentage">Percentage (%)</option>
+                        <option value="fixed">Fixed Amount (AUD $)</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Value (% or $) *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Discount Value *</label>
                       <input
                         type="number"
                         required
                         value={promoValue}
                         onChange={(e) => setPromoValue(Number(e.target.value))}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-bold mb-1">Usage Limit *</label>
+                      <label className="block text-slate-700 font-bold mb-1">Max Usages Limit *</label>
                       <input
                         type="number"
                         required
                         value={promoMaxUsage}
                         onChange={(e) => setPromoMaxUsage(Number(e.target.value))}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900"
                       />
                     </div>
                   </div>
-                  <button type="submit" className="glow-pink-btn text-white text-xs font-bold py-2.5 px-6 rounded-xl cursor-pointer">
-                    Save Code
-                  </button>
+                  <div className="flex space-x-3 pt-2">
+                    <button type="submit" className="bg-slate-900 hover:bg-black text-white font-bold text-xs py-3 px-6 rounded-xl cursor-pointer">
+                      Activate Coupon
+                    </button>
+                    <button type="button" onClick={() => setIsAddingPromo(false)} className="px-4 py-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold border border-slate-300">
+                      Cancel
+                    </button>
+                  </div>
                 </form>
               )}
 
-              <div className="border border-slate-800 rounded-2xl overflow-hidden bg-[#0F1422] shadow-xl">
+              {/* Promo Code Table */}
+              <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-900 text-slate-200 uppercase font-bold border-b border-slate-800">
+                  <thead className="bg-slate-900 text-white uppercase font-bold border-b border-slate-300">
                     <tr>
-                      <th className="p-4">Code</th>
+                      <th className="p-4">Coupon Code</th>
                       <th className="p-4">Discount</th>
-                      <th className="p-4">Usage (Used / Limit)</th>
+                      <th className="p-4">Used Count</th>
                       <th className="p-4">Status</th>
-                      <th className="p-4 text-right">Action</th>
+                      <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/80 text-slate-200">
+                  <tbody className="divide-y divide-slate-200 text-slate-900">
                     {promoCodes.map((p) => (
-                      <tr key={p.id} className="hover:bg-slate-800/40">
-                        <td className="p-4 font-mono font-bold text-[#00F0FF] text-sm">{p.code}</td>
-                        <td className="p-4 font-bold text-white">
-                          {p.discountType === 'percentage' ? `${p.discountValue}%` : formatAUD(p.discountValue)}
+                      <tr key={p.id} className="hover:bg-slate-50">
+                        <td className="p-4 font-mono font-bold text-slate-900 text-sm">{p.code}</td>
+                        <td className="p-4 font-bold text-slate-700">
+                          {p.discountType === 'percentage' ? `${p.discountValue}% OFF` : `$${p.discountValue} OFF`}
                         </td>
-                        <td className="p-4 font-mono">{p.usedCount} / {p.maxUsage}</td>
+                        <td className="p-4 font-mono text-slate-600">{p.usedCount} / {p.maxUsage}</td>
                         <td className="p-4">
                           <button
                             onClick={() => togglePromoCode(p.id, !p.active)}
-                            className={`px-3 py-1 rounded-full text-[10px] font-bold cursor-pointer ${
-                              p.active ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-red-950 text-red-400 border border-red-800'
+                            className={`px-3 py-1 rounded-xl text-xs font-bold cursor-pointer ${
+                              p.active ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-600 border border-slate-300'
                             }`}
                           >
                             {p.active ? 'ACTIVE' : 'INACTIVE'}
                           </button>
                         </td>
                         <td className="p-4 text-right">
-                          <button onClick={() => deletePromoCode(p.id)} className="p-2 text-slate-400 hover:text-red-400 cursor-pointer">
+                          <button onClick={() => deletePromoCode(p.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg cursor-pointer">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </td>
@@ -1385,15 +1273,15 @@ export default function CMSDashboardPage() {
 
           {/* TAB 7: SITE SETTINGS & BANK CONFIG */}
           {activeTab === 'settings' && (
-            <div className="bg-[#0F1422] p-8 rounded-3xl border border-slate-800 space-y-6 shadow-xl">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 space-y-6 shadow-sm text-slate-900">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
-                  <h2 className="text-xl font-black text-white uppercase">Site Configuration & Bank Info</h2>
-                  <p className="text-xs text-slate-400">Edit branding links, bank transfer details, and contact info</p>
+                  <h2 className="text-xl font-black text-slate-900 uppercase">Site Configuration & Bank Info</h2>
+                  <p className="text-xs text-slate-500">Edit branding links, bank transfer details, and contact info</p>
                 </div>
                 <button
                   onClick={handleSaveSettings}
-                  className="glow-pink-btn text-white text-xs font-bold px-6 py-3 rounded-xl cursor-pointer"
+                  className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-6 py-3 rounded-xl cursor-pointer shadow-md"
                 >
                   Save Settings
                 </button>
@@ -1401,177 +1289,117 @@ export default function CMSDashboardPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Logo Image Link (URL)</label>
+                  <label className="block text-slate-700 font-bold mb-1">Logo Image Link (URL)</label>
                   <input
                     type="text"
                     value={editableSettings.logoUrl}
                     onChange={(e) => setEditableSettings({ ...editableSettings, logoUrl: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-[#00F0FF]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Intro Loader Video Duration in Seconds (e.g. 2.46 or 3.5)</label>
+                  <label className="block text-slate-700 font-bold mb-1">Intro Loader Video Duration in Seconds (e.g. 2.46 or 3.5)</label>
                   <input
                     type="number"
                     step="0.01"
                     value={editableSettings.welcomingVideoDurationSec || 3.0}
                     onChange={(e) => setEditableSettings({ ...editableSettings, welcomingVideoDurationSec: parseFloat(e.target.value) || 3.0 })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-[#00F0FF]"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
 
-                <div className="md:col-span-2">
-                  <label className="block text-slate-300 font-bold mb-1">Top Banner Announcement Text</label>
+                <div className="md:col-span-2 pt-4 border-t border-slate-200">
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Australian Bank Transfer / PayID Details</h3>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Bank Name</label>
                   <input
                     type="text"
-                    value={editableSettings.topBannerText}
-                    onChange={(e) => setEditableSettings({ ...editableSettings, topBannerText: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-[#FF007A]"
+                    value={editableSettings.bankInfo?.bankName || ''}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, bankInfo: { ...editableSettings.bankInfo, bankName: e.target.value } })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Hero Media Type</label>
-                  <select
-                    value={editableSettings.heroMediaType}
-                    onChange={(e: any) => setEditableSettings({ ...editableSettings, heroMediaType: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white cursor-pointer font-bold"
-                  >
-                    <option value="video">Video Loop (.mp4)</option>
-                    <option value="image">Background Image</option>
-                  </select>
+                  <label className="block text-slate-700 font-bold mb-1">Account Name</label>
+                  <input
+                    type="text"
+                    value={editableSettings.bankInfo?.accountName || ''}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, bankInfo: { ...editableSettings.bankInfo, accountName: e.target.value } })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Hero Media Link (Cloudinary, AWS, etc.)</label>
+                  <label className="block text-slate-700 font-bold mb-1">BSB Number</label>
                   <input
                     type="text"
-                    value={editableSettings.heroMediaUrl}
-                    onChange={(e) => setEditableSettings({ ...editableSettings, heroMediaUrl: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                    value={editableSettings.bankInfo?.bsb || ''}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, bankInfo: { ...editableSettings.bankInfo, bsb: e.target.value } })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Account Number</label>
+                  <input
+                    type="text"
+                    value={editableSettings.bankInfo?.accountNumber || ''}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, bankInfo: { ...editableSettings.bankInfo, accountNumber: e.target.value } })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 font-mono"
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-slate-300 font-bold mb-1">Hero Section Title</label>
+                  <label className="block text-slate-700 font-bold mb-1">PayID Identifier (Email or Phone)</label>
                   <input
                     type="text"
-                    value={editableSettings.heroTitle}
-                    onChange={(e) => setEditableSettings({ ...editableSettings, heroTitle: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                    value={editableSettings.bankInfo?.payId || ''}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, bankInfo: { ...editableSettings.bankInfo, payId: e.target.value } })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 font-mono"
                   />
-                </div>
-
-                {/* Bank Information Sub-Section */}
-                <div className="md:col-span-2 p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4 pt-4">
-                  <h3 className="text-sm font-black text-[#00F0FF] uppercase tracking-wider">Bank Transfer & PayID Config</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                    <div>
-                      <label className="block text-slate-300 font-bold mb-1">Bank Name</label>
-                      <input
-                        type="text"
-                        value={editableSettings.bankInfo.bankName}
-                        onChange={(e) => setEditableSettings({
-                          ...editableSettings,
-                          bankInfo: { ...editableSettings.bankInfo, bankName: e.target.value }
-                        })}
-                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-slate-300 font-bold mb-1">Account Name</label>
-                      <input
-                        type="text"
-                        value={editableSettings.bankInfo.accountName}
-                        onChange={(e) => setEditableSettings({
-                          ...editableSettings,
-                          bankInfo: { ...editableSettings.bankInfo, accountName: e.target.value }
-                        })}
-                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-slate-300 font-bold mb-1">BSB Number</label>
-                      <input
-                        type="text"
-                        value={editableSettings.bankInfo.bsb}
-                        onChange={(e) => setEditableSettings({
-                          ...editableSettings,
-                          bankInfo: { ...editableSettings.bankInfo, bsb: e.target.value }
-                        })}
-                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-mono"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-slate-300 font-bold mb-1">Account Number</label>
-                      <input
-                        type="text"
-                        value={editableSettings.bankInfo.accountNumber}
-                        onChange={(e) => setEditableSettings({
-                          ...editableSettings,
-                          bankInfo: { ...editableSettings.bankInfo, accountNumber: e.target.value }
-                        })}
-                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-mono"
-                      />
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="block text-slate-300 font-bold mb-1">PayID Email</label>
-                      <input
-                        type="text"
-                        value={editableSettings.bankInfo.payId}
-                        onChange={(e) => setEditableSettings({
-                          ...editableSettings,
-                          bankInfo: { ...editableSettings.bankInfo, payId: e.target.value }
-                        })}
-                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-mono"
-                      />
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB 8: SEO & METADATA MANAGER */}
+          {/* TAB 8: SEO & METADATA CONFIG */}
           {activeTab === 'seo' && (
-            <div className="bg-[#0F1422] p-8 rounded-3xl border border-slate-800 space-y-6 shadow-xl">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 space-y-6 shadow-sm text-slate-900">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
                 <div>
-                  <h2 className="text-xl font-black text-white uppercase">SEO & Metadata Manager</h2>
-                  <p className="text-xs text-slate-400">Configure search engine titles, descriptions, and index keywords</p>
+                  <h2 className="text-xl font-black text-slate-900 uppercase">SEO & Open Graph Metadata</h2>
+                  <p className="text-xs text-slate-500">Edit page titles, meta descriptions, and social preview cards</p>
                 </div>
-                <button onClick={handleSaveSettings} className="glow-pink-btn text-white text-xs font-bold px-6 py-3 rounded-xl cursor-pointer">
-                  Save Meta Data
+                <button
+                  onClick={handleSaveSettings}
+                  className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-6 py-3 rounded-xl cursor-pointer shadow-md"
+                >
+                  Save SEO Config
                 </button>
               </div>
 
               <div className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">SEO Title Tag</label>
+                  <label className="block text-slate-700 font-bold mb-1">Meta Title Tag</label>
                   <input
                     type="text"
-                    value={editableSettings.seoTitle}
+                    value={editableSettings.seoTitle || ''}
                     onChange={(e) => setEditableSettings({ ...editableSettings, seoTitle: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Meta Description</label>
+                  <label className="block text-slate-700 font-bold mb-1">Meta Description</label>
                   <textarea
                     rows={3}
-                    value={editableSettings.seoMetaDescription}
+                    value={editableSettings.seoMetaDescription || ''}
                     onChange={(e) => setEditableSettings({ ...editableSettings, seoMetaDescription: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-300 font-bold mb-1">SEO Keywords</label>
-                  <input
-                    type="text"
-                    value={editableSettings.seoKeywords}
-                    onChange={(e) => setEditableSettings({ ...editableSettings, seoKeywords: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
               </div>
@@ -1580,49 +1408,43 @@ export default function CMSDashboardPage() {
         </div>
       </div>
 
-      {/* Invoice Modal Exporter */}
-      {selectedOrderForInvoice && (
-        <InvoiceModal
-          order={selectedOrderForInvoice}
-          isOpen={isInvoiceOpen}
-          onClose={() => {
-            setIsInvoiceOpen(false);
-            setSelectedOrderForInvoice(null);
-          }}
-        />
-      )}
-
       {/* View Order Details Modal */}
       {viewingOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
-          <div className="bg-[#0F1422] border border-slate-800 rounded-3xl p-6 max-w-xl w-full text-white space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h3 className="text-lg font-bold uppercase text-[#FF007A]">Order Details: {viewingOrder.id}</h3>
-              <button onClick={() => setViewingOrder(null)} className="p-2 text-slate-400 hover:text-white cursor-pointer">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
+          <div className="bg-white border border-slate-300 rounded-3xl p-6 max-w-lg w-full text-slate-900 space-y-4 shadow-2xl">
+            <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+              <div>
+                <span className="text-[10px] text-[#FF007A] font-bold uppercase font-mono">ORDER DETAILS</span>
+                <h3 className="text-lg font-black font-mono text-slate-900">{viewingOrder.id}</h3>
+              </div>
+              <button onClick={() => setViewingOrder(null)} className="p-2 text-slate-400 hover:text-black cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="text-xs space-y-2 text-slate-300">
-              <p><strong>Customer:</strong> {viewingOrder.customer.firstName} {viewingOrder.customer.lastName} ({viewingOrder.customer.email})</p>
-              <p><strong>Phone:</strong> {viewingOrder.customer.phone}</p>
-              <p><strong>Shipping:</strong> {viewingOrder.customer.address.street}, {viewingOrder.customer.address.suburb} {viewingOrder.customer.address.state} {viewingOrder.customer.address.postcode}</p>
-              <p><strong>Payment Status:</strong> <span className="uppercase text-emerald-400 font-bold">{viewingOrder.paymentStatus}</span></p>
-              <p><strong>Delivery Stage:</strong> <span className="uppercase text-[#00F0FF] font-bold">{viewingOrder.deliveryStatus}</span></p>
-            </div>
-            <div className="border-t border-slate-800 pt-3">
-              <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Ordered Compounds:</h4>
-              <div className="space-y-1 text-xs">
-                {viewingOrder.items.map(({ product, quantity }) => (
-                  <div key={product.id} className="flex justify-between p-2 rounded-lg bg-slate-900">
-                    <span>{product.title} (x{quantity})</span>
-                    <span className="font-mono text-white">{formatAUD((product.discountedPrice || product.price) * quantity)}</span>
-                  </div>
-                ))}
+            <div className="space-y-3 text-xs">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
+                <p><strong>Customer:</strong> {viewingOrder.customer?.firstName || 'Guest'} {viewingOrder.customer?.lastName || ''}</p>
+                <p><strong>Email:</strong> {viewingOrder.customer?.email || 'N/A'}</p>
+                <p><strong>Phone:</strong> {viewingOrder.customer?.phone || 'N/A'}</p>
+                <p><strong>Address:</strong> {viewingOrder.customer?.address?.street || 'N/A'}, {viewingOrder.customer?.address?.suburb || ''} {viewingOrder.customer?.address?.state || ''} {viewingOrder.customer?.address?.postcode || ''}</p>
               </div>
-            </div>
-            <div className="flex justify-between font-bold text-sm border-t border-slate-800 pt-3">
-              <span>Total AUD:</span>
-              <span className="font-mono text-[#FF007A]">{formatAUD(viewingOrder.totalAmount)}</span>
+
+              <div>
+                <p className="font-bold mb-1">Ordered Items:</p>
+                <div className="space-y-1">
+                  {viewingOrder.items.map((item, idx) => (
+                    <div key={idx} className="flex justify-between bg-slate-100 p-2 rounded-lg text-slate-900 font-bold">
+                      <span>{item.quantity}x {item.product.title}</span>
+                      <span className="font-mono">{formatAUD((item.product.discountedPrice || item.product.price) * item.quantity)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-between border-t border-slate-200 pt-2 text-sm font-black">
+                <span>Total AUD Due:</span>
+                <span className="text-[#FF007A] font-mono">{formatAUD(viewingOrder.totalAmount)}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1630,88 +1452,73 @@ export default function CMSDashboardPage() {
 
       {/* Edit Product Modal */}
       {editingProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               updateProduct(editingProduct.id, editingProduct);
               setEditingProduct(null);
             }}
-            className="bg-[#0F1422] border border-[#00F0FF]/40 rounded-3xl p-6 sm:p-8 max-w-xl w-full text-white space-y-4 shadow-2xl"
+            className="bg-white border border-slate-300 rounded-3xl p-6 max-w-xl w-full text-slate-900 space-y-4 shadow-2xl"
           >
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h3 className="text-lg font-bold uppercase text-[#00F0FF]">Edit Product: {editingProduct.title}</h3>
-              <button type="button" onClick={() => setEditingProduct(null)} className="p-2 text-slate-400 hover:text-white cursor-pointer">
+            <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+              <h3 className="text-lg font-bold uppercase text-slate-900">Edit Product: {editingProduct.title}</h3>
+              <button type="button" onClick={() => setEditingProduct(null)} className="p-2 text-slate-400 hover:text-black cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-bold mb-1">Title</label>
+                <label className="block text-slate-700 font-bold mb-1">Title</label>
                 <input
                   type="text"
                   value={editingProduct.title}
                   onChange={(e) => setEditingProduct({ ...editingProduct, title: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
                 />
               </div>
               <div>
-                <label className="block text-slate-300 font-bold mb-1">Image URL</label>
+                <label className="block text-slate-700 font-bold mb-1">Image Link</label>
                 <input
                   type="text"
                   value={editingProduct.images[0] || ''}
                   onChange={(e) => setEditingProduct({ ...editingProduct, images: [e.target.value] })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
                 />
               </div>
               <div>
-                <label className="block text-slate-300 font-bold mb-1">Original Price ($)</label>
+                <label className="block text-slate-700 font-bold mb-1">Original Price (AUD)</label>
                 <input
                   type="number"
                   value={editingProduct.price}
                   onChange={(e) => setEditingProduct({ ...editingProduct, price: Number(e.target.value) })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
                 />
               </div>
               <div>
-                <label className="block text-slate-300 font-bold mb-1">Discounted Price ($)</label>
+                <label className="block text-slate-700 font-bold mb-1">Discounted Price (AUD)</label>
                 <input
                   type="number"
-                  value={editingProduct.discountedPrice || 0}
+                  value={editingProduct.discountedPrice || editingProduct.price}
                   onChange={(e) => setEditingProduct({ ...editingProduct, discountedPrice: Number(e.target.value) })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
                 />
               </div>
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Category</label>
-                <select
-                  value={editingProduct.category}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white cursor-pointer"
-                >
-                  {siteSettings.categories.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-slate-300 font-bold mb-1">Type Flag</label>
-                <select
-                  value={editingProduct.type}
-                  onChange={(e: any) => setEditingProduct({ ...editingProduct, type: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white cursor-pointer"
-                >
-                  <option value="best_sell">Best Sale</option>
-                  <option value="featured">Featured</option>
-                  <option value="standard">Standard Catalog</option>
-                </select>
+              <div className="sm:col-span-2">
+                <label className="block text-slate-700 font-bold mb-1">Description & Notes</label>
+                <textarea
+                  rows={3}
+                  value={editingProduct.description || ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                />
               </div>
             </div>
-            <div className="flex justify-end space-x-3 pt-3 border-t border-slate-800">
-              <button type="button" onClick={() => setEditingProduct(null)} className="px-4 py-2 bg-slate-800 text-xs rounded-xl font-bold">
+            <div className="flex justify-end space-x-3 pt-3 border-t border-slate-200">
+              <button type="button" onClick={() => setEditingProduct(null)} className="px-4 py-2 bg-slate-100 text-slate-700 text-xs rounded-xl font-bold border border-slate-300">
                 Cancel
               </button>
-              <button type="submit" className="glow-pink-btn text-white text-xs px-6 py-2 rounded-xl font-bold cursor-pointer">
+              <button type="submit" className="bg-slate-900 hover:bg-black text-white text-xs px-6 py-2 rounded-xl font-bold cursor-pointer">
                 Save Changes
               </button>
             </div>
@@ -1721,69 +1528,70 @@ export default function CMSDashboardPage() {
 
       {/* View Product Details Modal */}
       {viewingProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
-          <div className="bg-[#0F1422] border border-slate-800 rounded-3xl p-6 max-w-md w-full text-white space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h3 className="text-lg font-bold text-white uppercase">{viewingProduct.title}</h3>
-              <button onClick={() => setViewingProduct(null)} className="p-2 text-slate-400 hover:text-white cursor-pointer">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
+          <div className="bg-white border border-slate-300 rounded-3xl p-6 max-w-md w-full text-slate-900 space-y-4 shadow-2xl">
+            <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+              <h3 className="text-lg font-bold text-slate-900 uppercase">{viewingProduct.title}</h3>
+              <button onClick={() => setViewingProduct(null)} className="p-2 text-slate-400 hover:text-black cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-800">
+            <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={viewingProduct.images[0] || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop'} alt={viewingProduct.title} className="w-full h-full object-cover" />
             </div>
-            <div className="text-xs space-y-1.5 text-slate-300">
-              <p><strong>Category:</strong> <span className="text-[#00F0FF]">{viewingProduct.category}</span></p>
-              <p><strong>Price:</strong> <span className="font-mono text-white font-bold">{formatAUD(viewingProduct.discountedPrice || viewingProduct.price)}</span></p>
+            <div className="text-xs space-y-1.5 text-slate-700">
+              <p><strong>Category:</strong> <span className="text-[#FF007A] font-bold">{viewingProduct.category}</span></p>
+              <p><strong>Price:</strong> <span className="font-mono text-slate-900 font-bold">{formatAUD(viewingProduct.discountedPrice || viewingProduct.price)}</span></p>
               <p><strong>Purity Spec:</strong> {viewingProduct.purity || '>99% HPLC Verified'}</p>
               <p><strong>Dosage Form:</strong> {viewingProduct.dosage || 'Standard Vial'}</p>
             </div>
           </div>
         </div>
       )}
+
       {/* Edit FAQ Modal */}
       {editingFAQ && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               updateFAQ(editingFAQ.id, editingFAQ);
               setEditingFAQ(null);
             }}
-            className="bg-[#0F1422] border border-[#00F0FF]/40 rounded-3xl p-6 max-w-xl w-full text-white space-y-4 shadow-2xl"
+            className="bg-white border border-slate-300 rounded-3xl p-6 max-w-xl w-full text-slate-900 space-y-4 shadow-2xl"
           >
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h3 className="text-lg font-bold uppercase text-[#00F0FF]">Edit FAQ Item</h3>
-              <button type="button" onClick={() => setEditingFAQ(null)} className="p-2 text-slate-400 hover:text-white cursor-pointer">
+            <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+              <h3 className="text-lg font-bold uppercase text-slate-900">Edit FAQ Item</h3>
+              <button type="button" onClick={() => setEditingFAQ(null)} className="p-2 text-slate-400 hover:text-black cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block text-slate-300 font-bold mb-1">Question</label>
+                <label className="block text-slate-700 font-bold mb-1">Question</label>
                 <input
                   type="text"
                   value={editingFAQ.question}
                   onChange={(e) => setEditingFAQ({ ...editingFAQ, question: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
                 />
               </div>
               <div>
-                <label className="block text-slate-300 font-bold mb-1">Answer Content</label>
+                <label className="block text-slate-700 font-bold mb-1">Answer Content</label>
                 <textarea
                   rows={3}
                   value={editingFAQ.answer}
                   onChange={(e) => setEditingFAQ({ ...editingFAQ, answer: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
                 />
               </div>
               <div>
-                <label className="block text-slate-300 font-bold mb-1">Category</label>
+                <label className="block text-slate-700 font-bold mb-1">Category</label>
                 <select
                   value={editingFAQ.category}
                   onChange={(e) => setEditingFAQ({ ...editingFAQ, category: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white cursor-pointer"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 cursor-pointer"
                 >
                   <option value="General">General</option>
                   <option value="Quality & HPLC">Quality & HPLC</option>
@@ -1792,17 +1600,24 @@ export default function CMSDashboardPage() {
                 </select>
               </div>
             </div>
-            <div className="flex justify-end space-x-3 pt-3 border-t border-slate-800">
-              <button type="button" onClick={() => setEditingFAQ(null)} className="px-4 py-2 bg-slate-800 text-xs rounded-xl font-bold">
+            <div className="flex justify-end space-x-3 pt-3 border-t border-slate-200">
+              <button type="button" onClick={() => setEditingFAQ(null)} className="px-4 py-2 bg-slate-100 text-slate-700 text-xs rounded-xl font-bold border border-slate-300">
                 Cancel
               </button>
-              <button type="submit" className="glow-pink-btn text-white text-xs px-6 py-2 rounded-xl font-bold cursor-pointer">
+              <button type="submit" className="bg-slate-900 hover:bg-black text-white text-xs px-6 py-2 rounded-xl font-bold cursor-pointer">
                 Save Changes
               </button>
             </div>
           </form>
         </div>
       )}
+
+      {/* Official Corporate Tax Invoice Modal */}
+      <InvoiceModal
+        isOpen={isInvoiceOpen}
+        onClose={() => setIsInvoiceOpen(false)}
+        order={selectedOrderForInvoice}
+      />
     </div>
   );
 }
