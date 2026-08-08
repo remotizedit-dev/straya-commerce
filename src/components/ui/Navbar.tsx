@@ -24,7 +24,7 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-black border-b border-white/10 shadow-2xl select-none">
+    <header className="sticky top-0 z-40 w-full bg-white border-b border-white/10 shadow-2xl select-none">
       {/* Tier 1: Centered Big Logo & Action Icons */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between relative border-b border-white/5">
         {/* Left Placeholder for symmetry */}
@@ -33,7 +33,7 @@ export const Navbar: React.FC = () => {
         {/* Center Bigger Logo (NO STRAYA Text) */}
         <Link href="/" className="flex items-center justify-center mx-auto group">
           {siteSettings.logoUrl ? (
-            <div className="relative h-14 w-44 sm:h-16 sm:w-52 group-hover:scale-105 transition-transform duration-300">
+            <div className="relative h-18 w-52 sm:h-20 sm:w-62 group-hover:scale-105 transition-transform duration-300">
               <Image src={siteSettings.logoUrl} alt="Brand Logo" fill className="object-contain" />
             </div>
           ) : (
@@ -82,13 +82,13 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Request Call Quick Button */}
-          <button
+          {/* <button
             onClick={openCallModal}
-            className="hidden sm:flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-[#FF007A]/40 text-gray-200 hover:text-white transition-all cursor-pointer"
+            className="hidden sm:flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg bg-white/5 border border-black/10 hover:border-[#FF007A]/40 text-gray-200 hover:text-white transition-all cursor-pointer"
           >
             <PhoneCall className="w-3.5 h-3.5 text-[#FF007A]" />
             <span>Request Call</span>
-          </button>
+          </button> */}
 
           {/* Cart Counter Button */}
           <button
@@ -115,7 +115,7 @@ export const Navbar: React.FC = () => {
       </div>
 
       {/* Tier 2: Next Line Centered Dark Navigation Bar */}
-      <div className="hidden lg:block bg-black py-2.5">
+      <div className="hidden lg:block bg-white py-2.5">
         <nav className="max-w-7xl mx-auto px-4 flex items-center justify-center space-x-2">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -123,9 +123,8 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-5 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors ${
-                  isActive ? 'text-white font-extrabold' : 'text-slate-300 hover:text-white'
-                }`}
+                className={`relative px-3 py-2 rounded-xl text-xs sm:text-sm font-thin tracking-wider transition-colors ${isActive ? 'text-black font-extrabold' : 'text-slate-3100 hover:text-black'
+                  }`}
               >
                 {link.name}
                 {isActive && (
@@ -155,11 +154,10 @@ export const Navbar: React.FC = () => {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-3 rounded-lg text-base font-medium ${
-                  pathname === link.href
-                    ? 'bg-[#FF007A]/20 text-white font-bold border border-[#FF007A]/40'
-                    : 'text-gray-300 hover:bg-white/5'
-                }`}
+                className={`block px-4 py-3 rounded-lg text-base font-medium ${pathname === link.href
+                  ? 'bg-[#FF007A]/20 text-white font-bold border border-[#FF007A]/40'
+                  : 'text-gray-300 hover:bg-white/5'
+                  }`}
               >
                 {link.name}
               </Link>
