@@ -2,28 +2,28 @@
   "rules": {
     "siteSettings": {
       ".read": true,
-      ".write": "auth != null"
+      ".write": true
     },
     "products": {
       ".read": true,
-      ".write": "auth != null",
+      ".write": true,
       ".indexOn": ["category", "type"]
     },
     "coas": {
       ".read": true,
-      ".write": "auth != null"
+      ".write": true
     },
     "faqs": {
       ".read": true,
-      ".write": "auth != null"
+      ".write": true
     },
     "promoCodes": {
       ".read": true,
-      ".write": "auth != null",
+      ".write": true,
       ".indexOn": ["code"]
     },
     "leads": {
-      ".read": "auth != null",
+      ".read": true,
       ".write": true
     },
     "orders": {
