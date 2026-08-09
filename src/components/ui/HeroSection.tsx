@@ -29,12 +29,15 @@ export const HeroSection: React.FC = () => {
     },
   };
 
+  const mediaUrl = siteSettings.heroMediaUrl || 'https://assets.mixkit.co/videos/preview/mixkit-abstract-glowing-cyan-and-pink-particles-loop-42861-large.mp4';
+  const isVideo = siteSettings.heroMediaType === 'video' || mediaUrl.endsWith('.mp4') || mediaUrl.endsWith('.webm');
+
   return (
     <div className="relative min-h-[88vh] flex flex-col justify-end overflow-hidden bg-slate-950 text-white select-none pb-12 pt-28">
       {/* Background Video or Image - Bright, Vibrant & Clear */}
-      {siteSettings.heroMediaType === 'video' && siteSettings.heroMediaUrl ? (
+      {isVideo ? (
         <video
-          key={siteSettings.heroMediaUrl}
+          key={mediaUrl}
           autoPlay
           muted
           loop
@@ -43,14 +46,18 @@ export const HeroSection: React.FC = () => {
           webkit-playsinline="true"
           x5-playsinline="true"
           controls={false}
+          preload="auto"
           className="absolute inset-0 w-full h-full object-cover opacity-100 scale-100 filter brightness-110 saturate-125"
         >
-          <source src={siteSettings.heroMediaUrl} type="video/mp4" />
+          <source
+            src={mediaUrl}
+            type={mediaUrl.toLowerCase().endsWith('.webm') ? 'video/webm' : 'video/mp4'}
+          />
         </video>
       ) : (
         <div
           className="absolute inset-0 bg-cover bg-center opacity-100 filter brightness-110 saturate-125"
-          style={{ backgroundImage: `url(${siteSettings.heroMediaUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1600&auto=format&fit=crop'})` }}
+          style={{ backgroundImage: `url(${mediaUrl})` }}
         />
       )}
 

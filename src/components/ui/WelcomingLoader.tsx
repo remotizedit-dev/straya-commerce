@@ -9,10 +9,15 @@ export const WelcomingLoader: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const loaderVideoUrl = siteSettings.welcomingVideoUrl && siteSettings.welcomingVideoUrl.trim() !== ''
+    ? siteSettings.welcomingVideoUrl
+    : '/videos/welcoming_intro.webm';
+
   // Dynamic video duration from CMS in seconds (default 3.5s)
-  const videoDurationSec = siteSettings.welcomingVideoDurationSec && siteSettings.welcomingVideoDurationSec > 0
-    ? siteSettings.welcomingVideoDurationSec
-    : 3.5;
+  const videoDurationSec =
+    siteSettings.welcomingVideoDurationSec && siteSettings.welcomingVideoDurationSec > 0
+      ? siteSettings.welcomingVideoDurationSec
+      : 3.5;
 
   const durationMs = (videoDurationSec + 0.5) * 1000;
 
@@ -59,7 +64,7 @@ export const WelcomingLoader: React.FC = () => {
       window.removeEventListener('touchstart', handleInteraction);
       window.removeEventListener('click', handleInteraction);
     };
-  }, [durationMs]);
+  }, [durationMs, loaderVideoUrl]);
 
   return (
     <AnimatePresence>
@@ -69,7 +74,7 @@ export const WelcomingLoader: React.FC = () => {
           exit={{ opacity: 0, transition: { duration: 0.8, ease: 'easeInOut' } }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black overflow-hidden select-none"
         >
-          {/* Mobile Guaranteed Autoplay Video Tag */}
+          {/* Mobile & Web Video Player with Fail-Safe Sources */}
           <video
             ref={videoRef}
             autoPlay
@@ -82,10 +87,23 @@ export const WelcomingLoader: React.FC = () => {
             disablePictureInPicture
             preload="auto"
             onEnded={dismissLoader}
+            onCanPlay={() => {
+              if (videoRef.current) {
+                videoRef.current.play().catch(() => {});
+              }
+            }}
             className="absolute inset-0 w-full h-full object-cover opacity-100 filter brightness-110 saturate-120"
           >
-            <source src="/videos/welcoming_intro.mp4" type="video/mp4" />
+            {loaderVideoUrl && (
+              <source
+                src={loaderVideoUrl}
+                type={loaderVideoUrl.toLowerCase().endsWith('.webm') ? 'video/webm' : 'video/mp4'}
+              />
+            )}
             <source src="/videos/welcoming_intro.webm" type="video/webm" />
+            <source src="/videos/welcoming_intro.mp4" type="video/mp4" />
+            <source src="/videos/welcome_intro.webm" type="video/webm" />
+            <source src="/videos/welcome_intro.mp4" type="video/mp4" />
           </video>
         </motion.div>
       )}
