@@ -32,7 +32,7 @@ export default function AllPeptidesPage() {
     <div className="bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
         {/* Header Banner */}
-        <div className="relative rounded-3xl bg-slate-900 text-white p-8 sm:p-12 overflow-hidden shadow-xl text-center">
+        {/* <div className="relative rounded-3xl bg-slate-900 text-white p-8 sm:p-12 overflow-hidden shadow-xl text-center">
           <div className="relative z-10 max-w-3xl mx-auto space-y-3 flex flex-col items-center justify-center">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#FF007A]/20 text-[#FF007A] text-xs font-bold uppercase tracking-wider">
               <Grid className="w-3.5 h-3.5" />
@@ -42,6 +42,20 @@ export default function AllPeptidesPage() {
               All Research Peptides
             </h1>
             <p className="text-slate-300 text-sm leading-relaxed text-center max-w-2xl">
+              Browse Australia&apos;s complete catalog of high-purity laboratory compounds. Every product includes batch-specific HPLC mass spectrometry verification.
+            </p>
+          </div>
+        </div> */}
+        <div className="relative rounded-3xl bg-white border border-slate-200 text-slate-900 p-8 sm:p-12 overflow-hidden shadow-sm text-center">
+          <div className="relative z-10 max-w-3xl mx-auto space-y-3 flex flex-col items-center justify-center">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#FF007A]/20 text-[#FF007A] text-xs font-bold uppercase tracking-wider">
+              <Grid className="w-3.5 h-3.5" />
+              <span>HPLC Tested Catalog</span>
+            </div>
+            <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-center text-slate-900">
+              All Research Peptides
+            </h1>
+            <p className="text-slate-600 text-sm leading-relaxed text-center max-w-2xl">
               Browse Australia&apos;s complete catalog of high-purity laboratory compounds. Every product includes batch-specific HPLC mass spectrometry verification.
             </p>
           </div>

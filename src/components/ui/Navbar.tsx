@@ -56,7 +56,7 @@ export const Navbar: React.FC = () => {
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10">
           <Link href="/" className="flex items-center justify-center group">
             {siteSettings.logoUrl ? (
-              <div className="relative h-14 w-44 sm:h-16 sm:w-56 group-hover:scale-105 transition-transform duration-300">
+              <div className="relative h-14 w-44 sm:h-16 sm:w-56 my-2 group-hover:scale-105 transition-transform duration-300">
                 <Image src={siteSettings.logoUrl} alt="Brand Logo" fill className="object-contain" />
               </div>
             ) : (
@@ -104,9 +104,8 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-5 py-2 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider transition-colors ${
-                  isActive ? 'text-[#FF007A]' : 'text-slate-700 hover:text-slate-900'
-                }`}
+                className={`relative px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors ${isActive ? 'text-[#FF007A]' : 'text-slate-700 hover:text-slate-900'
+                  }`}
               >
                 {link.name}
                 {isActive && (
@@ -136,11 +135,10 @@ export const Navbar: React.FC = () => {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`block px-4 py-3 rounded-lg text-base font-bold ${
-                  pathname === link.href
-                    ? 'bg-[#FF007A]/10 text-[#FF007A] font-extrabold border border-[#FF007A]/30'
-                    : 'text-slate-700 hover:bg-slate-100'
-                }`}
+                className={`block px-4 py-3 rounded-lg text-base font-bold ${pathname === link.href
+                  ? 'bg-[#FF007A]/10 text-[#FF007A] font-extrabold border border-[#FF007A]/30'
+                  : 'text-slate-700 hover:bg-slate-100'
+                  }`}
               >
                 {link.name}
               </Link>
