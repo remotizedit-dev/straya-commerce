@@ -7,10 +7,7 @@
     "products": {
       ".read": true,
       ".write": "auth != null",
-      ".indexOn": [
-        "category",
-        "type"
-      ]
+      ".indexOn": ["category", "type"]
     },
     "coas": {
       ".read": true,
@@ -23,9 +20,7 @@
     "promoCodes": {
       ".read": true,
       ".write": "auth != null",
-      ".indexOn": [
-        "code"
-      ]
+      ".indexOn": ["code"]
     },
     "leads": {
       ".read": "auth != null",
@@ -34,19 +29,12 @@
     "orders": {
       ".read": true,
       ".write": true,
-      ".indexOn": [
-        "createdAt",
-        "paymentStatus",
-        "deliveryStatus",
-        "customer/email"
-      ]
+      ".indexOn": ["createdAt", "paymentStatus", "deliveryStatus", "customer/email"]
     },
     "customers": {
       ".read": true,
       ".write": true,
-      ".indexOn": [
-        "email"
-      ]
+      ".indexOn": ["email"]
     }
   }
 }

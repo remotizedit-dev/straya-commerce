@@ -38,8 +38,16 @@ export default function ProductDetailPage() {
     );
   }
 
-  const discountPercent = product.discountedPrice
-    ? Math.round(((product.price - product.discountedPrice) / product.price) * 100)
+  const hasDiscount = Boolean(
+    product.discountedPrice &&
+    product.discountedPrice > 0 &&
+    product.discountedPrice < product.price
+  );
+
+  const effectivePrice = hasDiscount ? product.discountedPrice! : product.price;
+
+  const discountPercent = hasDiscount
+    ? Math.round(((product.price - product.discountedPrice!) / product.price) * 100)
     : 0;
 
   return (
@@ -112,17 +120,15 @@ export default function ProductDetailPage() {
                 {product.title}
               </h1>
 
-
-
               {/* Price Box */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                 <div>
                   <span className="text-xs text-slate-500 block uppercase font-bold">Research Price</span>
                   <div className="flex items-baseline space-x-3">
                     <span className="text-3xl font-black text-slate-900">
-                      {formatAUD(product.discountedPrice || product.price)}
+                      {formatAUD(effectivePrice)}
                     </span>
-                    {product.discountedPrice && product.discountedPrice < product.price && (
+                    {hasDiscount && (
                       <span className="text-base text-slate-400 line-through">
                         {formatAUD(product.price)}
                       </span>
@@ -163,7 +169,7 @@ export default function ProductDetailPage() {
                   className="flex-1 glow-pink-btn text-white font-black py-4 px-8 rounded-xl text-base uppercase tracking-wider flex items-center justify-center space-x-3 transition-all cursor-pointer shadow-lg"
                 >
                   <ShoppingBag className="w-5 h-5" />
-                  <span>ADD TO CART ({formatAUD((product.discountedPrice || product.price) * quantity)})</span>
+                  <span>ADD TO CART ({formatAUD(effectivePrice * quantity)})</span>
                 </button>
               </div>
 

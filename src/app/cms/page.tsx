@@ -85,6 +85,7 @@ export default function CMSDashboardPage() {
   }, [activeTab]);
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true);
 
   // Modals & Forms State
   const [viewingOrder, setViewingOrder] = useState<Order | null>(null);
@@ -113,9 +114,12 @@ export default function CMSDashboardPage() {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUserEmail(user.email);
+        setIsAuthChecking(false);
       } else {
         const isAuthSession = typeof window !== 'undefined' && sessionStorage.getItem('straya_cms_auth');
-        if (!isAuthSession) {
+        if (isAuthSession) {
+          setIsAuthChecking(false);
+        } else {
           router.push('/cms/login');
         }
       }
@@ -233,6 +237,15 @@ export default function CMSDashboardPage() {
     { id: 'settings', label: 'Site & Bank Config', icon: Settings },
     { id: 'seo', label: 'SEO & Metadata', icon: Globe },
   ];
+
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-white text-slate-900 flex flex-col items-center justify-center p-6 select-none">
+        <div className="w-10 h-10 border-4 border-slate-200 border-t-[#FF007A] rounded-full animate-spin mb-4" />
+        <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Verifying Admin Credentials...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white text-slate-900 flex font-sans select-none">
@@ -1345,7 +1358,30 @@ export default function CMSDashboardPage() {
                 </div>
 
                 <div className="md:col-span-2 pt-4 border-t border-slate-200 space-y-3">
-                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Homepage Hero Banner & Color Config</h3>
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Homepage Hero Background & Text Config</h3>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Hero Background Media Type</label>
+                  <select
+                    value={editableSettings.heroMediaType || 'video'}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, heroMediaType: e.target.value as any })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 cursor-pointer font-bold"
+                  >
+                    <option value="video">MP4 Video Background</option>
+                    <option value="image">Static Image Background</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Hero Background Image/Video Link (URL)</label>
+                  <input
+                    type="text"
+                    placeholder="https://..."
+                    value={editableSettings.heroMediaUrl || ''}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, heroMediaUrl: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 font-mono"
+                  />
                 </div>
 
                 <div>
