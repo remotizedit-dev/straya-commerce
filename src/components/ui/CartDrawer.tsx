@@ -123,14 +123,14 @@ export const CartDrawer: React.FC = () => {
                             <div className="flex items-center bg-slate-100 border border-slate-200 rounded-lg">
                               <button
                                 onClick={() => updateQuantity(product.id, quantity - 1)}
-                                className="p-1 text-slate-500 hover:text-slate-900"
+                                className="p-1 text-slate-500 hover:text-slate-900 cursor-pointer"
                               >
                                 <Minus className="w-3.5 h-3.5" />
                               </button>
                               <span className="px-2 text-xs font-bold text-slate-900">{quantity}</span>
                               <button
                                 onClick={() => updateQuantity(product.id, quantity + 1)}
-                                className="p-1 text-slate-500 hover:text-slate-900"
+                                className="p-1 text-slate-500 hover:text-slate-900 cursor-pointer"
                               >
                                 <Plus className="w-3.5 h-3.5" />
                               </button>

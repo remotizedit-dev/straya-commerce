@@ -85,11 +85,10 @@ export default function ProductDetailPage() {
                   <button
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
-                      selectedImageIndex === idx
+                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${selectedImageIndex === idx
                         ? 'border-[#FF007A] shadow-md'
                         : 'border-slate-200 opacity-60 hover:opacity-100'
-                    }`}
+                      }`}
                   >
                     <Image src={img} alt={`Thumbnail ${idx}`} fill className="object-cover" />
                   </button>
@@ -145,14 +144,14 @@ export default function ProductDetailPage() {
                 <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl p-1">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="p-2 text-slate-600 hover:text-slate-900"
+                    className="p-2 text-slate-600 hover:text-slate-900 cursor-pointer"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
                   <span className="px-4 text-base font-black text-slate-900">{quantity}</span>
                   <button
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="p-2 text-slate-600 hover:text-slate-900"
+                    className="p-2 text-slate-600 hover:text-slate-900 cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -190,11 +189,11 @@ export default function ProductDetailPage() {
             {(product.technicalSpecs && product.technicalSpecs.length > 0
               ? product.technicalSpecs
               : [
-                  { label: 'COMPOUND NAME', value: product.title.split(' ')[0] },
-                  { label: 'PURITY', value: product.purity || '99.79%' },
-                  { label: 'FORM', value: 'White lyophilized powder' },
-                  { label: 'TESTING METHOD', value: 'HPLC-MS' },
-                ]
+                { label: 'COMPOUND NAME', value: product.title.split(' ')[0] },
+                { label: 'PURITY', value: product.purity || '99.79%' },
+                { label: 'FORM', value: 'White lyophilized powder' },
+                { label: 'TESTING METHOD', value: 'HPLC-MS' },
+              ]
             ).map((spec, idx) => (
               <div key={idx} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1.5 hover:border-[#FF007A]/40 transition-all">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
