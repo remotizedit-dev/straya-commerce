@@ -183,11 +183,17 @@ export default function HomePage() {
         </div>
 
         {/* Product Cards Grid: 4 items desktop / 2 items mobile */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {bestSaleProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {bestSaleProducts.length > 0 ? (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {bestSaleProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-500 font-medium">
+            No products currently in the catalog. Add research compounds in the CMS admin portal.
+          </div>
+        )}
       </section>
 
       {/* 9/ Disclaimer Section */}
@@ -239,11 +245,17 @@ export default function HomePage() {
         </div>
 
         {/* Featured Product Cards Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {featuredProducts.length > 0 ? (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-500 font-medium">
+            No featured products configured. Highlight products from the CMS admin portal.
+          </div>
+        )}
       </section>
     </div>
   );

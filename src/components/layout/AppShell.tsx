@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { AppProvider } from '@/lib/store';
-import { WelcomingLoader } from '@/components/ui/WelcomingLoader';
+import { ResearchDisclaimerModal } from '@/components/ui/ResearchDisclaimerModal';
 import { TopBanner } from '@/components/ui/TopBanner';
 import { Navbar } from '@/components/ui/Navbar';
 import { CartDrawer } from '@/components/ui/CartDrawer';
@@ -40,7 +40,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
       ) : (
         // Storefront Shell (White Main Body + Black Navbar & Footer)
         <div className="min-h-screen flex flex-col bg-white text-slate-900 font-sans antialiased">
-          <WelcomingLoader />
+          <ResearchDisclaimerModal />
           <TopBanner />
           <Navbar />
           <main className="flex-grow">{children}</main>

@@ -29,7 +29,7 @@ export const HeroSection: React.FC = () => {
     },
   };
 
-  const mediaUrl = siteSettings.heroMediaUrl || 'https://assets.mixkit.co/videos/preview/mixkit-abstract-glowing-cyan-and-pink-particles-loop-42861-large.mp4';
+  const mediaUrl = siteSettings.heroMediaUrl || '/videos/welcoming_intro.mp4';
   const isVideo = siteSettings.heroMediaType === 'video' || mediaUrl.endsWith('.mp4') || mediaUrl.endsWith('.webm');
 
   return (

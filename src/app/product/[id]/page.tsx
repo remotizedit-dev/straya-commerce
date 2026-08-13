@@ -188,29 +188,63 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Technical Specifications Section */}
-        <div className="space-y-6 pt-6 border-t border-slate-200">
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+        <div className="space-y-6 pt-8 border-t border-slate-200">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
             Technical Specifications
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="space-y-3.5 max-w-4xl">
             {(product.technicalSpecs && product.technicalSpecs.length > 0
               ? product.technicalSpecs
               : [
                   { label: 'COMPOUND NAME', value: product.title.split(' ')[0] },
-                  { label: 'PURITY', value: product.purity || '99.79%' },
-                  { label: 'FORM', value: 'White lyophilized powder' },
+                  { label: 'CAS NUMBER', value: '49557-75-7' },
+                  { label: 'MOLECULAR FORMULA', value: 'C14H20CuN6O4' },
+                  { label: 'MOLECULAR WEIGHT', value: '403.89 g/mol' },
+                  { label: 'PURITY', value: product.purity || '99.55%' },
+                  { label: 'FORM', value: 'Lyophilized powder' },
                   { label: 'TESTING METHOD', value: 'HPLC-MS' },
                 ]
-            ).map((spec, idx) => (
-              <div key={idx} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1.5 hover:border-[#FF007A]/40 transition-all">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                  {spec.label}
-                </span>
-                <span className="text-base font-extrabold text-slate-900 font-mono block leading-snug">
-                  {spec.value}
-                </span>
-              </div>
-            ))}
+            ).map((spec, idx) => {
+              const labelUpper = spec.label.toUpperCase();
+              const isPurity = labelUpper.includes('PURITY');
+              const isTesting = labelUpper.includes('TESTING') || labelUpper.includes('METHOD');
+
+              return (
+                <div
+                  key={idx}
+                  className={`p-4 sm:p-5 rounded-2xl border transition-all ${
+                    isPurity
+                      ? 'bg-emerald-50/40 border-emerald-300 shadow-xs'
+                      : isTesting
+                      ? 'bg-blue-50/40 border-blue-300 shadow-xs'
+                      : 'bg-white border-slate-200/90 shadow-xs hover:border-slate-300'
+                  }`}
+                >
+                  <span
+                    className={`text-[11px] font-extrabold uppercase tracking-wider block mb-1 ${
+                      isPurity
+                        ? 'text-emerald-800'
+                        : isTesting
+                        ? 'text-blue-800'
+                        : 'text-slate-500'
+                    }`}
+                  >
+                    {spec.label}
+                  </span>
+                  <span
+                    className={`text-base sm:text-lg font-extrabold block leading-snug font-sans ${
+                      isPurity
+                        ? 'text-emerald-700'
+                        : isTesting
+                        ? 'text-blue-700'
+                        : 'text-slate-900'
+                    }`}
+                  >
+                    {spec.value}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

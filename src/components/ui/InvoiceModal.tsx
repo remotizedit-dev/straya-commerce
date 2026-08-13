@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Order } from '@/lib/types';
 import { useApp } from '@/lib/store';
 import { formatAUD } from '@/lib/utils';
-import { X, Download, Building, FileText } from 'lucide-react';
+import { X, Download, Building, FileText, Printer } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 interface InvoiceModalProps {
@@ -25,21 +25,40 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, isOpen, onClo
     if (!invoiceRef.current) return;
     setIsDownloading(true);
     try {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+
       const canvas = await html2canvas(invoiceRef.current, {
         backgroundColor: '#FFFFFF',
         scale: 2,
         useCORS: true,
+        allowTaint: true,
+        logging: false,
+        imageTimeout: 10000,
+        scrollX: 0,
+        scrollY: 0,
       });
-      const dataUrl = canvas.toDataURL('image/png');
+
+      const dataUrl = canvas.toDataURL('image/png', 1.0);
       const link = document.createElement('a');
       link.href = dataUrl;
-      link.download = `Invoice_${order.id}.png`;
+      link.download = `Invoice_${order.id || 'STRAYA'}.png`;
+      document.body.appendChild(link);
       link.click();
+      setTimeout(() => {
+        if (document.body.contains(link)) {
+          document.body.removeChild(link);
+        }
+      }, 200);
     } catch (err) {
-      console.error('Invoice download failed', err);
+      console.warn('PNG export failed, invoking print fallback', err);
+      window.print();
     } finally {
       setIsDownloading(false);
     }
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -69,13 +88,23 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, isOpen, onClo
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
               <button
+                onClick={handlePrint}
+                className="bg-slate-800 hover:bg-slate-700 text-white text-[11px] sm:text-xs font-bold px-3 py-2 rounded-xl flex items-center space-x-1.5 cursor-pointer shadow-xs shrink-0"
+                title="Print or Save as PDF"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Print / PDF</span>
+              </button>
+
+              <button
                 onClick={handleDownloadPNG}
                 disabled={isDownloading}
-                className="glow-pink-btn text-white text-[11px] sm:text-xs font-bold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 cursor-pointer disabled:opacity-50 shadow-md shrink-0"
+                className="glow-pink-btn text-white text-[11px] sm:text-xs font-bold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 cursor-pointer disabled:opacity-50 shadow-md shrink-0 active:scale-95"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>{isDownloading ? 'Exporting...' : 'Download (PNG)'}</span>
+                <span>{isDownloading ? 'Exporting PNG...' : 'Download PNG'}</span>
               </button>
+
               <button
                 onClick={onClose}
                 className="p-1.5 sm:p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white cursor-pointer shrink-0"
@@ -98,6 +127,7 @@ export const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, isOpen, onClo
                       <img
                         src={siteSettings.logoUrl}
                         alt="Brand Logo"
+                        crossOrigin="anonymous"
                         className="h-12 w-auto object-contain"
                       />
                     </div>

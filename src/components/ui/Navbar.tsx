@@ -57,7 +57,7 @@ export const Navbar: React.FC = () => {
           <Link href="/" className="flex items-center justify-center group">
             {siteSettings.logoUrl ? (
               <div className="relative h-14 w-44 sm:h-16 sm:w-56 group-hover:scale-105 transition-transform duration-300">
-                <Image src={siteSettings.logoUrl} alt="Brand Logo" fill className="object-contain" />
+                <Image src={siteSettings.logoUrl} alt="Brand Logo" fill className="object-contain" priority unoptimized />
               </div>
             ) : (
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-md group-hover:scale-105 transition-transform">

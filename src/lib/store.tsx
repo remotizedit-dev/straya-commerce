@@ -56,6 +56,7 @@ interface AppContextType {
 
   coas: COAItem[];
   addCOA: (coa: Omit<COAItem, 'id'>) => Promise<void>;
+  updateCOA: (id: string, patch: Partial<COAItem>) => Promise<void>;
   deleteCOA: (id: string) => Promise<void>;
 
   faqs: FAQItem[];
@@ -426,9 +427,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newItem: COAItem = { ...coaData, id };
     setCoas((prev) => [newItem, ...prev]);
     try {
-      await set(ref(database, `coas/${id}`), newItem);
+      const cleanItem = JSON.parse(JSON.stringify(newItem));
+      await set(ref(database, `coas/${id}`), cleanItem);
     } catch (e) {
       console.warn('Firebase addCOA error', e);
+    }
+  };
+
+  const updateCOA = async (id: string, patch: Partial<COAItem>) => {
+    setCoas((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+    try {
+      const cleanPatch = JSON.parse(JSON.stringify(patch));
+      await update(ref(database, `coas/${id}`), cleanPatch);
+    } catch (e) {
+      console.warn('Firebase updateCOA error', e);
     }
   };
 
@@ -719,6 +731,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteProduct,
         coas,
         addCOA,
+        updateCOA,
         deleteCOA,
         faqs,
         addFAQ,

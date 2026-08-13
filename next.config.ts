@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // Allow image loading from ALL remote domains (Cloudinary, AWS S3, Firebase Storage, Imgur, Unsplash, CDNs, etc.)
+    // Universal image loading support for ANY domain, CDN, host, or protocol
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
