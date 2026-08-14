@@ -104,7 +104,7 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-5 py-2 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider transition-colors ${
+                className={`relative px-4 py-2 rounded-xl text-[13px] font-bold uppercase tracking-wider transition-colors ${
                   isActive ? 'text-[#FF007A]' : 'text-slate-700 hover:text-slate-900'
                 }`}
               >

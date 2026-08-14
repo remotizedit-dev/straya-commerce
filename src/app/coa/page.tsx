@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/lib/store';
 import { COAItem } from '@/lib/types';
@@ -24,6 +23,7 @@ export default function COAPage() {
   const [selectedCOA, setSelectedCOA] = useState<COAItem | null>(null);
   const [searchFilter, setSearchFilter] = useState('');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
+  const [isDownloading, setIsDownloading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const filteredCOAs = coas.filter(
@@ -58,6 +58,40 @@ export default function COAPage() {
     setZoomLevel((prev) => (prev > 1.2 ? 1 : 2));
   };
 
+  const handleDownloadCOA = async () => {
+    if (!selectedCOA) return;
+    setIsDownloading(true);
+    try {
+      const imageUrl = selectedCOA.imageUrl;
+      const response = await fetch(imageUrl, { mode: 'cors' });
+      if (!response.ok) throw new Error('Fetch failed');
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `COA_${selectedCOA.batchNumber || selectedCOA.id}.png`;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        if (document.body.contains(link)) document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 250);
+    } catch {
+      // Direct Link Download Fallback
+      const link = document.createElement('a');
+      link.href = selectedCOA.imageUrl;
+      link.target = '_blank';
+      link.download = `COA_${selectedCOA.batchNumber || selectedCOA.id}.png`;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        if (document.body.contains(link)) document.body.removeChild(link);
+      }, 250);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
@@ -68,7 +102,7 @@ export default function COAPage() {
               <Award className="w-4 h-4" />
               <span>High Performance Liquid Chromatography (HPLC)</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-center">
+            <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-center font-display">
               Certificate of Analysis (COA)
             </h1>
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed text-center max-w-2xl">
@@ -165,10 +199,10 @@ export default function COAPage() {
           </div>
         )}
 
-        {/* 🌟 CRISP WHITE COA VIEWER LIGHTBOX MODAL WITH INTERACTIVE ZOOM IN / OUT & PAN */}
+        {/* 🌟 CRISP WHITE COA VIEWER LIGHTBOX MODAL WITH TRUE A4 STANDARD PROPORTIONS */}
         <AnimatePresence>
           {selectedCOA && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-hidden select-none">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden select-none">
               {/* Backdrop */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -180,15 +214,15 @@ export default function COAPage() {
 
               {/* Modal Container */}
               <motion.div
-                initial={{ scale: 0.95, opacity: 0, y: 15 }}
+                initial={{ scale: 0.96, opacity: 0, y: 15 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.95, opacity: 0, y: 15 }}
-                className="relative z-10 w-full max-w-5xl max-h-[94vh] flex flex-col bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-200"
+                exit={{ scale: 0.96, opacity: 0, y: 15 }}
+                className="relative z-10 w-full max-w-5xl max-h-[96vh] flex flex-col bg-slate-100 text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-300"
               >
                 {/* Header Action Bar */}
                 <div className="bg-slate-900 text-white px-4 sm:px-6 py-3.5 flex items-center justify-between shrink-0 border-b border-slate-800 gap-2">
                   <div className="min-w-0">
-                    <h3 className="text-sm sm:text-base font-extrabold truncate text-white">
+                    <h3 className="text-sm sm:text-base font-extrabold truncate text-white font-display">
                       {selectedCOA.productTitle}
                     </h3>
                     <p className="text-[11px] text-[#00F0FF] font-mono truncate">
@@ -247,18 +281,16 @@ export default function COAPage() {
                       <ExternalLink className="w-4 h-4" />
                     </a>
 
-                    {/* Download Button */}
-                    <a
-                      href={selectedCOA.imageUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      download
-                      className="glow-pink-btn text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 shadow-md shrink-0 cursor-pointer"
-                      title="Download Certificate"
+                    {/* Direct Download Button */}
+                    <button
+                      onClick={handleDownloadCOA}
+                      disabled={isDownloading}
+                      className="glow-pink-btn text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 shadow-md shrink-0 cursor-pointer disabled:opacity-50"
+                      title="Download High-Res Certificate"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Download</span>
-                    </a>
+                      <span>{isDownloading ? 'Saving...' : 'Download Certificate'}</span>
+                    </button>
 
                     {/* Close Modal Button */}
                     <button
@@ -271,29 +303,36 @@ export default function COAPage() {
                   </div>
                 </div>
 
-                {/* Interactive Zoomable Viewport */}
+                {/* Interactive Zoomable Viewport with A4 Sheet Presentation */}
                 <div
                   ref={scrollContainerRef}
                   onDoubleClick={handleToggleZoom}
-                  className="relative flex-1 overflow-auto bg-slate-100 p-4 sm:p-8 flex items-center justify-center min-h-[60vh] max-h-[calc(94vh-65px)] cursor-grab active:cursor-grabbing select-none"
+                  className="relative flex-1 overflow-auto bg-slate-100 p-3 sm:p-6 md:p-8 flex items-center justify-center min-h-[60vh] max-h-[calc(96vh-65px)] cursor-grab active:cursor-grabbing select-none"
                 >
+                  {/* 📄 STANDARD A4 PAPER CERTIFICATE CONTAINER */}
                   <div
                     style={{
                       transform: `scale(${zoomLevel})`,
                       transformOrigin: 'center center',
                       transition: 'transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
+                      width: '100%',
+                      maxWidth: '794px',
+                      aspectRatio: '1 / 1.414',
                     }}
-                    className="relative max-w-full rounded-2xl shadow-xl bg-white p-2 border border-slate-300/80"
+                    className="relative bg-white rounded-2xl shadow-2xl p-4 sm:p-8 border border-slate-300 flex flex-col justify-between"
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={selectedCOA.imageUrl || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop'}
-                      alt={selectedCOA.productTitle}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop';
-                      }}
-                      className="max-h-[78vh] w-auto object-contain rounded-xl select-none pointer-events-none"
-                    />
+                    {/* Inner Certificate Image */}
+                    <div className="relative w-full h-full rounded-xl overflow-hidden bg-slate-50 flex items-center justify-center border border-slate-200">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={selectedCOA.imageUrl || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop'}
+                        alt={selectedCOA.productTitle}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop';
+                        }}
+                        className="w-full h-full object-contain select-none pointer-events-none"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -303,7 +342,7 @@ export default function COAPage() {
                     💡 Tip: Double-click to toggle zoom, or use the <strong>+</strong> and <strong>-</strong> buttons above to inspect batch purity details.
                   </span>
                   <span className="text-[11px] font-mono text-slate-400">
-                    High Purity Verified Analytical Certificate
+                    Standard A4 HPLC Laboratory Analytical Report
                   </span>
                 </div>
               </motion.div>

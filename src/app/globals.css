@@ -10,22 +10,37 @@
 body {
   background-color: #FFFFFF;
   color: #0F172A;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
   selection-background-color: #FF007A;
   selection-color: #ffffff;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+  letter-spacing: -0.025em;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: -0.01em;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: #F8FAFC;
 }
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
-  border-radius: 4px;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #FF007A;
@@ -33,11 +48,11 @@ body {
 
 /* Light Mode Glassmorphism Panels */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid #E2E8F0;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
 }
 
 .glass-panel-hover {
@@ -47,7 +62,7 @@ body {
 .glass-panel-hover:hover {
   background: #FFFFFF;
   border-color: #FF007A;
-  box-shadow: 0 12px 35px -10px rgba(255, 0, 122, 0.15);
+  box-shadow: 0 12px 35px -10px rgba(255, 0, 122, 0.12);
   transform: translateY(-2px);
 }
 
@@ -64,29 +79,33 @@ body {
 }
 
 .glow-pink-btn {
-  background: linear-gradient(135deg, #FF007A 0%, #D80068 100%);
+  background: linear-gradient(135deg, #FF007A 0%, #E0006C 100%);
   color: #FFFFFF;
-  font-weight: 800;
-  box-shadow: 0 4px 20px rgba(255, 0, 122, 0.35);
-  transition: all 0.25s ease;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  box-shadow: 0 4px 18px rgba(255, 0, 122, 0.28);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glow-pink-btn:hover {
-  box-shadow: 0 6px 28px rgba(255, 0, 122, 0.55);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #FF1A8B 0%, #D00064 100%);
+  box-shadow: 0 6px 24px rgba(255, 0, 122, 0.45);
+  transform: translateY(-1.5px);
 }
 
 .glow-cyan-btn {
   background: linear-gradient(135deg, #00D8F6 0%, #009BB5 100%);
   color: #FFFFFF;
-  font-weight: 800;
-  box-shadow: 0 4px 20px rgba(0, 216, 246, 0.35);
-  transition: all 0.25s ease;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  box-shadow: 0 4px 18px rgba(0, 216, 246, 0.28);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glow-cyan-btn:hover {
-  box-shadow: 0 6px 28px rgba(0, 216, 246, 0.55);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #1AE0FA 0%, #008AA3 100%);
+  box-shadow: 0 6px 24px rgba(0, 216, 246, 0.45);
+  transform: translateY(-1.5px);
 }
 
 @keyframes pulseGlow {
@@ -96,4 +115,47 @@ body {
 
 .animate-pulse-glow {
   animation: pulseGlow 4s infinite ease-in-out;
+}
+
+/* 📄 STRICT SINGLE-PAGE A4 PRINT STYLING */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  html, body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+    font-size: 11px !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  header, nav, footer, #navbar, #top-banner, .top-banner, .footer, .cart-drawer, .request-call-modal {
+    display: none !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  #printable-invoice {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: avoid !important;
+  }
 }
