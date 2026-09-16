@@ -97,7 +97,7 @@ export default function CheckoutPage() {
 
   const handleProceedToPayment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firstName || !lastName || !email || !phone || !street || !suburb || !postcode) {
+    if (!firstName || !lastName || !email || !street || !suburb || !postcode) {
       setFormError('Please fill out all required shipping fields.');
       return;
     }
@@ -300,10 +300,9 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Australian Phone *</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number (Optional)</label>
                     <input
                       type="tel"
-                      required
                       placeholder="0412 884 920"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}

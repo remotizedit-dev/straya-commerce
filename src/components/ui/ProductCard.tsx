@@ -109,10 +109,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.92 }}
             onClick={() => addToCart(product, 1)}
-            className="p-2 sm:px-3 sm:py-2 rounded-xl glow-pink-btn text-white text-xs font-bold flex items-center space-x-1 transition-all cursor-pointer shadow-md shrink-0"
+            className="w-9 h-9 sm:w-auto sm:h-auto sm:px-3.5 sm:py-2 rounded-xl glow-pink-btn text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md shrink-0"
             title="Add to Cart"
           >
-            <ShoppingBag className="w-4 h-4" />
+            <ShoppingBag className="w-4 h-4 shrink-0" />
             <span className="hidden sm:inline">Add</span>
           </motion.button>
         </div>
