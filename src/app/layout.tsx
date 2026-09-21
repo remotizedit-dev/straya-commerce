@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans, Outfit, JetBrains_Mono } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import { AppShell } from '@/components/layout/AppShell';
 
@@ -38,6 +39,20 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${outfit.variable} ${jetbrainsMono.variable} w-full overflow-x-hidden bg-white text-slate-900`}>
       <body className="bg-white text-slate-900 min-h-screen font-sans antialiased overflow-x-hidden w-full selection:bg-[#FF007A] selection:text-white flex flex-col justify-between">
+        
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-NLWF5EZG18"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-NLWF5EZG18');
+          `}
+        </Script>
+
         <AppShell>{children}</AppShell>
       </body>
     </html>
