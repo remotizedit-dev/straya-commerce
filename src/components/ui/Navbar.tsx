@@ -42,27 +42,40 @@ export const Navbar: React.FC = () => {
     <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200 shadow-sm select-none">
       {/* Tier 1: Left Search Icon Only, Center Logo, Right Cart */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between relative border-b border-slate-100 min-h-[72px]">
-        {/* Left Side: Search Icon Only (Click redirects/scrolls to homepage search section) */}
-        <div className="flex items-center">
+        {/* Left Side: Search Icon & WhatsApp Button (on Mobile View) */}
+        <div className="flex items-center space-x-2 sm:space-x-2.5 z-20">
+          {/* Search Icon */}
           <button
             onClick={handleSearchClick}
-            className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors cursor-pointer border border-slate-200 flex items-center justify-center group"
+            className="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors cursor-pointer border border-slate-200 flex items-center justify-center group"
             title="Search Products on Homepage"
           >
             <Search className="w-5 h-5 text-[#FF007A] group-hover:scale-110 transition-transform" />
           </button>
+
+          {/* WhatsApp Direct Chat Button - Mobile Top Left View */}
+          <a
+            href="https://wa.me/qr/4RBQJ2R3UD4GN1"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Chat on WhatsApp"
+            aria-label="Chat on WhatsApp"
+            className="lg:hidden p-2 sm:p-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white flex items-center justify-center cursor-pointer shadow-md hover:scale-105 active:scale-95 transition-transform"
+          >
+            <WhatsAppIcon className="w-5 h-5" />
+          </a>
         </div>
 
         {/* Absolute Dead Center Screen Logo */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10 pointer-events-auto max-w-[45%] sm:max-w-none">
           <Link href="/" className="flex items-center justify-center group">
             {siteSettings.logoUrl ? (
-              <div className="relative h-14 w-44 sm:h-16 sm:w-56 group-hover:scale-105 transition-transform duration-300">
+              <div className="relative h-11 w-32 sm:h-16 sm:w-56 group-hover:scale-105 transition-transform duration-300">
                 <Image src={siteSettings.logoUrl} alt="Brand Logo" fill className="object-contain" priority unoptimized />
               </div>
             ) : (
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-md group-hover:scale-105 transition-transform">
-                <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center font-black text-2xl text-slate-900">
+              <div className="w-11 h-11 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FF007A] to-[#00F0FF] p-0.5 shadow-md group-hover:scale-105 transition-transform">
+                <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center font-black text-xl sm:text-2xl text-slate-900">
                   S
                 </div>
               </div>
@@ -70,16 +83,16 @@ export const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Right Side: WhatsApp Button, Cart Counter Button & Mobile Menu */}
-        <div className="flex items-center space-x-2.5">
-          {/* WhatsApp Direct Chat Button */}
+        {/* Right Side: WhatsApp Button (Desktop), Cart Counter Button & Mobile Menu */}
+        <div className="flex items-center space-x-2 sm:space-x-2.5 z-20">
+          {/* WhatsApp Direct Chat Button - Desktop View beside Cart */}
           <a
             href="https://wa.me/qr/4RBQJ2R3UD4GN1"
             target="_blank"
             rel="noopener noreferrer"
             title="Chat on WhatsApp"
             aria-label="Chat on WhatsApp"
-            className="p-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white flex items-center justify-center cursor-pointer shadow-md hover:scale-105 active:scale-95 transition-transform"
+            className="hidden lg:flex p-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white items-center justify-center cursor-pointer shadow-md hover:scale-105 active:scale-95 transition-transform"
           >
             <WhatsAppIcon className="w-5 h-5" />
           </a>
@@ -87,7 +100,7 @@ export const Navbar: React.FC = () => {
           {/* Cart Counter Button */}
           <button
             onClick={openCart}
-            className="relative p-2.5 rounded-xl glow-pink-btn text-white flex items-center justify-center cursor-pointer shadow-md hover:scale-105 active:scale-95 transition-transform"
+            className="relative p-2 sm:p-2.5 rounded-xl glow-pink-btn text-white flex items-center justify-center cursor-pointer shadow-md hover:scale-105 active:scale-95 transition-transform"
             title="View Cart"
           >
             <ShoppingBag className="w-5 h-5" />
@@ -101,9 +114,9 @@ export const Navbar: React.FC = () => {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2.5 rounded-xl bg-slate-100 text-slate-800 hover:text-black cursor-pointer border border-slate-200"
+            className="lg:hidden p-2 sm:p-2.5 rounded-xl bg-slate-100 text-slate-800 hover:text-black cursor-pointer border border-slate-200 flex items-center justify-center"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
           </button>
         </div>
       </div>
