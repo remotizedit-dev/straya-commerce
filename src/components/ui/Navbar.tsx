@@ -29,9 +29,14 @@ export const Navbar: React.FC = () => {
     if (pathname === '/') {
       const el = document.getElementById('search-lookup') || document.getElementById('products');
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const lenis = (window as unknown as { __lenis?: { scrollTo: (t: HTMLElement, o?: object) => void } }).__lenis;
+        if (lenis) {
+          lenis.scrollTo(el, { offset: -90, duration: 1.2 });
+        } else {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         const inputEl = el.querySelector('input');
-        if (inputEl) inputEl.focus();
+        if (inputEl) setTimeout(() => inputEl.focus(), 600);
       }
     } else {
       router.push('/#search-lookup');

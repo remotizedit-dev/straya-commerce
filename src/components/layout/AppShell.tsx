@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { AppProvider } from '@/lib/store';
+import { SmoothScrollProvider } from '@/components/layout/SmoothScrollProvider';
 import { ResearchDisclaimerModal } from '@/components/ui/ResearchDisclaimerModal';
 import { TopBanner } from '@/components/ui/TopBanner';
 import { Navbar } from '@/components/ui/Navbar';
@@ -38,16 +39,18 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
           {children}
         </div>
       ) : (
-        // Storefront Shell (White Main Body + Black Navbar & Footer)
-        <div className="min-h-screen flex flex-col bg-white text-slate-900 font-sans antialiased">
-          <ResearchDisclaimerModal />
-          <TopBanner />
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <CartDrawer />
-          <RequestCallModal />
-          <Footer />
-        </div>
+        // Storefront Shell with GSAP + Lenis Butter-Smooth Momentum Scroll
+        <SmoothScrollProvider>
+          <div className="min-h-screen flex flex-col bg-white text-slate-900 font-sans antialiased">
+            <ResearchDisclaimerModal />
+            <TopBanner />
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <CartDrawer />
+            <RequestCallModal />
+            <Footer />
+          </div>
+        </SmoothScrollProvider>
       )}
     </AppProvider>
   );
