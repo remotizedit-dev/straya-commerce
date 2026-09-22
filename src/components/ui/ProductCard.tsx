@@ -56,7 +56,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       {/* Product Image Container */}
-      <Link href={`/product/${product.id}`} className="relative block aspect-square w-full bg-slate-50 overflow-hidden">
+      <Link href={`/product/${product.id}`} className="relative block aspect-square w-full bg-white overflow-hidden">
         <Image
           src={product.images[0] || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=800&auto=format&fit=crop'}
           alt={product.title}

@@ -88,7 +88,7 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Left: Images */}
           <div className="space-y-4">
-            <div className="relative aspect-square w-full bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="relative aspect-square w-full bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm">
               {discountPercent > 0 && (
                 <span className="absolute top-4 left-4 z-10 px-3 py-1 rounded-lg bg-[#FF007A] text-white text-xs font-black uppercase tracking-wider shadow-md">
                   SAVE {discountPercent}%
@@ -115,10 +115,10 @@ export default function ProductDetailPage() {
                   <button
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
+                    className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 bg-white transition-all cursor-pointer shrink-0 ${
                       selectedImageIndex === idx
                         ? 'border-[#FF007A] shadow-md scale-105'
-                        : 'border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100'
+                        : 'border-slate-100 hover:border-slate-200 opacity-80 hover:opacity-100'
                     }`}
                   >
                     <Image src={img} alt={`Thumbnail ${idx}`} fill className="object-cover" />
