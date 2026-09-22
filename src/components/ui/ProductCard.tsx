@@ -101,7 +101,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 {formatAUD(product.price)}
               </span>
             )}
-            <span className="text-[10px] text-slate-400 leading-none mt-0.5">Inc. GST</span>
           </div>
 
           {/* Quick Add to Cart Button */}

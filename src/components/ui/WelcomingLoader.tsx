@@ -12,7 +12,7 @@ export const WelcomingLoader: React.FC = () => {
   const loaderVideoUrl =
     siteSettings.welcomingVideoUrl && siteSettings.welcomingVideoUrl.trim() !== ''
       ? siteSettings.welcomingVideoUrl
-      : '/videos/welcoming_intro.webm';
+      : '';
 
   // Dynamic video duration from CMS in seconds (default 3.5s)
   const videoDurationSec =
@@ -68,6 +68,8 @@ export const WelcomingLoader: React.FC = () => {
     };
   }, [durationMs, loaderVideoUrl]);
 
+  if (!loaderVideoUrl) return null;
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -107,10 +109,6 @@ export const WelcomingLoader: React.FC = () => {
                 type={loaderVideoUrl.toLowerCase().endsWith('.webm') ? 'video/webm' : 'video/mp4'}
               />
             )}
-            <source src="/videos/welcoming_intro.webm" type="video/webm" />
-            <source src="/videos/welcoming_intro.mp4" type="video/mp4" />
-            <source src="/videos/welcome_intro.webm" type="video/webm" />
-            <source src="/videos/welcome_intro.mp4" type="video/mp4" />
           </video>
         </motion.div>
       )}

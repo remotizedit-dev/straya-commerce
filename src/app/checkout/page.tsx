@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useApp } from '@/lib/store';
 import { DeliveryOption, Order } from '@/lib/types';
-import { formatAUD } from '@/lib/utils';
+import { formatAUD, getQuantityDiscountPercent, getItemLineTotal } from '@/lib/utils';
 import { InvoiceModal } from '@/components/ui/InvoiceModal';
 import { ShieldCheck, Truck, Tag, CreditCard, Building, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -447,6 +447,8 @@ export default function CheckoutPage() {
                 <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
                   {cart.map(({ product, quantity }) => {
                     const pPrice = product.discountedPrice || product.price;
+                    const discountPct = getQuantityDiscountPercent(quantity);
+                    const lineTotal = getItemLineTotal(pPrice, quantity);
                     return (
                       <div key={product.id} className="flex items-center justify-between text-xs">
                         <div className="flex items-center space-x-3">
@@ -460,10 +462,17 @@ export default function CheckoutPage() {
                           </div>
                           <div>
                             <p className="font-bold text-slate-900 truncate max-w-[150px]">{product.title}</p>
-                            <span className="text-slate-500">Qty: {quantity}</span>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-slate-500">Qty: {quantity}</span>
+                              {discountPct > 0 && (
+                                <span className="text-[10px] text-emerald-600 bg-emerald-50 border border-emerald-200 px-1 py-0.2 rounded font-bold">
+                                  {discountPct}% OFF
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
-                        <span className="font-mono text-slate-900 font-bold">{formatAUD(pPrice * quantity)}</span>
+                        <span className="font-mono text-slate-900 font-bold">{formatAUD(lineTotal)}</span>
                       </div>
                     );
                   })}
@@ -513,7 +522,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex justify-between text-base font-black text-slate-900 pt-3 border-t border-slate-200">
-                    <span>Total (Inc. GST)</span>
+                    <span>Total</span>
                     <span className="text-[#FF007A] text-xl font-mono">{formatAUD(totalAmount)}</span>
                   </div>
                 </div>

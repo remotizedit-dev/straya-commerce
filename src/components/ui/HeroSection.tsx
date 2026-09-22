@@ -4,10 +4,11 @@ import React from 'react';
 import Link from 'next/link';
 import { motion, Variants } from 'framer-motion';
 import { useApp } from '@/lib/store';
-import { ShoppingBag, PhoneCall, ShieldCheck, ArrowRight, Award, Zap, Sparkles } from 'lucide-react';
+import { ShoppingBag, ShieldCheck, ArrowRight, Award, Zap, Sparkles } from 'lucide-react';
+import { TelegramIcon } from '@/components/ui/BrandIcons';
 
 export const HeroSection: React.FC = () => {
-  const { siteSettings, openCallModal } = useApp();
+  const { siteSettings } = useApp();
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -29,12 +30,17 @@ export const HeroSection: React.FC = () => {
     },
   };
 
-  const mediaUrl = siteSettings.heroMediaUrl || '/videos/welcoming_intro.mp4';
-  const isVideo = siteSettings.heroMediaType === 'video' || mediaUrl.endsWith('.mp4') || mediaUrl.endsWith('.webm');
+  const mediaUrl = siteSettings.heroMediaUrl || '';
+  const isVideo = Boolean(
+    mediaUrl &&
+      (siteSettings.heroMediaType === 'video' ||
+        mediaUrl.toLowerCase().endsWith('.mp4') ||
+        mediaUrl.toLowerCase().endsWith('.webm'))
+  );
 
   return (
     <div className="relative min-h-[88vh] flex flex-col justify-end overflow-hidden bg-slate-950 text-white select-none pb-12 pt-28">
-      {/* Background Video or Image - Bright, Vibrant & Clear */}
+      {/* Background Media - Image or Video (No hardcoded fallback video) */}
       {isVideo ? (
         <video
           key={mediaUrl}
@@ -54,11 +60,13 @@ export const HeroSection: React.FC = () => {
             type={mediaUrl.toLowerCase().endsWith('.webm') ? 'video/webm' : 'video/mp4'}
           />
         </video>
-      ) : (
+      ) : mediaUrl ? (
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-100 filter brightness-110 saturate-125"
+          className="absolute inset-0 bg-cover bg-center opacity-100 filter brightness-110 saturate-125 transition-opacity duration-700"
           style={{ backgroundImage: `url(${mediaUrl})` }}
         />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-black" />
       )}
 
       {/* Subtle Bottom Vignette for Text Contrast */}
@@ -140,16 +148,22 @@ export const HeroSection: React.FC = () => {
             </motion.div>
           </Link>
 
-          {/* Request For A Call Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={openCallModal}
-            className="w-full sm:w-auto bg-white hover:bg-slate-100 text-slate-900 font-black text-base px-8 py-4 rounded-xl flex items-center justify-center space-x-3 transition-all cursor-pointer shadow-xl"
+          {/* Join Telegram Button */}
+          <a
+            href="https://t.me/+eaZoymP6M3U1Nzc1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto"
           >
-            <PhoneCall className="w-5 h-5 text-[#FF007A]" />
-            <span>REQUEST FOR A CALL</span>
-          </motion.button>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full sm:w-auto bg-[#0088cc] hover:bg-[#0099e6] text-white font-black text-base px-8 py-4 rounded-xl flex items-center justify-center space-x-3 transition-all cursor-pointer shadow-xl border border-sky-400/40"
+            >
+              <TelegramIcon className="w-5 h-5" />
+              <span>JOIN TELEGRAM</span>
+            </motion.div>
+          </a>
         </motion.div>
 
         {/* Trust Badges Grid - Positioned Nicely at the Bottom */}

@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/lib/store';
 import { ShoppingBag, Search, Menu, X } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/ui/BrandIcons';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
@@ -69,12 +70,24 @@ export const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Right Side: Cart Counter Button & Mobile Menu */}
-        <div className="flex items-center space-x-3">
+        {/* Right Side: WhatsApp Button, Cart Counter Button & Mobile Menu */}
+        <div className="flex items-center space-x-2.5">
+          {/* WhatsApp Direct Chat Button */}
+          <a
+            href="https://wa.me/qr/4RBQJ2R3UD4GN1"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Chat on WhatsApp"
+            aria-label="Chat on WhatsApp"
+            className="p-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white flex items-center justify-center cursor-pointer shadow-md hover:scale-105 active:scale-95 transition-transform"
+          >
+            <WhatsAppIcon className="w-5 h-5" />
+          </a>
+
           {/* Cart Counter Button */}
           <button
             onClick={openCart}
-            className="relative p-2.5 rounded-xl glow-pink-btn text-white flex items-center justify-center cursor-pointer shadow-md"
+            className="relative p-2.5 rounded-xl glow-pink-btn text-white flex items-center justify-center cursor-pointer shadow-md hover:scale-105 active:scale-95 transition-transform"
             title="View Cart"
           >
             <ShoppingBag className="w-5 h-5" />
@@ -145,6 +158,19 @@ export const Navbar: React.FC = () => {
                 {link.name}
               </Link>
             ))}
+
+            <div className="pt-2">
+              <a
+                href="https://wa.me/qr/4RBQJ2R3UD4GN1"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-sm shadow-md transition-colors"
+              >
+                <WhatsAppIcon className="w-5 h-5" />
+                <span>Chat on WhatsApp</span>
+              </a>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

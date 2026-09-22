@@ -1454,7 +1454,7 @@ export default function CMSDashboardPage() {
                   <label className="block text-slate-700 font-bold mb-1">Intro Loader Video Link (URL)</label>
                   <input
                     type="text"
-                    placeholder="/videos/welcoming_intro.webm"
+                    placeholder="https://..."
                     value={editableSettings.welcomingVideoUrl || ''}
                     onChange={(e) => setEditableSettings({ ...editableSettings, welcomingVideoUrl: e.target.value })}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 font-mono"

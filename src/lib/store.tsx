@@ -25,6 +25,7 @@ import {
 } from './mockData';
 import { ref, onValue, set, push, update, remove } from 'firebase/database';
 import { database } from './firebase';
+import { getItemLineTotal } from './utils';
 
 interface AppContextType {
   // Cart
@@ -371,7 +372,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const cartSubtotal = cart.reduce((acc, item) => {
     const price = item.product.discountedPrice || item.product.price;
-    return acc + price * item.quantity;
+    return acc + getItemLineTotal(price, item.quantity);
   }, 0);
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);

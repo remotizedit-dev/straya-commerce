@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/lib/store';
-import { formatAUD } from '@/lib/utils';
+import { formatAUD, getQuantityDiscountPercent, getItemLineTotal } from '@/lib/utils';
 import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Tag } from 'lucide-react';
 
 export const CartDrawer: React.FC = () => {
@@ -98,6 +98,8 @@ export const CartDrawer: React.FC = () => {
                 ) : (
                   cart.map(({ product, quantity }) => {
                     const itemPrice = product.discountedPrice || product.price;
+                    const discountPct = getQuantityDiscountPercent(quantity);
+                    const lineTotal = getItemLineTotal(itemPrice, quantity);
                     return (
                       <div
                         key={product.id}
@@ -148,8 +150,13 @@ export const CartDrawer: React.FC = () => {
 
                         <div className="text-right">
                           <p className="text-xs font-black text-white">
-                            {formatAUD(itemPrice * quantity)}
+                            {formatAUD(lineTotal)}
                           </p>
+                          {discountPct > 0 && (
+                            <span className="text-[9px] text-emerald-400 font-bold bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 rounded inline-block mt-1">
+                              {discountPct}% OFF
+                            </span>
+                          )}
                         </div>
                       </div>
                     );

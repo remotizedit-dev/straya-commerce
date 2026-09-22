@@ -6,8 +6,25 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useApp } from '@/lib/store';
-import { formatAUD } from '@/lib/utils';
-import { ShoppingBag, Star, ShieldCheck, Award, Tag, Plus, Minus, ChevronRight, CheckCircle2 } from 'lucide-react';
+import {
+  formatAUD,
+  getQuantityDiscountPercent,
+  getQuantityDiscountRate,
+  getItemEffectiveUnitPrice,
+  getItemLineTotal,
+} from '@/lib/utils';
+import {
+  ShoppingBag,
+  Star,
+  ShieldCheck,
+  Award,
+  Tag,
+  Plus,
+  Minus,
+  ChevronRight,
+  CheckCircle2,
+  Sparkles,
+} from 'lucide-react';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -50,6 +67,11 @@ export default function ProductDetailPage() {
     ? Math.round(((product.price - product.discountedPrice!) / product.price) * 100)
     : 0;
 
+  const currentDiscountPct = getQuantityDiscountPercent(quantity);
+  const currentUnitDiscountedPrice = getItemEffectiveUnitPrice(effectivePrice, quantity);
+  const currentLineTotal = getItemLineTotal(effectivePrice, quantity);
+  const currentSavings = effectivePrice * quantity - currentLineTotal;
+
   return (
     <div className="bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
@@ -78,25 +100,25 @@ export default function ProductDetailPage() {
                 </span>
               )}
 
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={product.images[selectedImageIndex] || product.images[0]}
                 alt={product.title}
-                fill
-                priority
-                className="object-cover transition-all duration-500"
+                className="w-full h-full object-contain p-6"
               />
             </div>
 
+            {/* Thumbnail Strip */}
             {product.images.length > 1 && (
-              <div className="flex items-center space-x-3 overflow-x-auto pb-2">
+              <div className="flex space-x-3 overflow-x-auto pb-2">
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
                     className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
                       selectedImageIndex === idx
-                        ? 'border-[#FF007A] shadow-md'
-                        : 'border-slate-200 opacity-60 hover:opacity-100'
+                        ? 'border-[#FF007A] shadow-md scale-105'
+                        : 'border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100'
                     }`}
                   >
                     <Image src={img} alt={`Thumbnail ${idx}`} fill className="object-cover" />
@@ -145,31 +167,115 @@ export default function ProductDetailPage() {
               </p>
             </div>
 
-            {/* Quantity & Add to Cart */}
-            <div className="space-y-4 pt-4 border-t border-slate-200">
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl p-1">
+            {/* Quantity Suggestions & Tiered Discounts */}
+            <div className="space-y-3 pt-4 border-t border-slate-200">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-800">
+                  Select Quantity (Bundle & Save)
+                </span>
+                {currentDiscountPct > 0 && (
+                  <span className="text-[11px] font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                    <Sparkles className="w-3 h-3 text-emerald-600" />
+                    <span>{currentDiscountPct}% OFF Applied (Save {formatAUD(currentSavings)})</span>
+                  </span>
+                )}
+              </div>
+
+              {/* 1 / 2 / 3 / 4 Suggestion Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5">
+                {[
+                  { qty: 1, label: '1 Vial', badge: 'Standard', pct: 0 },
+                  { qty: 2, label: '2 Vials', badge: '-5% OFF', pct: 5 },
+                  { qty: 3, label: '3 Vials', badge: '-10% OFF', pct: 10, highlight: 'Popular' },
+                  { qty: 4, label: '4 Vials', badge: '-15% OFF', pct: 15, highlight: 'Best Value' },
+                ].map((tier) => {
+                  const isSelected = quantity === tier.qty;
+                  const tierTotal = getItemLineTotal(effectivePrice, tier.qty);
+                  const tierUnit = getItemEffectiveUnitPrice(effectivePrice, tier.qty);
+
+                  return (
+                    <button
+                      key={tier.qty}
+                      type="button"
+                      onClick={() => setQuantity(tier.qty)}
+                      className={`relative p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col justify-between items-center group ${
+                        isSelected
+                          ? 'border-slate-900 bg-slate-900 text-white shadow-md ring-2 ring-slate-900/10'
+                          : 'border-slate-200 bg-white hover:border-slate-300 text-slate-900 hover:bg-slate-50'
+                      }`}
+                    >
+                      {/* Top Badge */}
+                      <div className="mb-1.5">
+                        {tier.pct > 0 ? (
+                          <span
+                            className={`text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-tight ${
+                              isSelected
+                                ? 'bg-[#00F0FF] text-slate-950 shadow-xs'
+                                : 'bg-[#FF007A]/10 text-[#FF007A]'
+                            }`}
+                          >
+                            {tier.badge}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                            Regular
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Quantity Title */}
+                      <span className="text-sm font-black tracking-tight">
+                        {tier.label}
+                      </span>
+
+                      {/* Line Total */}
+                      <span className={`text-xs font-mono font-bold mt-1 ${isSelected ? 'text-[#00F0FF]' : 'text-slate-900'}`}>
+                        {formatAUD(tierTotal)}
+                      </span>
+
+                      {/* Per Vial note */}
+                      <span className={`text-[10px] font-mono mt-0.5 ${isSelected ? 'text-slate-300' : 'text-slate-400'}`}>
+                        {formatAUD(tierUnit)}/ea
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Stepper & Add to Cart Row */}
+              <div className="flex items-center space-x-3 pt-2">
+                <div className="flex items-center bg-slate-100 border border-slate-200 rounded-xl p-1 shrink-0">
                   <button
+                    type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="p-2 text-slate-600 hover:text-slate-900"
+                    className="p-2 text-slate-600 hover:text-slate-900 cursor-pointer"
+                    title="Decrease Quantity"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="px-4 text-base font-black text-slate-900">{quantity}</span>
+                  <span className="px-3 text-base font-black text-slate-900 min-w-[2.2rem] text-center">
+                    {quantity}
+                  </span>
                   <button
+                    type="button"
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="p-2 text-slate-600 hover:text-slate-900"
+                    className="p-2 text-slate-600 hover:text-slate-900 cursor-pointer"
+                    title="Increase Quantity"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => addToCart(product, quantity)}
-                  className="flex-1 glow-pink-btn text-white font-black py-4 px-8 rounded-xl text-base uppercase tracking-wider flex items-center justify-center space-x-3 transition-all cursor-pointer shadow-lg"
+                  className="flex-1 glow-pink-btn text-white font-black py-4 px-4 sm:px-6 rounded-xl text-sm sm:text-base uppercase tracking-wider flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-lg hover:shadow-xl"
                 >
-                  <ShoppingBag className="w-5 h-5" />
-                  <span>ADD TO CART ({formatAUD(effectivePrice * quantity)})</span>
+                  <ShoppingBag className="w-5 h-5 shrink-0" />
+                  <span className="truncate">
+                    ADD TO CART • {formatAUD(currentLineTotal)}
+                    {currentDiscountPct > 0 && ` (-${currentDiscountPct}%)`}
+                  </span>
                 </button>
               </div>
 
