@@ -16,8 +16,8 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !phone || !message) {
-      setError('Please fill in all contact fields.');
+    if (!name || !email || !message) {
+      setError('Please fill in all required fields.');
       return;
     }
 
@@ -28,7 +28,7 @@ export default function ContactPage() {
       await addLead({
         name,
         email,
-        phone,
+        phone: phone.trim() || undefined,
         source: 'contact_form',
         message,
       });
@@ -56,9 +56,15 @@ export default function ContactPage() {
           <h1 className="text-3xl sm:text-5xl font-black text-slate-900 uppercase tracking-tight">
             Contact Straya Peptides
           </h1>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Have questions regarding HPLC batch verification, custom laboratory orders, or dispatch tracking? Our Sydney and Melbourne teams are here to assist.
+          <p className="text-slate-600 text-base leading-relaxed">
+            For general enquiries, our team is here to assist.
           </p>
+          <div className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm font-medium shadow-sm">
+            <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>
+              <strong className="font-bold text-amber-800">Please note:</strong> Personal use, dosing, or medical guidance enquiries cannot be addressed.
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -146,11 +152,16 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
+                <div className="space-y-2">
                   <h3 className="text-xl font-bold text-slate-900 uppercase tracking-wide">
                     Send Us A Message
                   </h3>
-                  <p className="text-xs text-[#FF007A] font-bold">Submissions are stored securely in CMS</p>
+                  <p className="text-xs text-slate-600">
+                    For general enquiries, our team is here to assist.
+                  </p>
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-medium">
+                    <strong className="font-bold text-amber-800">Please note:</strong> Personal use, dosing, or medical guidance enquiries cannot be addressed.
+                  </div>
                 </div>
 
                 {error && (
@@ -190,11 +201,10 @@ export default function ContactPage() {
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">
-                      Phone Number *
+                      Phone Number <span className="text-slate-400 font-normal">(Optional)</span>
                     </label>
                     <input
                       type="tel"
-                      required
                       placeholder="0412 345 678"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
@@ -223,11 +233,11 @@ export default function ContactPage() {
                   className="w-full glow-pink-btn text-white font-black py-4 px-6 rounded-xl uppercase tracking-wider text-xs flex items-center justify-center space-x-2 transition-all cursor-pointer disabled:opacity-50 shadow-lg"
                 >
                   {isSubmitting ? (
-                    <span>Sending Inquiry...</span>
+                    <span>Submitting...</span>
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      <span>Submit Inquiry to CMS</span>
+                      <span>Submit</span>
                     </>
                   )}
                 </button>

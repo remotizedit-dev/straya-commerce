@@ -93,11 +93,11 @@ export interface CustomerRecord {
 export interface Lead {
   id: string;
   name: string;
-  phone: string;
+  phone?: string;
   email: string;
   source: 'call_request' | 'contact_form';
   message?: string;
-  status: 'new' | 'contacted' | 'resolved';
+  status: 'new' | 'contacted' | 'resolved' | 'closed';
   createdAt: string;
 }
 

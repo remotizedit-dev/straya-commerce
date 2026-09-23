@@ -7,7 +7,7 @@ export const INITIAL_SITE_SETTINGS: SiteSettings = {
   topBannerText: 'Free Express Shipping on Order Over $200',
   heroMediaType: 'image',
   heroMediaUrl: '',
-  heroTitle: 'Australia\'s Premier Research Peptide Source',
+  heroTitle: '',
   heroSubtitle: 'HPLC Tested & Verified >99% Purity. Premium Grade Peptides Dispatched Express Daily from Sydney & Melbourne.',
   heroTextColor: '#FFFFFF',
   introTitle: 'Best Peptides in Australia',

@@ -1278,7 +1278,7 @@ export default function CMSDashboardPage() {
                       {leads.map((l) => (
                         <tr key={l.id} className="hover:bg-slate-50">
                           <td className="p-4 font-bold text-slate-900 text-sm">{l.name}</td>
-                          <td className="p-4 font-mono font-bold text-slate-900">{l.phone}</td>
+                          <td className="p-4 font-mono font-bold text-slate-900">{l.phone || '—'}</td>
                           <td className="p-4 text-slate-700">{l.message || 'Callback Request'}</td>
                           <td className="p-4">
                             <select

@@ -133,6 +133,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             setCustomers(parsed);
           }
         }
+        const savedSettings = localStorage.getItem('straya_site_settings');
+        if (savedSettings) {
+          const parsed = JSON.parse(savedSettings);
+          if (parsed && typeof parsed === 'object') {
+            setSiteSettingsState((prev) => ({ ...prev, ...parsed }));
+          }
+        }
       }
     } catch (e) {
       console.warn('localStorage read error', e);
@@ -183,7 +190,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         settingsRef,
         (snapshot) => {
           if (snapshot.exists()) {
-            setSiteSettingsState({ ...INITIAL_SITE_SETTINGS, ...snapshot.val() });
+            const val = snapshot.val();
+            const merged = { ...INITIAL_SITE_SETTINGS, ...val };
+            setSiteSettingsState(merged);
+            try {
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('straya_site_settings', JSON.stringify(merged));
+              }
+            } catch (e) {
+              console.warn('localStorage siteSettings write error', e);
+            }
           }
         },
         (err) => {
@@ -385,6 +401,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateSiteSettings = async (newSettings: Partial<SiteSettings>) => {
     const updated = { ...siteSettings, ...newSettings };
     setSiteSettingsState(updated);
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('straya_site_settings', JSON.stringify(updated));
+      }
+    } catch (e) {}
     try {
       await set(ref(database, 'siteSettings'), updated);
     } catch (e) {
