@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/lib/store';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Mail, Send, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 export default function ContactPage() {
-  const { siteSettings, addLead } = useApp();
+  const { addLead } = useApp();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -46,9 +46,9 @@ export default function ContactPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
         {/* Header */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
+        <div className="text-center space-y-4 max-w-2xl mx-auto">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#FF007A]/10 text-[#FF007A] text-xs font-bold uppercase tracking-wider">
             <Mail className="w-4 h-4" />
             <span>Australian Support Desk</span>
@@ -67,81 +67,15 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Info */}
-          <div className="space-y-8">
-            <div className="bg-slate-50 p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-              <h3 className="text-xl font-bold text-slate-900 uppercase tracking-wide border-b border-slate-200 pb-4">
-                Direct Australian Contact
-              </h3>
-
-              <div className="space-y-5 text-sm text-slate-700">
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 rounded-xl bg-[#FF007A]/10 text-[#FF007A] shrink-0">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900">Laboratory Headquarters</h4>
-                    <p className="text-xs text-slate-500 mt-1">{siteSettings.address}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 rounded-xl bg-[#FF007A]/10 text-[#FF007A] shrink-0">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900">Telephone Support</h4>
-                    <p className="text-xs text-[#FF007A] font-mono font-bold mt-1">{siteSettings.contactPhone}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 rounded-xl bg-[#FF007A]/10 text-[#FF007A] shrink-0">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900">Email Desk</h4>
-                    <p className="text-xs text-slate-500 mt-1">{siteSettings.contactEmail}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="p-3 rounded-xl bg-[#FF007A]/10 text-[#FF007A] shrink-0">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900">Business Hours</h4>
-                    <p className="text-xs text-slate-500 mt-1">{siteSettings.businessHours}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {siteSettings.mapEmbedUrl && (
-              <div className="rounded-3xl border border-slate-200 overflow-hidden shadow-sm h-72 w-full">
-                <iframe
-                  src={siteSettings.mapEmbedUrl}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Straya Location Map"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Form */}
-          <div className="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-md flex flex-col justify-between">
+        {/* Contact Form Card */}
+        <div className="max-w-2xl mx-auto w-full">
+          <div className="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-xl">
             {isSubmitted ? (
               <div className="flex flex-col items-center justify-center text-center py-12 space-y-4">
                 <CheckCircle2 className="w-16 h-16 text-[#FF007A] animate-bounce" />
                 <h3 className="text-2xl font-bold text-slate-900">Message Sent Successfully!</h3>
                 <p className="text-xs text-slate-600 max-w-sm">
-                  Your message has been logged directly into our CMS inquiry desk. We will respond via email or phone shortly.
+                  Your message has been logged directly into our inquiry desk. We will respond via email shortly.
                 </p>
                 <button
                   onClick={() => setIsSubmitted(false)}
@@ -151,17 +85,14 @@ export default function ContactPage() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="space-y-2">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-1 border-b border-slate-100 pb-4">
                   <h3 className="text-xl font-bold text-slate-900 uppercase tracking-wide">
                     Send Us A Message
                   </h3>
-                  <p className="text-xs text-slate-600">
-                    For general enquiries, our team is here to assist.
+                  <p className="text-xs text-slate-500">
+                    Fill out the form below and our team will get back to you promptly.
                   </p>
-                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-medium">
-                    <strong className="font-bold text-amber-800">Please note:</strong> Personal use, dosing, or medical guidance enquiries cannot be addressed.
-                  </div>
                 </div>
 
                 {error && (
@@ -218,7 +149,7 @@ export default function ContactPage() {
                     Message / Inquiry *
                   </label>
                   <textarea
-                    rows={4}
+                    rows={5}
                     required
                     placeholder="Enter details regarding compound orders or HPLC reports..."
                     value={message}
