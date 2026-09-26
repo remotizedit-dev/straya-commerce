@@ -86,17 +86,7 @@ export const Footer: React.FC = () => {
           <span className="hover:text-black cursor-pointer">Shipping &amp; Return Policy</span>
         </div>
         <div>
-          <p className="text-slate-500 font-medium text-xs">
-            Developed by{' '}
-            <a
-              href="https://remotizedit.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-bold text-[#FF007A] hover:underline"
-            >
-              RemotizedIT
-            </a>
-          </p>
+          
         </div>
       </div>
     </footer>
