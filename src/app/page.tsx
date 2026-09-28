@@ -61,7 +61,7 @@ export default function HomePage() {
           <div className="relative w-full md:w-96">
             <input
               type="text"
-              placeholder="Search BPC-157, Semaglutide, GHK-Cu..."
+              placeholder="Search Retatrutide (Reta), Tirzepatide, GHK-Cu..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-50 text-slate-900 text-sm px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-[#FF007A] transition-colors pr-10"
@@ -257,6 +257,82 @@ export default function HomePage() {
           </div>
         )}
       </section>
+
+      {/* 11/ Retatrutide Australia & Research Peptides Authority SEO Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="rounded-3xl bg-slate-900 text-white p-8 sm:p-12 border border-slate-800 space-y-8">
+          <div className="max-w-3xl space-y-3">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#00F0FF]/10 border border-[#00F0FF]/30 text-[#00F0FF] text-xs font-bold uppercase tracking-widest">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Australian Laboratory Grade Research</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white">
+              Retatrutide (Reta) & High-Purity Peptides in Australia
+            </h2>
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              Straya Labs is Australia&apos;s dedicated laboratory provider for third-party verified, research-grade peptides. Every batch of <strong>Retatrutide (10mg, 20mg, 30mg)</strong>, <strong>Tirzepatide</strong>, and <strong>GHK-Cu</strong> undergoes rigorous High-Performance Liquid Chromatography (HPLC) and Mass Spectrometry (MS) testing to confirm &gt;99% purity before domestic dispatch.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-800">
+            <div className="space-y-2">
+              <h3 className="font-extrabold text-[#FF007A] text-base uppercase">Where to buy Retatrutide in Australia?</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Straya Labs supplies lyophilized, laboratory-certified Retatrutide nationwide with direct dispatch from Sydney and Melbourne distribution centers.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-extrabold text-[#00F0FF] text-base uppercase">&gt;99% HPLC Certified Batch Testing</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                We believe in total transparency. Every compound is verified with third-party analytical test reports accessible via our online Certificate of Analysis desk.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h3 className="font-extrabold text-white text-base uppercase">Express Australia Post Dispatch</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Orders are packed discreetly with temperature-protective cold packaging and shipped express daily across NSW, VIC, QLD, WA, SA, and nationwide.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* JSON-LD FAQ Structured Data for Google Ranking */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'Where can I buy Retatrutide in Australia?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'You can order HPLC-verified Retatrutide (Reta) in Australia directly from Straya Labs (strayalabsau.com). We supply 10mg, 20mg, and 30mg research-grade lyophilized vials dispatched express daily from Sydney and Melbourne.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'What purity standard is Straya Labs Retatrutide?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Every batch of Retatrutide from Straya Labs is verified with third-party High-Performance Liquid Chromatography (HPLC) and Mass Spectrometry (MS) testing to guarantee >99% purity with verifiable Certificates of Analysis (COA).',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'How quickly are peptide orders dispatched in Australia?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'All orders placed are dispatched same-day or next business day via Australia Post Express with full consignment tracking provided.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
     </div>
   );
 }

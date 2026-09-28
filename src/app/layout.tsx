@@ -25,9 +25,9 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-const DEFAULT_SEO_TITLE = "Straya Labs | Australia's Highest Purity Research Peptides";
-const DEFAULT_SEO_DESC = "Buy HPLC-verified research peptides in Australia from Straya Labs. Premium Retatrutide (Reta), Tirzepatide, GHK-Cu, BPC-157, TB-500, Semaglutide >99% purity. Express domestic dispatch from Sydney & Melbourne.";
-const DEFAULT_SEO_KEYWORDS = "Retatrutide Australia, Retatrutide Reta, buy Retatrutide Australia, Reta peptide Australia, Retatrutide Sydney Melbourne, Retatrutide 10mg, Retatrutide 20mg, Retatrutide 30mg, Tirzepatide Australia, GHK-Cu Australia, BPC-157 Australia, TB-500 Australia, Semaglutide Australia, HPLC research peptides, Straya Labs, Straya Peptides";
+const DEFAULT_SEO_TITLE = "Retatrutide (Reta) Australia | Straya Labs - Highest Purity Peptides";
+const DEFAULT_SEO_DESC = "Buy HPLC-verified Retatrutide (Reta) in Australia from Straya Labs. Premium 10mg, 20mg & 30mg research grade Retatrutide, Tirzepatide, GHK-Cu >99% purity with Certificate of Analysis. Express domestic dispatch from Sydney & Melbourne.";
+const DEFAULT_SEO_KEYWORDS = "Retatrutide Australia, Retatrutide Reta Australia, buy Retatrutide Australia, Retatrutide 10mg Australia, Retatrutide 20mg Australia, Retatrutide 30mg Australia, Reta peptide Australia, buy Reta Australia, Retatrutide Sydney, Retatrutide Melbourne, Tirzepatide Australia, GHK-Cu Australia, BPC-157 Australia, TB-500 Australia, Semaglutide Australia, HPLC research peptides, Straya Labs, Straya Labs Australia";
 
 export async function generateMetadata(): Promise<Metadata> {
   let title = DEFAULT_SEO_TITLE;
@@ -39,7 +39,10 @@ export async function generateMetadata(): Promise<Metadata> {
     const res = await fetch(`${dbUrl}/siteSettings.json`, { next: { revalidate: 60 } });
     if (res.ok) {
       const data = await res.json();
-      if (data?.seoTitle) title = data.seoTitle;
+      if (data?.seoTitle) {
+        // If CMS title is set, prioritize it while ensuring Retatrutide & Straya Labs are represented
+        title = data.seoTitle;
+      }
       if (data?.seoMetaDescription) description = data.seoMetaDescription;
       if (data?.seoKeywords) keywords = data.seoKeywords;
     }
@@ -48,7 +51,10 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
-    metadataBase: new URL('https://straya-peptides.com.au'),
+    metadataBase: new URL('https://www.strayalabsau.com'),
+    alternates: {
+      canonical: 'https://www.strayalabsau.com',
+    },
     title: {
       default: title,
       template: '%s | Straya Labs',
@@ -56,21 +62,36 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     keywords,
     icons: {
-      icon: '/favicon.ico',
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/icon.png', sizes: '256x256', type: 'image/png' },
+      ],
       shortcut: '/favicon.ico',
-      apple: '/favicon.ico',
+      apple: [
+        { url: '/apple-icon.png', sizes: '256x256', type: 'image/png' },
+      ],
     },
     openGraph: {
       title,
       description,
-      type: 'website',
-      locale: 'en_AU',
+      url: 'https://www.strayalabsau.com',
       siteName: 'Straya Labs',
+      locale: 'en_AU',
+      type: 'website',
+      images: [
+        {
+          url: 'https://www.strayalabsau.com/icon.png',
+          width: 256,
+          height: 256,
+          alt: 'Straya Labs Logo',
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
+      images: ['https://www.strayalabsau.com/icon.png'],
     },
     robots: {
       index: true,
@@ -91,10 +112,55 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://www.strayalabsau.com/#organization',
+        name: 'Straya Labs',
+        url: 'https://www.strayalabsau.com',
+        logo: 'https://www.strayalabsau.com/icon.png',
+        description: "Australia's premier laboratory supplier of HPLC-verified research peptides including Retatrutide (Reta), Tirzepatide, and GHK-Cu.",
+        address: {
+          '@type': 'PostalAddress',
+          addressCountry: 'AU',
+        },
+        sameAs: [
+          'https://t.me/strayapeptides',
+          'https://instagram.com/strayapeptides',
+        ],
+      },
+      {
+        '@type': 'WebSite',
+        '@id': 'https://www.strayalabsau.com/#website',
+        url: 'https://www.strayalabsau.com',
+        name: 'Straya Labs',
+        description: 'Buy HPLC-verified research peptides in Australia including Retatrutide (Reta) and Tirzepatide.',
+        publisher: {
+          '@id': 'https://www.strayalabsau.com/#organization',
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://www.strayalabsau.com/products?search={search_term_string}',
+          'query-input': 'required name=search_term_string',
+        },
+      },
+    ],
+  };
+
   return (
     <html lang="en" className={`${plusJakartaSans.variable} ${outfit.variable} ${jetbrainsMono.variable} w-full overflow-x-hidden bg-white text-slate-900`}>
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="256x256" href="/icon.png" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="bg-white text-slate-900 min-h-screen font-sans antialiased overflow-x-hidden w-full selection:bg-[#FF007A] selection:text-white flex flex-col justify-between">
-        
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-NLWF5EZG18"
           strategy="afterInteractive"
