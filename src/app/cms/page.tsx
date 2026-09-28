@@ -529,6 +529,7 @@ export default function CMSDashboardPage() {
                         <th className="p-4">Total Amount</th>
                         <th className="p-4">Payment Status</th>
                         <th className="p-4">Shipping Stage</th>
+                        <th className="p-4">Shipping Track ID</th>
                         <th className="p-4 text-right">Invoice Export</th>
                       </tr>
                     </thead>
@@ -565,6 +566,28 @@ export default function CMSDashboardPage() {
                               <option value="Shipped">Shipped</option>
                               <option value="Delivered">Delivered</option>
                             </select>
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center space-x-1 min-w-[160px]">
+                              <input
+                                type="text"
+                                placeholder="e.g. AP123456AU"
+                                defaultValue={o.shippingTrackId || ''}
+                                key={`${o.id}-${o.shippingTrackId || 'none'}`}
+                                onBlur={(e) => {
+                                  const val = e.target.value.trim();
+                                  if (val !== (o.shippingTrackId || '')) {
+                                    updateOrderStatus(o.id, undefined, undefined, val);
+                                  }
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    (e.target as HTMLInputElement).blur();
+                                  }
+                                }}
+                                className="bg-slate-50 text-slate-900 font-mono text-xs px-2.5 py-1.5 rounded-xl border border-slate-300 focus:outline-none focus:border-[#FF007A] w-full"
+                              />
+                            </div>
                           </td>
                           <td className="p-4 text-right">
                             <div className="flex items-center justify-end space-x-2">
@@ -1704,6 +1727,18 @@ export default function CMSDashboardPage() {
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Target SEO Keywords (Comma Separated)</label>
+                  <textarea
+                    rows={3}
+                    placeholder="e.g. Retatrutide Australia, Retatrutide Reta, buy Retatrutide Australia, HPLC verified peptides"
+                    value={editableSettings.seoKeywords || ''}
+                    onChange={(e) => setEditableSettings({ ...editableSettings, seoKeywords: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
+                  />
+                  <p className="text-[11px] text-slate-500 mt-1">Include high-intent search terms like &quot;Retatrutide (Reta) Australia&quot;, specific dosages (10mg, 20mg, 30mg), and regional keywords.</p>
+                </div>
               </div>
             </div>
           )}
@@ -1740,6 +1775,36 @@ export default function CMSDashboardPage() {
                       <span className="font-mono">{formatAUD((item.product.discountedPrice || item.product.price) * item.quantity)}</span>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Shipping Track ID editor in modal */}
+              <div className="bg-cyan-50 p-3 rounded-xl border border-cyan-200 space-y-2">
+                <label className="block text-[11px] font-bold text-slate-800 uppercase tracking-wide">
+                  Shipping Track ID (Australia Post / Courier)
+                </label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    placeholder="e.g. AP982341209AU"
+                    defaultValue={viewingOrder.shippingTrackId || ''}
+                    id="modal-track-id"
+                    className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-[#FF007A]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const input = document.getElementById('modal-track-id') as HTMLInputElement;
+                      if (input) {
+                        const val = input.value.trim();
+                        updateOrderStatus(viewingOrder.id, undefined, undefined, val);
+                        setViewingOrder({ ...viewingOrder, shippingTrackId: val });
+                      }
+                    }}
+                    className="bg-slate-900 hover:bg-black text-white px-3 py-2 rounded-xl text-xs font-bold cursor-pointer transition-colors"
+                  >
+                    Save Track ID
+                  </button>
                 </div>
               </div>
             </div>

@@ -21,6 +21,7 @@ import {
   FileText,
   ArrowRight,
   ShieldCheck,
+  ExternalLink,
 } from 'lucide-react';
 
 function TrackOrderContent() {
@@ -204,6 +205,40 @@ function TrackOrderContent() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Shipping Track ID Card */}
+                  {order.shippingTrackId && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-cyan-50/80 border border-cyan-200 text-xs text-slate-900 space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-start sm:items-center space-x-3">
+                          <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-700 shrink-0">
+                            <Truck className="w-5 h-5 text-cyan-600" />
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
+                              Australia Post / Courier Tracking ID
+                            </span>
+                            <span className="text-base sm:text-lg font-black font-mono text-slate-900 tracking-wide select-all">
+                              {order.shippingTrackId}
+                            </span>
+                          </div>
+                        </div>
+
+                        <a
+                          href={`https://auspost.com.au/mypost/track/#/details/${encodeURIComponent(order.shippingTrackId)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs uppercase tracking-wider hover:bg-black transition-all shrink-0 cursor-pointer shadow-sm"
+                        >
+                          <span>Track with AusPost</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      </div>
+                      <p className="text-[11px] text-slate-600">
+                        Your parcel has been dispatched from our Australian laboratory. Click above to view live transit updates on the Australia Post portal.
+                      </p>
+                    </div>
+                  )}
 
                   {/* Unpaid Warning & Bank Details Shortcut */}
                   {order.paymentStatus === 'unpaid' && (

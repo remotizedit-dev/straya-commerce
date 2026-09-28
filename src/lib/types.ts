@@ -72,6 +72,7 @@ export interface Order {
   totalAmount: number;
   paymentStatus: PaymentStatus;
   deliveryStatus: DeliveryStatus;
+  shippingTrackId?: string;
   notes?: string;
 }
 

@@ -44,6 +44,12 @@ export default function ProductDetailPage() {
     return () => clearInterval(interval);
   }, [product.images]);
 
+  useEffect(() => {
+    if (product?.title && typeof document !== 'undefined') {
+      document.title = `${product.title} | Straya Labs`;
+    }
+  }, [product?.title]);
+
   if (!product) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center text-slate-900 bg-white">

@@ -78,7 +78,7 @@ interface AppContextType {
 
   orders: Order[];
   createOrder: (orderData: Omit<Order, 'id' | 'createdAt'>) => Promise<Order>;
-  updateOrderStatus: (id: string, paymentStatus?: Order['paymentStatus'], deliveryStatus?: Order['deliveryStatus']) => Promise<void>;
+  updateOrderStatus: (id: string, paymentStatus?: Order['paymentStatus'], deliveryStatus?: Order['deliveryStatus'], shippingTrackId?: string) => Promise<void>;
   deleteOrder: (id: string) => Promise<void>;
 
   customers: CustomerRecord[];
@@ -652,23 +652,33 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateOrderStatus = async (
     id: string,
     paymentStatus?: Order['paymentStatus'],
-    deliveryStatus?: Order['deliveryStatus']
+    deliveryStatus?: Order['deliveryStatus'],
+    shippingTrackId?: string
   ) => {
-    setOrders((prev) =>
-      prev.map((o) => {
+    setOrders((prev) => {
+      const updated = prev.map((o) => {
         if (o.id === id) {
           return {
             ...o,
             paymentStatus: paymentStatus !== undefined ? paymentStatus : o.paymentStatus,
             deliveryStatus: deliveryStatus !== undefined ? deliveryStatus : o.deliveryStatus,
+            shippingTrackId: shippingTrackId !== undefined ? shippingTrackId : o.shippingTrackId,
           };
         }
         return o;
-      })
-    );
+      });
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('straya_orders', JSON.stringify(updated));
+        }
+      } catch (e) {}
+      return updated;
+    });
+
     const patch: Partial<Order> = {};
     if (paymentStatus !== undefined) patch.paymentStatus = paymentStatus;
     if (deliveryStatus !== undefined) patch.deliveryStatus = deliveryStatus;
+    if (shippingTrackId !== undefined) patch.shippingTrackId = shippingTrackId;
     try {
       await update(ref(database, `orders/${id}`), patch);
     } catch (e) {

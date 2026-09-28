@@ -25,16 +25,66 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: 'Straya Peptides | Australia\'s Highest Purity Research Peptides',
-  description: 'Buy high purity research peptides in Australia. HPLC tested BPC-157, TB-500, Semaglutide, Tirzepatide, GHK-Cu with Certificate of Analysis. Express overnight shipping.',
-  keywords: 'peptides Australia, buy BPC-157 Sydney, TB-500 Melbourne, Semaglutide Australia, HPLC research peptides, GHK-Cu, Straya peptides',
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/favicon.ico',
-  },
-};
+const DEFAULT_SEO_TITLE = "Straya Labs | Australia's Highest Purity Research Peptides";
+const DEFAULT_SEO_DESC = "Buy HPLC-verified research peptides in Australia from Straya Labs. Premium Retatrutide (Reta), Tirzepatide, GHK-Cu, BPC-157, TB-500, Semaglutide >99% purity. Express domestic dispatch from Sydney & Melbourne.";
+const DEFAULT_SEO_KEYWORDS = "Retatrutide Australia, Retatrutide Reta, buy Retatrutide Australia, Reta peptide Australia, Retatrutide Sydney Melbourne, Retatrutide 10mg, Retatrutide 20mg, Retatrutide 30mg, Tirzepatide Australia, GHK-Cu Australia, BPC-157 Australia, TB-500 Australia, Semaglutide Australia, HPLC research peptides, Straya Labs, Straya Peptides";
+
+export async function generateMetadata(): Promise<Metadata> {
+  let title = DEFAULT_SEO_TITLE;
+  let description = DEFAULT_SEO_DESC;
+  let keywords = DEFAULT_SEO_KEYWORDS;
+
+  try {
+    const dbUrl = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || "https://straya-peptides-rit-default-rtdb.asia-southeast1.firebasedatabase.app";
+    const res = await fetch(`${dbUrl}/siteSettings.json`, { next: { revalidate: 60 } });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.seoTitle) title = data.seoTitle;
+      if (data?.seoMetaDescription) description = data.seoMetaDescription;
+      if (data?.seoKeywords) keywords = data.seoKeywords;
+    }
+  } catch (e) {
+    // fallback gracefully to rich defaults
+  }
+
+  return {
+    metadataBase: new URL('https://straya-peptides.com.au'),
+    title: {
+      default: title,
+      template: '%s | Straya Labs',
+    },
+    description,
+    keywords,
+    icons: {
+      icon: '/favicon.ico',
+      shortcut: '/favicon.ico',
+      apple: '/favicon.ico',
+    },
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      locale: 'en_AU',
+      siteName: 'Straya Labs',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+  };
+}
 
 export default function RootLayout({
   children,

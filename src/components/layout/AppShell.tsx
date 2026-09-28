@@ -10,6 +10,7 @@ import { Navbar } from '@/components/ui/Navbar';
 import { CartDrawer } from '@/components/ui/CartDrawer';
 import { RequestCallModal } from '@/components/ui/RequestCallModal';
 import { Footer } from '@/components/ui/Footer';
+import { SeoSynchronizer } from '@/components/ui/SeoSynchronizer';
 
 export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
@@ -33,6 +34,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
   return (
     <AppProvider>
+      <SeoSynchronizer />
       {isCMSPage ? (
         // Dedicated CMS Portal Shell (NO Storefront Navbar, NO TopBanner, NO Footer)
         <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
