@@ -37,6 +37,7 @@ import {
   ExternalLink,
   MapPin,
   HelpCircle,
+  Copy,
 } from 'lucide-react';
 
 export default function CMSDashboardPage() {
@@ -182,6 +183,8 @@ export default function CMSDashboardPage() {
   useEffect(() => {
     setEditableSettings(siteSettings);
   }, [siteSettings]);
+
+  const [copiedSitemap, setCopiedSitemap] = useState(false);
 
   // Analytics Calculations
   const paidOrders = orders.filter((o) => o.paymentStatus === 'paid');
@@ -1691,53 +1694,185 @@ export default function CMSDashboardPage() {
             </div>
           )}
 
-          {/* TAB 8: SEO & METADATA CONFIG */}
+          {/* TAB 8: SEO, GOOGLE SEARCH CONSOLE & ANALYTICS CONFIG */}
           {activeTab === 'seo' && (
-            <div className="bg-white p-8 rounded-3xl border border-slate-200 space-y-6 shadow-sm text-slate-900">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                <div>
-                  <h2 className="text-xl font-black text-slate-900 uppercase">SEO & Open Graph Metadata</h2>
-                  <p className="text-xs text-slate-500">Edit page titles, meta descriptions, and social preview cards</p>
-                </div>
-                <button
-                  onClick={handleSaveSettings}
-                  className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-6 py-3 rounded-xl cursor-pointer shadow-md"
-                >
-                  Save SEO Config
-                </button>
-              </div>
-
-              <div className="space-y-4 text-xs">
-                <div>
-                  <label className="block text-slate-700 font-bold mb-1">Meta Title Tag</label>
-                  <input
-                    type="text"
-                    value={editableSettings.seoTitle || ''}
-                    onChange={(e) => setEditableSettings({ ...editableSettings, seoTitle: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
-                  />
+            <div className="space-y-6">
+              {/* Top Banner & Save Action */}
+              <div className="bg-white p-8 rounded-3xl border border-slate-200 space-y-6 shadow-sm text-slate-900">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-4 gap-4">
+                  <div>
+                    <h2 className="text-xl font-black text-slate-900 uppercase">Search Engine Optimization (SEO) & Analytics</h2>
+                    <p className="text-xs text-slate-500">Configure Google Analytics 4, Search Console verification, and sitemap indexing</p>
+                  </div>
+                  <button
+                    onClick={handleSaveSettings}
+                    className="bg-slate-900 hover:bg-black text-white text-xs font-bold px-6 py-3 rounded-xl cursor-pointer shadow-md transition-all self-start sm:self-auto"
+                  >
+                    Save SEO & Analytics Settings
+                  </button>
                 </div>
 
-                <div>
-                  <label className="block text-slate-700 font-bold mb-1">Meta Description</label>
-                  <textarea
-                    rows={3}
-                    value={editableSettings.seoMetaDescription || ''}
-                    onChange={(e) => setEditableSettings({ ...editableSettings, seoMetaDescription: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
-                  />
+                {/* Google Analytics 4 Status Card */}
+                <div className="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200 space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center space-x-2.5">
+                      <span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                      </span>
+                      <h3 className="text-sm font-bold text-emerald-950 uppercase tracking-wider">
+                        Google Analytics 4 (GA4): Active & Connected
+                      </h3>
+                    </div>
+                    <a
+                      href="https://analytics.google.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-950 hover:underline"
+                    >
+                      <span>Open GA Dashboard</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                  <p className="text-xs text-emerald-800 leading-relaxed">
+                    Google Analytics is actively injected in your storefront root layout. All customer visits, pageviews, and session data are streamed directly to your Google Analytics measurement container.
+                  </p>
+                  <div>
+                    <label className="block text-slate-700 font-bold text-xs mb-1">GA4 Measurement ID (Tag)</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. G-NLWF5EZG18"
+                      value={editableSettings.googleAnalyticsId || 'G-NLWF5EZG18'}
+                      onChange={(e) => setEditableSettings({ ...editableSettings, googleAnalyticsId: e.target.value.trim() })}
+                      className="w-full sm:w-80 bg-white border border-emerald-300 rounded-xl px-4 py-2 text-xs font-mono text-slate-900 font-bold focus:outline-none focus:border-emerald-600"
+                    />
+                    <span className="text-[11px] text-slate-500 block mt-1">Default: G-NLWF5EZG18 (can also be overridden via NEXT_PUBLIC_GA_ID in .env.local)</span>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-slate-700 font-bold mb-1">Target SEO Keywords (Comma Separated)</label>
-                  <textarea
-                    rows={3}
-                    placeholder="e.g. Retatrutide Australia, Retatrutide Reta, buy Retatrutide Australia, HPLC verified peptides"
-                    value={editableSettings.seoKeywords || ''}
-                    onChange={(e) => setEditableSettings({ ...editableSettings, seoKeywords: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
-                  />
-                  <p className="text-[11px] text-slate-500 mt-1">Include high-intent search terms like &quot;Retatrutide (Reta) Australia&quot;, specific dosages (10mg, 20mg, 30mg), and regional keywords.</p>
+                {/* Google Search Console & XML Sitemap Card */}
+                <div className="p-5 rounded-2xl bg-blue-50/60 border border-blue-200 space-y-4">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center space-x-2">
+                      <Globe className="w-4 h-4 text-blue-700" />
+                      <h3 className="text-sm font-bold text-blue-950 uppercase tracking-wider">
+                        Google Search Console & XML Sitemap
+                      </h3>
+                    </div>
+                    <a
+                      href="https://search.google.com/search-console"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-1.5 text-xs font-bold text-blue-800 hover:text-blue-950 hover:underline"
+                    >
+                      <span>Open Search Console</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+
+                  <p className="text-xs text-blue-900 leading-relaxed">
+                    Your dynamic XML sitemap automatically indexes all static pages (/products, /coa, /faq, /contact, /track) and all active Firebase research products with 1-hour automatic revalidation.
+                  </p>
+
+                  {/* Sitemap Copy URL Box */}
+                  <div className="space-y-1.5">
+                    <label className="block text-slate-700 font-bold text-xs">Your Live XML Sitemap URL (Submit to GSC):</label>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value="https://www.strayalabsau.com/sitemap.xml"
+                        className="w-full bg-white border border-blue-300 rounded-xl px-4 py-2 text-xs font-mono text-slate-900 font-bold select-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText('https://www.strayalabsau.com/sitemap.xml');
+                          setCopiedSitemap(true);
+                          setTimeout(() => setCopiedSitemap(false), 2500);
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 shrink-0 cursor-pointer shadow-xs"
+                      >
+                        {copiedSitemap ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-white" />
+                            <span>Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy URL</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Google Site Verification Code */}
+                  <div className="pt-2 border-t border-blue-200/80">
+                    <label className="block text-slate-700 font-bold text-xs mb-1">
+                      Google Search Console Site Verification Token (Optional HTML Tag):
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. google-site-verification token or code"
+                      value={editableSettings.googleSiteVerification || ''}
+                      onChange={(e) => setEditableSettings({ ...editableSettings, googleSiteVerification: e.target.value.trim() })}
+                      className="w-full bg-white border border-blue-300 rounded-xl px-4 py-2 text-xs font-mono text-slate-900"
+                    />
+                    <span className="text-[11px] text-slate-500 block mt-1">
+                      If you verify GSC via HTML tag, enter the verification token here. Note: You can also instantly verify in GSC using your connected Google Analytics account!
+                    </span>
+                  </div>
+
+                  {/* Submission Steps Guide */}
+                  <div className="bg-white/80 p-3.5 rounded-xl border border-blue-200 text-[11px] text-slate-700 space-y-1">
+                    <span className="font-bold text-blue-950 uppercase tracking-tight block">How to upload sitemap to Google Search Console:</span>
+                    <ol className="list-decimal list-inside space-y-0.5 text-slate-600">
+                      <li>Open <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold">Google Search Console</a> and select your property (<strong>https://www.strayalabsau.com</strong>).</li>
+                      <li>In the left sidebar, click on <strong>Sitemaps</strong>.</li>
+                      <li>Under &quot;Add a new sitemap&quot;, type: <code className="bg-slate-100 text-slate-900 px-1.5 py-0.5 rounded font-bold font-mono">sitemap.xml</code> and click <strong>Submit</strong>.</li>
+                    </ol>
+                  </div>
+                </div>
+
+                {/* Core Meta Tags & Keywords */}
+                <div className="space-y-4 text-xs pt-4 border-t border-slate-200">
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                    Storefront Title & Meta Descriptions
+                  </h3>
+
+                  <div>
+                    <label className="block text-slate-700 font-bold mb-1">Homepage Meta Title Tag</label>
+                    <input
+                      type="text"
+                      value={editableSettings.seoTitle || ''}
+                      onChange={(e) => setEditableSettings({ ...editableSettings, seoTitle: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-700 font-bold mb-1">Homepage Meta Description</label>
+                    <textarea
+                      rows={3}
+                      value={editableSettings.seoMetaDescription || ''}
+                      onChange={(e) => setEditableSettings({ ...editableSettings, seoMetaDescription: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-700 font-bold mb-1">Target SEO Keywords (Comma Separated)</label>
+                    <textarea
+                      rows={3}
+                      placeholder="e.g. Retatrutide Australia, Retatrutide Reta, buy Retatrutide Australia, HPLC verified peptides"
+                      value={editableSettings.seoKeywords || ''}
+                      onChange={(e) => setEditableSettings({ ...editableSettings, seoKeywords: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900"
+                    />
+                    <p className="text-[11px] text-slate-500 mt-1">Include high-intent search terms like &quot;Retatrutide (Reta) Australia&quot;, specific dosages (10mg, 20mg, 30mg), and regional keywords.</p>
+                  </div>
                 </div>
               </div>
             </div>

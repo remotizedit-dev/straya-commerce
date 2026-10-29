@@ -1,7 +1,9 @@
 import { MetadataRoute } from 'next';
 
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://www.strayalabsau.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.strayalabsau.com';
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
@@ -50,12 +52,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (res.ok) {
       const data = await res.json();
       if (data && typeof data === 'object') {
-        const productUrls: MetadataRoute.Sitemap = Object.keys(data).map((id) => ({
-          url: `${baseUrl}/product/${id}`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly',
-          priority: 0.9,
-        }));
+        const items = Array.isArray(data)
+          ? data.filter(Boolean)
+          : Object.keys(data).map((key) => ({ id: key, ...(data[key] || {}) }));
+
+        const productUrls: MetadataRoute.Sitemap = items
+          .filter((p) => p && (p.id || p.title))
+          .map((p) => ({
+            url: `${baseUrl}/product/${p.id}`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.9,
+          }));
+
         return [...staticRoutes, ...productUrls];
       }
     }

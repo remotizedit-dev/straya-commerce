@@ -152,6 +152,8 @@ export interface SiteSettings {
   seoTitle: string;
   seoMetaDescription: string;
   seoKeywords: string;
+  googleAnalyticsId?: string;
+  googleSiteVerification?: string;
 }
 
 export interface COAItem {

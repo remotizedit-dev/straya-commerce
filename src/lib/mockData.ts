@@ -56,6 +56,8 @@ export const INITIAL_SITE_SETTINGS: SiteSettings = {
   seoTitle: 'Straya Labs | Australia\'s Highest Purity Research Peptides',
   seoMetaDescription: 'Buy HPLC-verified research peptides in Australia from Straya Labs. Premium Retatrutide (Reta), Tirzepatide, GHK-Cu, BPC-157, TB-500, Semaglutide >99% purity. Express domestic dispatch from Sydney & Melbourne.',
   seoKeywords: 'Retatrutide Australia, Retatrutide Reta, buy Retatrutide Australia, Reta peptide Australia, Retatrutide Sydney Melbourne, Retatrutide 10mg, Retatrutide 20mg, Retatrutide 30mg, Tirzepatide Australia, GHK-Cu Australia, BPC-157 Australia, TB-500 Australia, Semaglutide Australia, HPLC research peptides, Straya Labs, Straya Peptides',
+  googleAnalyticsId: 'G-NLWF5EZG18',
+  googleSiteVerification: '',
 };
 
 // 100% Real-time Server Architecture: Zero Mock Data across products, coas, faqs, promos, leads, customers, and orders

@@ -33,6 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
   let title = DEFAULT_SEO_TITLE;
   let description = DEFAULT_SEO_DESC;
   let keywords = DEFAULT_SEO_KEYWORDS;
+  let googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 
   try {
     const dbUrl = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || "https://straya-peptides-rit-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -45,6 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
       }
       if (data?.seoMetaDescription) description = data.seoMetaDescription;
       if (data?.seoKeywords) keywords = data.seoKeywords;
+      if (data?.googleSiteVerification) googleVerification = data.googleSiteVerification;
     }
   } catch (e) {
     // fallback gracefully to rich defaults
@@ -54,6 +56,9 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL('https://www.strayalabsau.com'),
     alternates: {
       canonical: 'https://www.strayalabsau.com',
+    },
+    verification: {
+      google: googleVerification || undefined,
     },
     title: {
       default: title,
@@ -161,18 +166,25 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-white text-slate-900 min-h-screen font-sans antialiased overflow-x-hidden w-full selection:bg-[#FF007A] selection:text-white flex flex-col justify-between">
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-NLWF5EZG18"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-NLWF5EZG18');
-          `}
-        </Script>
+        {(() => {
+          const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-NLWF5EZG18';
+          return (
+            <>
+              <Script
+                src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+                strategy="afterInteractive"
+              />
+              <Script id="google-analytics" strategy="afterInteractive">
+                {`
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${gaId}');
+                `}
+              </Script>
+            </>
+          );
+        })()}
 
         <AppShell>{children}</AppShell>
       </body>

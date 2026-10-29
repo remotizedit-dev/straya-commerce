@@ -6,6 +6,10 @@ export const metadata: Metadata = {
     'Complete your research peptide order with secure checkout. Express Australia Post delivery across Sydney, Melbourne, Brisbane, and nationwide by Straya Labs.',
   keywords:
     'buy peptides checkout Australia, Straya Labs checkout, express shipping peptides Australia',
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function CheckoutLayout({ children }: { children: React.ReactNode }) {
